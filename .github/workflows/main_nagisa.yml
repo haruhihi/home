@@ -35,7 +35,6 @@ jobs:
         with:
           name: node-app
           path: release.zip
-          node-version: '20.x'
 
   deploy:
     runs-on: ubuntu-latest
@@ -58,7 +57,6 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          node-version: '20.x'
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_28C57D321704440896C26A1CFE1CBBAC }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F403F00910C64140A87E7CB556872CA3 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E6988120DBB54994939023E3449116DE }}
