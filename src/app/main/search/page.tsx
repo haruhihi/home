@@ -3,7 +3,7 @@
 import React from "react";
 import { Table } from "antd";
 import type { TableColumnsType } from "antd";
-import { Filters } from "./components/filters.tsx";
+import { Filters } from "./components/filters";
 interface DataType {
   key: React.Key;
   name: string;
