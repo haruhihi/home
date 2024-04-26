@@ -11,13 +11,13 @@ const App = () => {
     fetch("/home/api/login", { body: JSON.stringify(values), method: "POST" })
       .then((res) => res.json())
       .then((res: IRes) => {
+        console.log("res", res);
         if (res.success) {
           router.replace("/home/search");
         } else {
           message.error("登录失败，请检查账号密码！");
         }
       });
-    console.log("Success:", values);
   };
   return (
     <LoginForm
