@@ -1,3 +1,4 @@
+import { DefaultUserName, DefaultUserPassword } from "@constants/config";
 import { ILoginReq, Res200, Res500 } from "@dtos/api";
 import { createSession } from "@utils/session";
 
@@ -6,8 +7,8 @@ export async function POST(request: Request) {
     const params = (await request.json()) as ILoginReq;
     // TODO use db
     if (
-      params.username === "tai_zz@163.com" &&
-      params.password === "5991123122/*t"
+      params.username === DefaultUserName &&
+      params.password === DefaultUserPassword
     ) {
       await createSession(params.username);
       return new Response(Res200({ success: true }), {
