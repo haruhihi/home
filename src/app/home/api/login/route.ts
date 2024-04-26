@@ -5,7 +5,10 @@ export async function POST(request: Request) {
   try {
     const params = (await request.json()) as ILoginReq;
     // TODO use db
-    if (params.username === "abc" && params.password === "123") {
+    if (
+      params.username === "tai_zz@163.com" &&
+      params.password === "5991123122/*t"
+    ) {
       await createSession(params.username);
       return new Response(Res200({ success: true }), {
         status: 200,
