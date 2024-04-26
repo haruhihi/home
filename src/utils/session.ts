@@ -24,13 +24,13 @@ export async function decrypt(session: string | undefined = "") {
 }
 
 export async function createSession(userId: string) {
-  const expires = Number(getConfig("CookieExpire"));
+  const expires = Number(getConfig("COOKIE_EXPIRE"));
   const expiresAt = new Date(Date.now() + expires);
   const session = await encrypt({ userId, expiresAt });
 
   cookies().set("session", session, {
-    httpOnly: isConfig("CookieHttpOnly"),
-    secure: isConfig("CookieSecure"),
+    httpOnly: isConfig("COOKIE_HTTP_ONLY"),
+    secure: isConfig("COOKIE_SECURE"),
     expires: expiresAt,
     sameSite: "lax",
     path: "/",
