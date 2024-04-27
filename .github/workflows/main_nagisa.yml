@@ -25,9 +25,9 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm install
-          echo SESSION_SECRET=$SESSION_SECRET >> .env.local
-          echo DEFAULT_USER_NAME=$DEFAULT_USER_NAME >> .env.local
-          echo DEFAULT_USER_PASSWORD=$DEFAULT_USER_PASSWORD >> .env.local
+          echo SESSION_SECRET=${{ secrets.SESSION_SECRET }} >> .env.local
+          echo DEFAULT_USER_NAME=${{ secrets.DEFAULT_USER_NAME }} >> .env.local
+          echo DEFAULT_USER_PASSWORD=${{ secrets.DEFAULT_USER_PASSWORD }} >> .env.local
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env.local
           echo DB_USER=${{ secrets.SESSION_SECRET }} >> .env.local
           echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env.local
