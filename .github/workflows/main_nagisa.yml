@@ -25,21 +25,16 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm install
-          echo 123
-          echo $SESSION_SECRET
-          echo "$SESSION_SECRET"
-          echo ${{ secrets.SESSION_SECRET }}
-          echo "SESSION_SECRET=$SESSION_SECRET"
           echo SESSION_SECRET=$SESSION_SECRET >> .env.local
           echo DEFAULT_USER_NAME=$DEFAULT_USER_NAME >> .env.local
           echo DEFAULT_USER_PASSWORD=$DEFAULT_USER_PASSWORD >> .env.local
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env.local
+          echo DB_USER=${{ secrets.SESSION_SECRET }} >> .env.local
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env.local
+          echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env.local
           cat .env.local
           npm run build --if-present
           npm run test --if-present
-        env:
-          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
-          DEFAULT_USER_NAME: ${{ secrets.DEFAULT_USER_NAME }}
-          DEFAULT_USER_PASSWORD: ${{ secrets.DEFAULT_USER_PASSWORD }}
 
       - name: Zip artifact for deployment
         run: zip -r release.zip . -x ".git/*"
