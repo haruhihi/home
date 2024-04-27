@@ -13,9 +13,11 @@
     "@ant-design/pro-components": "^2.7.1",
     "antd": "^5.16.4",
     "jose": "^5.2.4",
+    "mysql2": "^3.9.7",
     "next": "14.2.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sequelize": "^6.37.3"
   },
   "devDependencies": {
     "@types/node": "^20",
