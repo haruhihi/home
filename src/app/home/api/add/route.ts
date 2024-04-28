@@ -1,4 +1,5 @@
 import { Res200, Res500 } from "@dtos/api";
+import { EPlan } from "@dtos/db";
 import { getModels } from "@utils/db";
 
 const createDetail = () => {
@@ -15,12 +16,6 @@ const createDetail = () => {
         "https://img0.baidu.com/it/u=173830426,3489666896&fm=253&fmt=auto&app=120&f=JPEG?w=417&h=313",
         "https://img0.baidu.com/it/u=3032045723,164115336&fm=253&fmt=auto&app=120&f=JPEG?w=550&h=444",
         "https://img0.baidu.com/it/u=3953344066,2864724601&fm=253&fmt=auto&app=120&f=JPEG?w=607&h=404",
-        "f",
-        "g",
-        "h",
-        "i",
-        "j",
-        "k",
       ];
       return arr[Math.floor(Math.random() * arr.length)];
     }),
@@ -33,7 +28,7 @@ export async function GET(request: Request) {
     const result = await sequelize.transaction(async (t) => {
       const plan = await Plan.create(
         {
-          place: `${((arr: any[]) =>
+          [EPlan.Place]: `${((arr: any[]) =>
             arr[Math.floor(Math.random() * arr.length)])([
             "牛",
             "马",
@@ -43,7 +38,24 @@ export async function GET(request: Request) {
             "张",
             "胡",
           ])}集供电所`,
-          section: `${Math.floor(Math.random() * 10) + 1}台区`,
+          [EPlan.Section]: `${Math.floor(Math.random() * 10) + 1}台区`,
+          [EPlan.Construction]: `${Math.floor(Math.random() * 10) + 1}${
+            Math.floor(Math.random() * 10) + 1
+          }${Math.floor(Math.random() * 10) + 1}施工队`,
+          // random year, month day
+          [EPlan.ConstructionDate]: new Date(
+            2024 + Math.floor(Math.random() * 2),
+            Math.floor(Math.random() * 12),
+            Math.floor(Math.random() * 28)
+          ),
+          [EPlan.ElectricLevel]: `${((arr: any[]) =>
+            arr[Math.floor(Math.random() * arr.length)])([
+            "10kV",
+            "35kV",
+            "110kV",
+            "220kV",
+            "500kV",
+          ])}`,
           necessityBackground: createDetail(),
           necessityMulti: createDetail(),
           necessityResult: createDetail(),

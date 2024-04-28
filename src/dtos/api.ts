@@ -44,3 +44,19 @@ export interface IRes<T = any> {
   result: T;
   code: ResNum;
 }
+
+export interface ISearchRes {
+  // All count
+  totalCount: number;
+  // All pages
+  totalPages: number;
+  // data of this page
+  data: any[];
+}
+
+export interface ISearchReq {
+  // Page number
+  page: number;
+  // Page size
+  pageSize: number;
+}
