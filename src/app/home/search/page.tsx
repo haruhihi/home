@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Table } from "antd";
+import { Table, message } from "antd";
 import { Filters } from "./components/filters";
-import { ISearchReq, ISearchRes } from "@dtos/api";
+import { ISearchFilter, ISearchReq, ISearchRes } from "@dtos/api";
 import { serialize } from "@utils/helper";
 import { columns } from "./components/columns";
+import { EPlan } from "@dtos/db";
 
 interface DataType {
   key: React.Key;
@@ -24,36 +25,50 @@ for (let i = 0; i < 100; i++) {
   });
 }
 
+const defaultPage = 1;
+
 const App: React.FC = () => {
   const [res, setRes] = useState<ISearchRes>();
-  const [pageSet, setPageSet] = useState<ISearchReq>({ page: 1, pageSize: 5 });
+  const [params, setParams] = useState<ISearchFilter>({
+    page: defaultPage,
+    pageSize: 5,
+  });
 
-  const fetchData = async (pageSet: ISearchReq) => {
-    fetch("/home/api/search?" + serialize(pageSet), {
+  const fetchData = async (params: ISearchFilter) => {
+    fetch("/home/api/search?" + serialize(params), {
       method: "GET",
     })
       .then((res) => res.json())
-      .then((res) => setRes(res.result));
+      .then((res) => {
+        setRes(res.result);
+        message.success("查询成功");
+      });
   };
 
   useEffect(() => {
-    fetchData(pageSet);
-  }, [pageSet]);
+    fetchData(params);
+  }, [params]);
+
+  const onFinish = async (values: any) => {
+    setParams({ ...values, page: defaultPage, pageSize: params.pageSize });
+  };
 
   return (
     <div>
-      <Filters />
+      <Filters onFinish={onFinish} />
       <Table
         columns={columns}
         dataSource={res?.data}
         pagination={{
           total: res?.totalCount,
-          pageSize: pageSet.pageSize,
-          current: pageSet.page,
+          pageSize: params.pageSize,
+          current: params.page,
           showSizeChanger: true,
           showQuickJumper: true,
           onChange: (page: number, pageSize: number) => {
-            setPageSet({ page, pageSize });
+            setParams((params) => {
+              return { ...params, page, pageSize };
+            });
           },
         }}
       />

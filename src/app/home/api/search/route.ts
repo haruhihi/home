@@ -1,5 +1,7 @@
 import { ISearchReq, ISearchRes, Res200, Res500 } from "@dtos/api";
+import { EPlan } from "@dtos/db";
 import { getModels } from "@utils/db";
+import { Op, WhereOptions, where } from "sequelize";
 
 export async function GET(request: Request) {
   try {
@@ -12,10 +14,27 @@ export async function GET(request: Request) {
       throw new Error(`非法的 page: ${pageStr}, pageSize: ${pageSizeStr}`);
     }
 
-    const { Plan, sequelize } = await getModels();
+    const whereOptions = [
+      EPlan.Section,
+      EPlan.Construction,
+      EPlan.ConstructionDate,
+      EPlan.Place,
+      EPlan.ElectricLevel,
+    ].reduce<WhereOptions>((acc: any, cur) => {
+      if (params.has(cur) && params.get(cur) !== "") {
+        acc[cur] = {
+          [Op.substring]: params.get(cur),
+        };
+      }
+      return acc;
+    }, {});
+
+    console.log(whereOptions);
+    const { Plan } = await getModels();
     const { count, rows } = await Plan.findAndCountAll({
       offset: (page - 1) * pageSize,
       limit: pageSize,
+      where: whereOptions,
     });
 
     const result: ISearchRes = {
