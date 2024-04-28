@@ -7,7 +7,7 @@ import { ISearchFilter, ISearchReq, ISearchRes } from "@dtos/api";
 import { serialize } from "@utils/helper";
 import { columns } from "./components/columns";
 import { EPlan } from "@dtos/db";
-
+import { debounce } from "lodash";
 interface DataType {
   key: React.Key;
   name: string;
@@ -34,7 +34,7 @@ const App: React.FC = () => {
     pageSize: 5,
   });
 
-  const fetchData = async (params: ISearchFilter) => {
+  const fetchData = (params: ISearchFilter) => {
     fetch("/home/api/search?" + serialize(params), {
       method: "GET",
     })
@@ -50,13 +50,19 @@ const App: React.FC = () => {
   }, [params]);
 
   const onFinish = async (values: any) => {
+    console.log("on finish");
     setParams({ ...values, page: defaultPage, pageSize: params.pageSize });
   };
 
   return (
     <div>
       <Filters onFinish={onFinish} />
+
       <Table
+        style={{
+          margin: 24,
+        }}
+        bordered
         columns={columns}
         dataSource={res?.data}
         pagination={{
@@ -66,6 +72,7 @@ const App: React.FC = () => {
           showSizeChanger: true,
           showQuickJumper: true,
           onChange: (page: number, pageSize: number) => {
+            console.log("on change");
             setParams((params) => {
               return { ...params, page, pageSize };
             });
