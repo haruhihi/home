@@ -33,10 +33,10 @@ export const getModels = async () => {
     "Plan",
     {
       [EPlan.ID]: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         unique: true,
         primaryKey: true,
-        autoIncrement: true,
       },
       // 供电所
       [EPlan.Place]: {
