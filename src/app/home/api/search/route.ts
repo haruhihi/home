@@ -1,6 +1,7 @@
 import { ISearchReq, ISearchRes, Res200, Res500 } from "@dtos/api";
 import { EPlan } from "@dtos/db";
 import { getModels } from "@utils/db";
+import dayjs from "dayjs";
 import { Op, WhereOptions, where } from "sequelize";
 
 export async function GET(request: Request) {
@@ -17,17 +18,30 @@ export async function GET(request: Request) {
     const whereOptions = [
       EPlan.Section,
       EPlan.Construction,
-      EPlan.ConstructionDate,
       EPlan.Place,
       EPlan.ElectricLevel,
     ].reduce<WhereOptions>((acc: any, cur) => {
-      if (params.has(cur) && params.get(cur) !== "") {
+      if (
+        params.has(cur) &&
+        params.get(cur) !== "" &&
+        params.get(cur) !== null
+      ) {
         acc[cur] = {
           [Op.substring]: params.get(cur),
         };
       }
       return acc;
     }, {});
+
+    if (
+      params.has(EPlan.ConstructionDate) &&
+      params.get(EPlan.ConstructionDate) !== "" &&
+      params.get(EPlan.ConstructionDate) !== null
+    ) {
+      (whereOptions as any)[EPlan.ConstructionDate] = dayjs(
+        params.get(EPlan.ConstructionDate)
+      ).toISOString();
+    }
 
     console.log(whereOptions);
     const { Plan } = await getModels();

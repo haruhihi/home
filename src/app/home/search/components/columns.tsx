@@ -32,7 +32,7 @@ export const columns: TableColumnsType<any> = [
     width: 220,
     dataIndex: EPlan.ConstructionDate,
     key: EPlan.ConstructionDate,
-    render: (text) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
+    render: (text) => dayjs(text).format("YYYY-MM-DD"),
   },
   {
     title: "电压等级",
