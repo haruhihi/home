@@ -7,7 +7,7 @@ import { ISearchFilter, ISearchReq, ISearchRes } from "@dtos/api";
 import { serialize } from "@utils/helper";
 import { columns } from "./components/columns";
 import { EPlan } from "@dtos/db";
-import { debounce } from "lodash";
+
 interface DataType {
   key: React.Key;
   name: string;
