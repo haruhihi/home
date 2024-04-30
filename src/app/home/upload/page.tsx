@@ -2,7 +2,16 @@
 import React, { useEffect, useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
-import { Button, message, Upload } from "antd";
+import {
+  Button,
+  Col,
+  Divider,
+  message,
+  Row,
+  Select,
+  Space,
+  Upload,
+} from "antd";
 import { resolve } from "path";
 import { RcFile } from "antd/es/upload";
 import axios from "axios";
@@ -10,10 +19,79 @@ import COS from "cos-js-sdk-v5";
 import { ENV_LOCAL } from "@constants/config";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
+import {
+  PageContainer,
+  ProForm,
+  ProFormCheckbox,
+  ProFormDependency,
+  ProFormSelect,
+  ProFormSwitch,
+  ProFormText,
+  ProFormTextArea,
+  ProFormUploadButton,
+  ProLayout,
+} from "@ant-design/pro-components";
+import { maintainTeamOptions, operationTeamOptions } from "./help";
+import { uploadFile } from "./upload-file";
 const { Dragger } = Upload;
 
 const App: React.FC = () => {
   const [cos, setCOS] = useState<COS>();
+  const operatorOptions = [
+    "台沛麒",
+    "李斌建",
+    "杨家辉",
+    "1台沛麒",
+    "1李斌建",
+    "1杨家辉",
+    "2台沛麒",
+    "2李斌建",
+    "2杨家辉",
+    "3台沛麒",
+    "3李斌建",
+    "3杨家辉",
+  ].map((item) => ({
+    label: item,
+    value: item,
+  }));
+
+  const areaOptions = [
+    "皇庄1#台区",
+    "皇庄2#台区",
+    "皇庄3#台区",
+    "宫塘1#台区",
+    "宫塘2#台区",
+    "宫塘3#台区",
+    "宫塘4#台区",
+  ].map((item) => ({
+    label: item,
+    value: item,
+  }));
+
+  const specificAreaOptions = ["配电", "营销", "设备", "产业"].map((item) => ({
+    label: item,
+    value: item,
+  }));
+
+  const riskLevelOptions = ["一级", "二级", "三级", "四级", "五级"].map(
+    (item) => ({
+      label: item,
+      value: item,
+    })
+  );
+
+  const electricRiskLevelOptions = [
+    "四级",
+    "五级",
+    "六级",
+    "七级",
+    "八级",
+    "无",
+  ].map((item) => ({
+    label: item,
+    value: item,
+  }));
+
   // 初始化实例
   useEffect(() => {
     const cos = new COS({
@@ -48,98 +126,167 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ maxWidth: "800px" }}>
-      <img
-        src="https://cjxt-1325833079.cos.ap-nanjing.myqcloud.com/up/2024-04-29/f7NbhLQGMaumguFJi4GgE.jpg"
-        width="300"
-      />
-      <Dragger
-        name="file"
-        multiple
-        action={(file: RcFile) => {
-          if (!cos) {
-            message.error("初始化对象存储失败，请刷新重试");
-            return Promise.reject("failed");
-          }
-          return new Promise((resolve, reject) => {
-            cos.uploadFile(
-              {
-                Bucket:
-                  ENV_LOCAL.NEXT_PUBLIC_COS_BUCKET! /* 填入您自己的存储桶，必须字段 */,
-                Region:
-                  ENV_LOCAL.NEXT_PUBLIC_COS_REGION! /* 存储桶所在地域，例如ap-beijing，必须字段 */,
-                Key: `${ENV_LOCAL.NEXT_PUBLIC_COS_PREFIX}/${dayjs().format(
-                  "YYYY-MM-DD"
-                )}/${nanoid()}.${
-                  // 获取文件后缀
-                  file.name.split(".").pop() ?? "jpg"
-                }` /* 存储在桶里的对象键（例如1.jpg，a/b/test.txt），必须字段 */,
-                Body: file /* 必须，上传文件对象，可以是input[type="file"]标签选择本地文件后得到的file对象 */,
-                SliceSize:
-                  1024 *
-                  1024 *
-                  5 /* 触发分块上传的阈值，超过5MB使用分块上传，非必须 */,
-                onTaskReady: function (taskId) {
-                  /* 非必须 */
-                  console.log(taskId);
-                },
-                onProgress: function (progressData) {
-                  /* 非必须 */
-                  console.log(JSON.stringify(progressData));
-                },
-                onFileFinish: function (err, data, options) {
-                  /* 非必须 */
-                  console.log(options.Key + "上传" + (err ? "失败" : "完成"));
-                },
-                // 支持自定义headers 非必须
-                Headers: {
-                  "x-cos-meta-test": 123,
-                },
-              },
-              function (err, data) {
-                if (err) {
-                  console.log("上传失败", err);
-                  message.error(err.message ?? "上传失败");
-                  return reject(err);
-                }
-                message.success("上传成功");
-                console.log("上传成功", data);
-                resolve(`https://${data.Location}`);
-              }
+    <div>
+      <ProForm
+        layout="horizontal"
+        labelCol={{ span: 3 }}
+        wrapperCol={{ span: 14 }}
+        initialValues={{ withElectric: true }}
+        onFinish={(values) => {
+          console.log("values", values);
+        }}
+        submitter={{
+          render: (props, doms) => {
+            return (
+              <Row>
+                <Col span={14} offset={3}>
+                  <Space>{doms}</Space>
+                </Col>
+              </Row>
             );
-          });
-        }}
-        onChange={(info) => {
-          const { status } = info.file;
-          if (status !== "uploading") {
-            console.log(info.file, info.fileList);
-          }
-          if (status === "done") {
-            message.success(`${info.file.name} file uploaded successfully.`);
-          } else if (status === "error") {
-            message.error(`${info.file.name} file upload failed.`);
-          }
-        }}
-        onDrop={(e) => {
-          console.log("Dropped files", e.dataTransfer.files);
+          },
         }}
       >
-        <p className="ant-upload-drag-icon">
-          <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">
-          Click or drag file to this area to upload
-        </p>
-        <p className="ant-upload-hint">
-          Support for a single or bulk upload. Strictly prohibited from
-          uploading company data or other banned files.
-        </p>
-      </Dragger>
-      <div>录入信息如下</div>
-      <h1>属地单位：张集供电所</h1>
-      <h1>
-        项目必要性 - 计划来源：高故障线路、防山火隐患治理，网架结构改造需求
-      </h1>
+        <Divider orientation="left">
+          <h2>单位及人员</h2>
+        </Divider>
+
+        <ProFormSelect
+          name="maintainTeam"
+          options={maintainTeamOptions}
+          labelAlign="right"
+          width="md"
+          label="运维单位"
+          required
+        />
+        <ProFormSelect
+          name="operationTeam"
+          options={operationTeamOptions}
+          label="施工单位"
+          width="md"
+          required
+        />
+        <ProFormSelect
+          width="md"
+          name="maintainPerson"
+          label="工作负责人"
+          options={operatorOptions}
+          mode="multiple"
+          required
+        />
+        <ProFormSelect
+          width="md"
+          name="operationPerson"
+          label="施工人员"
+          options={operatorOptions}
+          mode="multiple"
+          required
+        />
+        <Divider orientation="left">
+          <h2>工作内容</h2>
+        </Divider>
+        <ProFormSelect
+          width="md"
+          name="area"
+          label="工作范围"
+          options={areaOptions}
+          mode="multiple"
+          required
+        />
+        <ProFormSelect
+          width="md"
+          name="specificArea"
+          label="专业分类"
+          options={specificAreaOptions}
+          required
+        />
+        <ProFormSelect
+          width="md"
+          name="riskLevel"
+          label="作业风险等级"
+          options={riskLevelOptions}
+          required
+        />
+        <ProFormSelect
+          width="md"
+          name="electricRiskLevel"
+          label="电网风险等级"
+          options={electricRiskLevelOptions}
+          required
+        />
+        <ProFormTextArea
+          width="md"
+          name="workContent"
+          label="作业内容"
+          // set height
+          fieldProps={{
+            autoSize: { minRows: 5 },
+          }}
+          required
+        />
+        <ProFormSwitch
+          label="带电作业"
+          width="md"
+          name="withElectric"
+          required
+        />
+        <ProFormDependency name={["withElectric"]}>
+          {({ withElectric }) => {
+            return (
+              <div
+                style={{
+                  display: withElectric ? "block" : "none",
+                }}
+              >
+                <ProFormTextArea
+                  width="md"
+                  name="withElectricWorkContent"
+                  label="带电作业内容"
+                  className="with-electric-work-content"
+                  fieldProps={{
+                    autoSize: { minRows: 5 },
+                  }}
+                />
+                <ProFormUploadButton
+                  width="xl"
+                  name="withElectricWorkImg"
+                  label="带电作业图片"
+                  max={5}
+                  // set headers for upload
+                  fieldProps={{
+                    customRequest: async (options) => {
+                      const file = options.file as any;
+                      console.log(file);
+                      try {
+                        const res = await uploadFile(
+                          file as any,
+                          cos!,
+                          (progress) => {
+                            file.progress = Math.floor(progress.percent * 100);
+                            const event = new Event("progress");
+                            (event as any).percent = progress.percent * 100;
+                            options.onProgress?.(event);
+                          }
+                        );
+                        file.status = "done";
+                        file.url = res;
+                        options.onSuccess?.(res);
+                        message.success("上传成功");
+                      } catch (err) {
+                        message.error("上传失败");
+                        file.status = "fail";
+                        options.onError?.(new Error());
+                      }
+                    },
+                  }}
+                  action={"http://secret"}
+                  listType="picture-card"
+                />
+              </div>
+            );
+          }}
+        </ProFormDependency>
+      </ProForm>
     </div>
   );
 };
