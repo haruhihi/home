@@ -1,3 +1,5 @@
+import { EPlan } from "./db";
+
 enum ResNum {
   Success = 0,
   Fail = 10000,
@@ -43,4 +45,27 @@ export interface IRes<T = any> {
   message: string;
   result: T;
   code: ResNum;
+}
+
+export interface ISearchRes {
+  // All count
+  totalCount: number;
+  // All pages
+  totalPages: number;
+  // data of this page
+  data: any[];
+}
+
+export interface ISearchReq {
+  // Page number
+  page: number;
+  // Page size
+  pageSize: number;
+}
+export interface ISearchFilter extends ISearchReq {
+  [EPlan.Construction]?: string;
+  [EPlan.ConstructionDate]?: string;
+  [EPlan.ElectricLevel]?: string;
+  [EPlan.Place]?: string;
+  [EPlan.Section]?: string;
 }

@@ -1,80 +1,19 @@
 "use client";
 
-import React from "react";
-import { Table } from "antd";
-import type { TableColumnsType } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, message } from "antd";
 import { Filters } from "./components/filters";
+import { ISearchFilter, ISearchReq, ISearchRes } from "@dtos/api";
+import { serialize } from "@utils/helper";
+import { columns } from "./components/columns";
+import { EPlan } from "@dtos/db";
+
 interface DataType {
   key: React.Key;
   name: string;
   age: number;
   address: string;
 }
-
-const columns: TableColumnsType<DataType> = [
-  {
-    title: "属地单位",
-    width: 220,
-    dataIndex: "name",
-    key: "name",
-    fixed: "left",
-    render: (text) => "张集供电所",
-  },
-  {
-    title: "项目必要性 - 计划来源",
-    width: 220,
-    dataIndex: "name",
-    key: "name",
-    fixed: "left",
-    render: (text) => (
-      <a href="/main/plan/1" target="_blank">
-        高故障线路、防山火隐患治理，网架结构改造需求
-      </a>
-    ),
-  },
-  {
-    title: "项目必要性 - 一停多用",
-    width: 220,
-    dataIndex: "name",
-    key: "name",
-    fixed: "left",
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: "项目必要性 - 指标提升情况",
-    width: 220,
-    dataIndex: "name",
-    key: "name",
-    fixed: "left",
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: "计划预警",
-    width: 100,
-    dataIndex: "age",
-    key: "age",
-    fixed: "left",
-  },
-  {
-    title: "供电可靠性",
-    dataIndex: "address",
-    key: "1",
-    width: 150,
-  },
-  {
-    title: "风险防范",
-    dataIndex: "address",
-    key: "2",
-    width: 150,
-  },
-  {
-    title: "Action",
-    key: "operation",
-    fixed: "right",
-    width: 100,
-    render: () => <a>action</a>,
-  },
-];
 
 const data: DataType[] = [];
 for (let i = 0; i < 100; i++) {
@@ -86,11 +25,62 @@ for (let i = 0; i < 100; i++) {
   });
 }
 
-const App: React.FC = () => (
-  <div>
-    <Filters />
-    <Table columns={columns} dataSource={data} scroll={{ x: 1500, y: 300 }} />
-  </div>
-);
+const defaultPage = 1;
+
+const App: React.FC = () => {
+  const [res, setRes] = useState<ISearchRes>();
+  const [params, setParams] = useState<ISearchFilter>({
+    page: defaultPage,
+    pageSize: 5,
+  });
+
+  const fetchData = (params: ISearchFilter) => {
+    fetch("/home/api/search?" + serialize(params), {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setRes(res.result);
+        message.success("查询成功");
+      });
+  };
+
+  useEffect(() => {
+    fetchData(params);
+  }, [params]);
+
+  const onFinish = async (values: any) => {
+    console.log("on finish");
+    setParams({ ...values, page: defaultPage, pageSize: params.pageSize });
+  };
+
+  return (
+    <div>
+      <Filters onFinish={onFinish} />
+
+      <Table
+        style={{
+          margin: 24,
+        }}
+        bordered
+        columns={columns}
+        dataSource={res?.data}
+        pagination={{
+          total: res?.totalCount,
+          pageSize: params.pageSize,
+          current: params.page,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          onChange: (page: number, pageSize: number) => {
+            console.log("on change");
+            setParams((params) => {
+              return { ...params, page, pageSize };
+            });
+          },
+        }}
+      />
+    </div>
+  );
+};
 
 export default App;

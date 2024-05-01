@@ -7,6 +7,7 @@ import {
 } from "@constants/config";
 import { DataTypes, Model, ModelStatic, Options, Sequelize } from "sequelize";
 import mysql2 from "mysql2";
+import { EPlan } from "@dtos/db";
 
 let cacheSequelize: Sequelize | null = null;
 let cachePlan: ModelStatic<Model<any, any>> | null = null;
@@ -31,19 +32,34 @@ export const getModels = async () => {
   const Plan = sequelize.define(
     "Plan",
     {
-      id: {
-        type: DataTypes.INTEGER,
+      [EPlan.ID]: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         unique: true,
         primaryKey: true,
-        autoIncrement: true,
       },
       // 供电所
-      place: {
+      [EPlan.Place]: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       // 台区
-      section: {
+      [EPlan.Section]: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      // 施工单位
+      [EPlan.Construction]: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      // 时间
+      [EPlan.ConstructionDate]: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      // 电压等级
+      [EPlan.ElectricLevel]: {
         type: DataTypes.STRING,
         allowNull: false,
       },
