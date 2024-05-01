@@ -1,42 +1,91 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { InboxOutlined } from "@ant-design/icons";
-import type { UploadProps } from "antd";
-import {
-  Button,
-  Col,
-  Divider,
-  message,
-  Row,
-  Select,
-  Space,
-  Upload,
-} from "antd";
-import { resolve } from "path";
-import { RcFile } from "antd/es/upload";
+import { Divider, Image, message } from "antd";
 import axios from "axios";
 import COS from "cos-js-sdk-v5";
-import { ENV_LOCAL } from "@constants/config";
-import dayjs from "dayjs";
-import { nanoid } from "nanoid";
 import {
-  PageContainer,
+  FooterToolbar,
   ProForm,
-  ProFormCheckbox,
+  ProFormDatePicker,
+  ProFormDateTimePicker,
   ProFormDependency,
+  ProFormRadio,
   ProFormSelect,
   ProFormSwitch,
-  ProFormText,
   ProFormTextArea,
   ProFormUploadButton,
-  ProLayout,
+  ProFormUploadButtonProps,
 } from "@ant-design/pro-components";
 import { maintainTeamOptions, operationTeamOptions } from "./help";
-import { uploadFile } from "./upload-file";
-const { Dragger } = Upload;
+import { uploadFileToCOS } from "./upload-file";
+import type { GetProp, UploadFile, UploadProps } from "antd";
+import { EPlan } from "@dtos/db";
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+
+const getBase64 = (file: FileType): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 
 const App: React.FC = () => {
   const [cos, setCOS] = useState<COS>();
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+  };
+
+  const commonUploadProps: Partial<ProFormUploadButtonProps> = {
+    // onPreview: handlePreview,
+    fieldProps: {
+      showUploadList: {
+        showPreviewIcon: false,
+      },
+      customRequest: async (options: any) => {
+        const file = options.file as any;
+        console.log(file);
+        try {
+          const res = await uploadFileToCOS(file as any, cos!, (progress) => {
+            file.progress = Math.floor(progress.percent * 100);
+            const event = new Event("progress");
+            (event as any).percent = progress.percent * 100;
+            options.onProgress?.(event);
+          });
+          file.status = "done";
+          file.url = res;
+          options.onSuccess?.(res);
+          message.success("上传成功");
+        } catch (err) {
+          message.error("上传失败");
+          file.status = "fail";
+          options.onError?.(new Error());
+        }
+      },
+    },
+    action: "http://secret",
+    listType: "picture-card",
+    max: 5,
+    required: true,
+  };
+
+  const commonTextareaProps = {
+    width: "md" as const,
+    fieldProps: {
+      autoSize: { minRows: 5 },
+    },
+    required: true,
+  };
+
   const operatorOptions = [
     "台沛麒",
     "李斌建",
@@ -131,20 +180,16 @@ const App: React.FC = () => {
         layout="horizontal"
         labelCol={{ span: 3 }}
         wrapperCol={{ span: 14 }}
-        initialValues={{ withElectric: true }}
+        initialValues={{
+          withElectric: true,
+          [EPlan.ServicePlan]: "不需要",
+          [EPlan.LoadStop]: false,
+        }}
         onFinish={(values) => {
           console.log("values", values);
         }}
         submitter={{
-          render: (props, doms) => {
-            return (
-              <Row>
-                <Col span={14} offset={3}>
-                  <Space>{doms}</Space>
-                </Col>
-              </Row>
-            );
-          },
+          render: (_, dom) => <FooterToolbar>{dom}</FooterToolbar>,
         }}
       >
         <Divider orientation="left">
@@ -215,14 +260,9 @@ const App: React.FC = () => {
           required
         />
         <ProFormTextArea
-          width="md"
           name="workContent"
           label="作业内容"
-          // set height
-          fieldProps={{
-            autoSize: { minRows: 5 },
-          }}
-          required
+          {...commonTextareaProps}
         />
         <ProFormSwitch
           label="带电作业"
@@ -238,6 +278,7 @@ const App: React.FC = () => {
                   display: withElectric ? "block" : "none",
                 }}
               >
+                <ProFormDateTimePicker label="带电作业开始时间" />
                 <ProFormTextArea
                   width="md"
                   name="withElectricWorkContent"
@@ -251,42 +292,171 @@ const App: React.FC = () => {
                   width="xl"
                   name="withElectricWorkImg"
                   label="带电作业图片"
-                  max={5}
-                  // set headers for upload
-                  fieldProps={{
-                    customRequest: async (options) => {
-                      const file = options.file as any;
-                      console.log(file);
-                      try {
-                        const res = await uploadFile(
-                          file as any,
-                          cos!,
-                          (progress) => {
-                            file.progress = Math.floor(progress.percent * 100);
-                            const event = new Event("progress");
-                            (event as any).percent = progress.percent * 100;
-                            options.onProgress?.(event);
-                          }
-                        );
-                        file.status = "done";
-                        file.url = res;
-                        options.onSuccess?.(res);
-                        message.success("上传成功");
-                      } catch (err) {
-                        message.error("上传失败");
-                        file.status = "fail";
-                        options.onError?.(new Error());
-                      }
-                    },
-                  }}
-                  action={"http://secret"}
-                  listType="picture-card"
+                  {...commonUploadProps}
+                />
+                <ProFormUploadButton
+                  width="xl"
+                  name="withElectricWorkImg"
+                  label="风险防范"
+                  tooltip={
+                    <ul>
+                      {[
+                        "1、上传现勘、施工方案、工作票（word文档） ",
+                        "2、上传施工附图、鸟瞰图(图片)",
+                        "3、高风险作业点（文字+图片）",
+                      ].map((item) => {
+                        return <li key={item}>{item}</li>;
+                      })}
+                    </ul>
+                  }
+                  {...commonUploadProps}
                 />
               </div>
             );
           }}
         </ProFormDependency>
+        <Divider orientation="left">
+          <h2>负荷停用情况</h2>
+        </Divider>
+        <>
+          <ProFormTextArea
+            tooltip="停用方式"
+            {...commonTextareaProps}
+            label="负荷停用"
+          />
+          <ProFormSwitch
+            tooltip="停用方式"
+            label="负荷转供"
+            name={EPlan.LoadStop}
+          />
+          <ProFormDependency name={[EPlan.LoadStop]}>
+            {(values) => {
+              return (
+                <div
+                  style={{
+                    display: values[EPlan.LoadStop] ? "block" : "none",
+                  }}
+                >
+                  <ProFormTextArea
+                    {...commonTextareaProps}
+                    label="负荷转供内容"
+                  />
+                </div>
+              );
+            }}
+          </ProFormDependency>
+          <ProFormSwitch label="操巡队开关是否到位" />
+          <ProFormTextArea {...commonTextareaProps} label="停电方式及区域" />
+        </>
+        <Divider orientation="left">
+          <h2>作业时间</h2>
+        </Divider>
+        <>
+          <ProFormDateTimePicker label="计划完工时间" />
+          <ProFormDateTimePicker label="负荷停用时间" />
+        </>
+        <Divider orientation="left">
+          <h2>项目必要性</h2>
+        </Divider>
+        <>
+          <ProFormUploadButton
+            {...commonUploadProps}
+            label="计划来源（图）"
+            required={false}
+          />
+          <ProFormTextArea
+            {...commonTextareaProps}
+            label="计划来源（文）"
+            required={false}
+          />
+          <ProFormUploadButton
+            {...commonUploadProps}
+            label="一停多用（图）"
+            required={false}
+          />
+          <ProFormTextArea
+            {...commonTextareaProps}
+            label="一停多用（文）"
+            required={false}
+          />
+          <ProFormUploadButton
+            {...commonUploadProps}
+            label="指标提升情况（图）"
+            required={false}
+          />
+          <ProFormTextArea
+            {...commonTextareaProps}
+            label="指标提升情况（文）"
+            required={false}
+          />
+        </>
+        <Divider orientation="left">
+          <h2>供电可靠性</h2>
+        </Divider>
+        <>
+          <ProFormUploadButton
+            {...commonUploadProps}
+            label="停电时户数（图）"
+            required={false}
+          />
+          <ProFormTextArea
+            {...commonTextareaProps}
+            label="停电时户数（文）"
+            required={false}
+          />
+          <ProFormRadio.Group
+            options={["需要", "不需要"]}
+            label="服务方案"
+            name={EPlan.ServicePlan}
+          />
+          <ProFormDependency name={[EPlan.ServicePlan]}>
+            {(values) => {
+              return (
+                <div
+                  style={{
+                    display:
+                      values[EPlan.ServicePlan] === "需要" ? "block" : "none",
+                  }}
+                >
+                  <ProFormUploadButton
+                    {...commonUploadProps}
+                    label="服务方案（文档）"
+                  />
+                  <ProFormTextArea
+                    {...commonTextareaProps}
+                    label="服务方案（文）"
+                    required={false}
+                  />
+                </div>
+              );
+            }}
+          </ProFormDependency>
+        </>
+
+        <Divider orientation="left">
+          <h2>其他</h2>
+        </Divider>
+        <>
+          <ProFormUploadButton
+            {...commonUploadProps}
+            label="物资"
+            tooltip="上传设备异动单、物资调拨单、编号"
+          />
+          <ProFormTextArea label="现场作业组织" {...commonTextareaProps} />
+        </>
       </ProForm>
+      {previewImage && (
+        <Image
+          alt="预览"
+          wrapperStyle={{ display: "none" }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
+          }}
+          src={previewImage}
+        />
+      )}
     </div>
   );
 };

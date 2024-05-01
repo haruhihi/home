@@ -5,7 +5,7 @@ import COS, { ProgressInfo } from "cos-js-sdk-v5";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 
-export const uploadFile = (
+export const uploadFileToCOS = (
   file: RcFile,
   cos: COS,
   onProgress: (progressData: ProgressInfo) => void
