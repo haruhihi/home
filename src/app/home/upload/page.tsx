@@ -75,7 +75,6 @@ const App: React.FC = () => {
     action: "http://secret",
     listType: "picture-card",
     max: 5,
-    required: true,
   };
 
   const commonTextareaProps = {
@@ -83,7 +82,6 @@ const App: React.FC = () => {
     fieldProps: {
       autoSize: { minRows: 5 },
     },
-    required: true,
   };
 
   const operatorOptions = [
@@ -202,14 +200,12 @@ const App: React.FC = () => {
           labelAlign="right"
           width="md"
           label="运维单位"
-          required
         />
         <ProFormSelect
           name="operationTeam"
           options={operationTeamOptions}
           label="施工单位"
           width="md"
-          required
         />
         <ProFormSelect
           width="md"
@@ -217,7 +213,6 @@ const App: React.FC = () => {
           label="工作负责人"
           options={operatorOptions}
           mode="multiple"
-          required
         />
         <ProFormSelect
           width="md"
@@ -225,7 +220,6 @@ const App: React.FC = () => {
           label="施工人员"
           options={operatorOptions}
           mode="multiple"
-          required
         />
         <Divider orientation="left">
           <h2>工作内容</h2>
@@ -236,40 +230,31 @@ const App: React.FC = () => {
           label="工作范围"
           options={areaOptions}
           mode="multiple"
-          required
         />
         <ProFormSelect
           width="md"
           name="specificArea"
           label="专业分类"
           options={specificAreaOptions}
-          required
         />
         <ProFormSelect
           width="md"
           name="riskLevel"
           label="作业风险等级"
           options={riskLevelOptions}
-          required
         />
         <ProFormSelect
           width="md"
           name="electricRiskLevel"
           label="电网风险等级"
           options={electricRiskLevelOptions}
-          required
         />
         <ProFormTextArea
           name="workContent"
           label="作业内容"
           {...commonTextareaProps}
         />
-        <ProFormSwitch
-          label="带电作业"
-          width="md"
-          name="withElectric"
-          required
-        />
+        <ProFormSwitch label="带电作业" width="md" name="withElectric" />
         <ProFormDependency name={["withElectric"]}>
           {({ withElectric }) => {
             return (
@@ -359,35 +344,17 @@ const App: React.FC = () => {
           <h2>项目必要性</h2>
         </Divider>
         <>
-          <ProFormUploadButton
-            {...commonUploadProps}
-            label="计划来源（图）"
-            required={false}
-          />
-          <ProFormTextArea
-            {...commonTextareaProps}
-            label="计划来源（文）"
-            required={false}
-          />
-          <ProFormUploadButton
-            {...commonUploadProps}
-            label="一停多用（图）"
-            required={false}
-          />
-          <ProFormTextArea
-            {...commonTextareaProps}
-            label="一停多用（文）"
-            required={false}
-          />
+          <ProFormUploadButton {...commonUploadProps} label="计划来源（图）" />
+          <ProFormTextArea {...commonTextareaProps} label="计划来源（文）" />
+          <ProFormUploadButton {...commonUploadProps} label="一停多用（图）" />
+          <ProFormTextArea {...commonTextareaProps} label="一停多用（文）" />
           <ProFormUploadButton
             {...commonUploadProps}
             label="指标提升情况（图）"
-            required={false}
           />
           <ProFormTextArea
             {...commonTextareaProps}
             label="指标提升情况（文）"
-            required={false}
           />
         </>
         <Divider orientation="left">
@@ -397,13 +364,8 @@ const App: React.FC = () => {
           <ProFormUploadButton
             {...commonUploadProps}
             label="停电时户数（图）"
-            required={false}
           />
-          <ProFormTextArea
-            {...commonTextareaProps}
-            label="停电时户数（文）"
-            required={false}
-          />
+          <ProFormTextArea {...commonTextareaProps} label="停电时户数（文）" />
           <ProFormRadio.Group
             options={["需要", "不需要"]}
             label="服务方案"
@@ -425,7 +387,6 @@ const App: React.FC = () => {
                   <ProFormTextArea
                     {...commonTextareaProps}
                     label="服务方案（文）"
-                    required={false}
                   />
                 </div>
               );
