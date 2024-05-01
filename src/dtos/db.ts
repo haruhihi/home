@@ -9,6 +9,9 @@ export enum EPlan {
   ServicePlan = "ServicePlan",
   /** 负荷停用 */
   LoadStop = "LoadStop",
+}
+
+export enum EPlanForeign {
   /** 工作负责人 */
   WorkOwner = "WorkOwner",
   /** 施工人员 */

@@ -1,5 +1,5 @@
 import { ISearchReq, ISearchRes, Res200, Res500 } from "@dtos/api";
-import { EPlan } from "@dtos/db";
+import { EPlan, EPlanForeign } from "@dtos/db";
 import { getModels } from "@utils/db";
 import dayjs from "dayjs";
 import { Op, WhereOptions, where } from "sequelize";
@@ -48,6 +48,7 @@ export async function GET(request: Request) {
       offset: (page - 1) * pageSize,
       limit: pageSize,
       where: whereOptions,
+      // include: [EPlanForeign.WorkOwner, EPlanForeign.Worker],
     });
 
     const result: ISearchRes = {

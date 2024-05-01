@@ -39,17 +39,13 @@ export const getModels = async () => {
   await sequelize.authenticate();
   console.log("Connection has been established successfully.");
 
-  const Plan = await initPlanModel(sequelize);
-  // const Plan = await initPlanModel(sequelize, { force: true });
-
   const User = await initUserModel(sequelize);
-  // const User = await initUserModel(sequelize, { force: true });
 
   const Maintainer = await initMaintainerModel(sequelize);
-  // const Maintainer = await initMaintainerModel(sequelize, { force: true });
 
   const Operator = await initOperatorModel(sequelize);
-  // const Operator = await initOperatorModel(sequelize, { force: true });
+
+  const Plan = await initPlanModel(sequelize, { User, Maintainer, Operator });
 
   cache = {
     sequelize,

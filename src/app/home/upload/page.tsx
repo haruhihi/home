@@ -19,7 +19,7 @@ import {
 } from "@ant-design/pro-components";
 import { uploadFileToCOS } from "./upload-file";
 import type { GetProp, UploadFile, UploadProps } from "antd";
-import { EPlan } from "@dtos/db";
+import { EPlan, EPlanForeign } from "@dtos/db";
 import { Footer } from "./footer";
 import { IFormConfigRes } from "@dtos/api";
 
@@ -183,7 +183,15 @@ const App: React.FC = () => {
           [EPlan.LoadStop]: false,
         }}
         onFinish={(values) => {
-          console.log("values", values);
+          axios
+            .post("/home/api/create", values)
+            .then((res) => {
+              message.success("创建成功");
+            })
+            .catch((err) => {
+              message.error(err.message ?? "创建失败");
+              console.log(err);
+            });
         }}
         submitter={{
           render: (_, dom) => <Footer ele={dom}></Footer>,
@@ -208,14 +216,14 @@ const App: React.FC = () => {
         />
         <ProFormSelect
           width="md"
-          name="maintainPerson"
+          name={EPlanForeign.WorkOwner}
           label="工作负责人"
           options={workOwnerOptions}
           mode="multiple"
         />
         <ProFormSelect
           width="md"
-          name="operationPerson"
+          name={EPlanForeign.Worker}
           label="施工人员"
           options={workerOptions}
           mode="multiple"

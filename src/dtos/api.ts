@@ -1,4 +1,4 @@
-import { EPlan } from "./db";
+import { EPlan, EPlanForeign } from "./db";
 
 enum ResNum {
   Success = 0,
@@ -77,4 +77,9 @@ export interface IFormConfigRes {
   workerOptions: TOptions;
   maintainerOptions: TOptions;
   operatorOptions: TOptions;
+}
+
+export interface ICreateReq {
+  [EPlanForeign.WorkOwner]: string;
+  [EPlanForeign.Worker]: string;
 }

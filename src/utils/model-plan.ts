@@ -1,8 +1,10 @@
-import { EPlan, EUser } from "@dtos/db";
+import { EPlan, EPlanForeign, EUser } from "@dtos/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
+import { TModel } from "./db";
 
 export const initPlanModel = async (
   sequelize: Sequelize,
+  options: { User: TModel; Maintainer: TModel; Operator: TModel },
   syncOptions?: SyncOptions
 ) => {
   const Plan = sequelize.define(
@@ -44,6 +46,14 @@ export const initPlanModel = async (
       // Other model options go here
     }
   );
+  // Plan.hasOne(options.User, { foreignKey: EPlanForeign.Worker, as: "Worker" });
+  // Plan.hasOne(options.User, {
+  //   foreignKey: EPlanForeign.WorkOwner,
+  //   as: "WorkOwner",
+  // });
+  // Plan.hasOne(options.Maintainer);
+  // Plan.hasOne(options.Operator);
+
   await Plan.sync(syncOptions);
   return Plan;
 };
