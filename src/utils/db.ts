@@ -10,15 +10,21 @@ import mysql2 from "mysql2";
 import { EPlan } from "@dtos/db";
 import { initUserModel } from "./model-user";
 import { initPlanModel } from "./model-plan";
+import { initMaintainer, initMaintainerModel } from "./model-maintainer";
+import { initOperator, initOperatorModel } from "./model-operator";
 
-let cacheSequelize: Sequelize | null = null;
-let cachePlan: ModelStatic<Model<any, any>> | null = null;
-let cacheUser: ModelStatic<Model<any, any>> | null = null;
+let cache: {
+  sequelize: Sequelize;
+  Plan: TModel;
+  User: TModel;
+  Maintainer: TModel;
+  Operator: TModel;
+} | null = null;
+
+export type TModel = ModelStatic<Model<any, any>>;
 
 export const getModels = async () => {
-  if (cachePlan && cacheSequelize) {
-    return { Plan: cachePlan, sequelize: cacheSequelize };
-  }
+  if (cache) return cache;
   // First time
   const params: Options = {
     host: DB_HOST,
@@ -33,14 +39,24 @@ export const getModels = async () => {
   await sequelize.authenticate();
   console.log("Connection has been established successfully.");
 
-  const Plan = initPlanModel(sequelize);
-  await Plan.sync();
-  cachePlan = Plan;
+  const Plan = await initPlanModel(sequelize);
+  // const Plan = await initPlanModel(sequelize, { force: true });
 
-  const User = initUserModel(sequelize);
-  await User.sync();
-  cacheUser = User;
+  const User = await initUserModel(sequelize);
+  // const User = await initUserModel(sequelize, { force: true });
 
-  cacheSequelize = sequelize;
-  return { sequelize, Plan };
+  const Maintainer = await initMaintainerModel(sequelize);
+  // const Maintainer = await initMaintainerModel(sequelize, { force: true });
+
+  const Operator = await initOperatorModel(sequelize);
+  // const Operator = await initOperatorModel(sequelize, { force: true });
+
+  cache = {
+    sequelize,
+    Plan,
+    User,
+    Maintainer,
+    Operator,
+  };
+  return cache;
 };

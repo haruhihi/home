@@ -9,6 +9,10 @@ export enum EPlan {
   ServicePlan = "ServicePlan",
   /** 负荷停用 */
   LoadStop = "LoadStop",
+  /** 工作负责人 */
+  WorkOwner = "WorkOwner",
+  /** 施工人员 */
+  Worker = "Worker",
 }
 
 export enum EUser {
@@ -25,4 +29,19 @@ export enum EUser {
   IsWorker = "IsWorker",
   /** 角色 */
   Role = "Role",
+}
+/** 运维单位 */
+export enum EMaintainer {
+  /** ID */
+  ID = "ID",
+  /** 姓名 */
+  Name = "Name",
+}
+
+/** 施工单位 */
+export enum EOperator {
+  /** ID */
+  ID = "ID",
+  /** 姓名 */
+  Name = "Name",
 }

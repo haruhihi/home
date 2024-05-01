@@ -1,7 +1,10 @@
-import { EPlan } from "@dtos/db";
-import { DataTypes, Sequelize } from "sequelize";
+import { EPlan, EUser } from "@dtos/db";
+import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 
-export const initPlanModel = (sequelize: Sequelize) => {
+export const initPlanModel = async (
+  sequelize: Sequelize,
+  syncOptions?: SyncOptions
+) => {
   const Plan = sequelize.define(
     "Plan",
     {
@@ -36,40 +39,11 @@ export const initPlanModel = (sequelize: Sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      // 计划必要性 - 计划来源
-      necessityBackground: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      // 计划必要性 - 一停多用
-      necessityMulti: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      // 计划必要性 - 指标提升情况
-      necessityResult: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      // 计划必要性 - 负荷停用
-      cautionCutOff: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      // 计划必要性 - 带电作业
-      cautionElectric: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      // 计划必要性 - 开工后过程督办
-      cautionSupervision: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
     },
     {
       // Other model options go here
     }
   );
+  await Plan.sync(syncOptions);
   return Plan;
 };

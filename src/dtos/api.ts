@@ -69,3 +69,12 @@ export interface ISearchFilter extends ISearchReq {
   [EPlan.Place]?: string;
   [EPlan.Section]?: string;
 }
+
+type TOptions = Array<{ label: string; value: string }>;
+
+export interface IFormConfigRes {
+  workOwnerOptions: TOptions;
+  workerOptions: TOptions;
+  maintainerOptions: TOptions;
+  operatorOptions: TOptions;
+}

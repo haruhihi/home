@@ -5,6 +5,7 @@ import axios from "axios";
 import COS from "cos-js-sdk-v5";
 import {
   FooterToolbar,
+  PageLoading,
   ProForm,
   ProFormDatePicker,
   ProFormDateTimePicker,
@@ -16,10 +17,11 @@ import {
   ProFormUploadButton,
   ProFormUploadButtonProps,
 } from "@ant-design/pro-components";
-import { maintainTeamOptions, operationTeamOptions } from "./help";
 import { uploadFileToCOS } from "./upload-file";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { EPlan } from "@dtos/db";
+import { Footer } from "./footer";
+import { IFormConfigRes } from "@dtos/api";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -35,6 +37,13 @@ const App: React.FC = () => {
   const [cos, setCOS] = useState<COS>();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const [optionsRes, setOptionsRes] = useState<IFormConfigRes>();
+
+  useEffect(() => {
+    axios.get("/home/api/form/config").then((res) => {
+      setOptionsRes(res.data.result);
+    });
+  }, []);
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
@@ -83,24 +92,6 @@ const App: React.FC = () => {
       autoSize: { minRows: 5 },
     },
   };
-
-  const operatorOptions = [
-    "台沛麒",
-    "李斌建",
-    "杨家辉",
-    "1台沛麒",
-    "1李斌建",
-    "1杨家辉",
-    "2台沛麒",
-    "2李斌建",
-    "2杨家辉",
-    "3台沛麒",
-    "3李斌建",
-    "3杨家辉",
-  ].map((item) => ({
-    label: item,
-    value: item,
-  }));
 
   const areaOptions = [
     "皇庄1#台区",
@@ -172,6 +163,14 @@ const App: React.FC = () => {
     setCOS(cos);
   }, []);
 
+  if (!optionsRes) return <PageLoading />;
+  console.log("optionsRes", optionsRes);
+  const {
+    workOwnerOptions,
+    workerOptions,
+    operatorOptions,
+    maintainerOptions,
+  } = optionsRes;
   return (
     <div>
       <ProForm
@@ -187,7 +186,7 @@ const App: React.FC = () => {
           console.log("values", values);
         }}
         submitter={{
-          render: (_, dom) => <FooterToolbar>{dom}</FooterToolbar>,
+          render: (_, dom) => <Footer ele={dom}></Footer>,
         }}
       >
         <Divider orientation="left">
@@ -196,14 +195,14 @@ const App: React.FC = () => {
 
         <ProFormSelect
           name="maintainTeam"
-          options={maintainTeamOptions}
+          options={maintainerOptions}
           labelAlign="right"
           width="md"
           label="运维单位"
         />
         <ProFormSelect
           name="operationTeam"
-          options={operationTeamOptions}
+          options={operatorOptions}
           label="施工单位"
           width="md"
         />
@@ -211,14 +210,14 @@ const App: React.FC = () => {
           width="md"
           name="maintainPerson"
           label="工作负责人"
-          options={operatorOptions}
+          options={workOwnerOptions}
           mode="multiple"
         />
         <ProFormSelect
           width="md"
           name="operationPerson"
           label="施工人员"
-          options={operatorOptions}
+          options={workerOptions}
           mode="multiple"
         />
         <Divider orientation="left">
