@@ -24,6 +24,11 @@ export const EPlan = {
     Name: "Operator",
     label: "施工单位",
   },
+  /** 状态 */
+  Status: {
+    Name: "Status",
+    label: "状态",
+  },
   /** 创建时间 - Sequelize 自动 */
   CreatedAt: {
     Name: "createdAt",
@@ -33,6 +38,24 @@ export const EPlan = {
   UpdatedAt: {
     Name: "updatedAt",
     label: "更新时间",
+  },
+} as const;
+
+export const EPlanStatus = {
+  /** 待审核 */
+  Pending: {
+    Name: "Pending",
+    label: "待审核",
+  },
+  /** 审核通过 */
+  Approved: {
+    Name: "Approved",
+    label: "审核通过",
+  },
+  /** 审核驳回 */
+  Rejected: {
+    Name: "Rejected",
+    label: "审核不通过",
   },
 } as const;
 

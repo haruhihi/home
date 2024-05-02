@@ -9,6 +9,7 @@ import { getColumns } from "./components/columns";
 import { EPlan } from "@dtos/db";
 import { useServerConfigs } from "@utils/hooks";
 import { PageLoading } from "@ant-design/pro-components";
+import axios from "axios";
 
 interface DataType {
   key: React.Key;
@@ -38,13 +39,17 @@ const App: React.FC = () => {
   const serverConfigs = useServerConfigs();
 
   const fetchData = (params: ISearchFilter) => {
-    fetch("/home/api/search?" + serialize(params), {
-      method: "GET",
-    })
-      .then((res) => res.json())
+    axios
+      .get("/home/api/search?" + serialize(params), {
+        method: "GET",
+      })
       .then((res) => {
-        setRes(res.result);
+        setRes(res.data.result);
         message.success("查询成功");
+      })
+      .catch((err) => {
+        message.error("查询失败");
+        console.log(err);
       });
   };
 

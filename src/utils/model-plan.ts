@@ -1,4 +1,4 @@
-import { EPlan } from "@dtos/db";
+import { EPlan, EPlanStatus } from "@dtos/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 
 export const initPlanModel = async (
@@ -25,6 +25,14 @@ export const initPlanModel = async (
       },
       [EPlan.Operator.Name]: {
         type: DataTypes.STRING,
+      },
+      [EPlan.Status.Name]: {
+        defaultValue: EPlanStatus.Pending.Name,
+        type: DataTypes.ENUM(
+          EPlanStatus.Pending.Name,
+          EPlanStatus.Approved.Name,
+          EPlanStatus.Rejected.Name
+        ),
       },
     },
     {

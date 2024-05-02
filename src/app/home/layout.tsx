@@ -2,20 +2,20 @@
 import { PageContainer, ProLayout } from "@ant-design/pro-components";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-import { ThunderboltOutlined } from "@ant-design/icons";
+import { ApiOutlined } from "@ant-design/icons";
 
 const App: React.FC<{ children: React.ReactNode }> = (props) => {
   const router = useRouter();
   const path = usePathname();
 
-  const staticRoutes = [
+  let staticRoutes = [
     {
-      path: "/home/search",
+      path: "/home/plan/search",
       name: "首页",
       locale: "menu.home",
     },
     {
-      path: "/home/upload",
+      path: "/home/plan/upload",
       name: "录入计划",
       locale: "menu.upload",
     },
@@ -29,6 +29,10 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
         locale: "menu.audit",
       });
     }
+    // clean routes when user is log in
+    if (path === "/home/login") {
+      staticRoutes = [];
+    }
   }
 
   return (
@@ -36,7 +40,7 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
       location={{
         pathname: path,
       }}
-      logo={<ThunderboltOutlined />}
+      logo={<ApiOutlined />}
       title="国家电网"
       collapsed={false}
       collapsedButtonRender={false}

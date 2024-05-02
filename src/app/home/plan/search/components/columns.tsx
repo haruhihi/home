@@ -1,6 +1,7 @@
 import { IFormConfigRes } from "@dtos/api";
-import { EPlan } from "@dtos/db";
+import { EPlan, EPlanStatus } from "@dtos/db";
 import type { TableColumnsType } from "antd";
+import axios from "axios";
 import dayjs from "dayjs";
 
 export const getColumns = (configs: {
@@ -84,11 +85,51 @@ export const getColumns = (configs: {
       key: "operation",
       fixed: "right",
       width: 100,
-      render: (_, record) => (
-        <a href={`/home/plan/audit/${record[EPlan.ID.Name]}`} target="_blank">
-          审核
-        </a>
-      ),
+      render: (_, record) => {
+        if (record[EPlan.Status.Name] === EPlanStatus.Pending.Name) {
+          return (
+            <>
+              <a
+                href={`/home/plan/audit/${record[EPlan.ID.Name]}`}
+                target="_blank"
+              >
+                去审核
+              </a>
+              <a
+                style={{ marginLeft: 10 }}
+                onClick={() => {
+                  axios
+                    .post(`/home/api/audit`, {
+                      [EPlan.ID.Name]: record[EPlan.ID.Name],
+                      [EPlan.Status.Name]: EPlanStatus.Approved.Name,
+                    })
+                    .then((res) => {
+                      console.log("res", res);
+                    });
+                }}
+              >
+                通过
+              </a>
+              <a
+                style={{ marginLeft: 10 }}
+                onClick={() => {
+                  axios
+                    .post(`/home/api/audit`, {
+                      [EPlan.ID.Name]: record[EPlan.ID.Name],
+                      [EPlan.Status.Name]: EPlanStatus.Rejected.Name,
+                    })
+                    .then((res) => {
+                      console.log("res", res);
+                    });
+                }}
+              >
+                驳回
+              </a>
+            </>
+          );
+        }
+        return (EPlanStatus as any)[record[EPlan.Status.Name]].label;
+      },
     },
   ];
 };
