@@ -1,13 +1,16 @@
 import { IFormConfigRes } from "@dtos/api";
-import { EPlan, EPlanStatus } from "@dtos/db";
+import { EPlan, EPlanStatus, EUser, EUserRoleEnum } from "@dtos/db";
+import { useData } from "@utils/data-provider";
 import type { TableColumnsType } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 
-export const getColumns = (configs: {
-  serverConfigs: IFormConfigRes;
+export const useColumns = (configs: {
+  serverConfigs?: IFormConfigRes;
 }): TableColumnsType<any> => {
   const { serverConfigs } = configs;
+  const { userInfo } = useData();
+  if (!serverConfigs || !userInfo) return [];
   return [
     {
       title: "编号",
@@ -86,47 +89,52 @@ export const getColumns = (configs: {
       fixed: "right",
       width: 100,
       render: (_, record) => {
+        // Pending 态
         if (record[EPlan.Status.Name] === EPlanStatus.Pending.Name) {
-          return (
-            <>
-              <a
-                href={`/home/plan/audit/${record[EPlan.ID.Name]}`}
-                target="_blank"
-              >
-                去审核
-              </a>
-              <a
-                style={{ marginLeft: 10 }}
-                onClick={() => {
-                  axios
-                    .post(`/home/api/plan/audit`, {
-                      [EPlan.ID.Name]: record[EPlan.ID.Name],
-                      [EPlan.Status.Name]: EPlanStatus.Approved.Name,
-                    })
-                    .then((res) => {
-                      console.log("res", res);
-                    });
-                }}
-              >
-                通过
-              </a>
-              <a
-                style={{ marginLeft: 10 }}
-                onClick={() => {
-                  axios
-                    .post(`/home/api/plan/audit`, {
-                      [EPlan.ID.Name]: record[EPlan.ID.Name],
-                      [EPlan.Status.Name]: EPlanStatus.Rejected.Name,
-                    })
-                    .then((res) => {
-                      console.log("res", res);
-                    });
-                }}
-              >
-                驳回
-              </a>
-            </>
-          );
+          if (userInfo[EUser.Role] === EUserRoleEnum.Admin) {
+            return (
+              <>
+                <a
+                  href={`/home/plan/audit/${record[EPlan.ID.Name]}`}
+                  target="_blank"
+                >
+                  去审核
+                </a>
+                <a
+                  style={{ marginLeft: 10 }}
+                  onClick={() => {
+                    axios
+                      .post(`/home/api/plan/audit`, {
+                        [EPlan.ID.Name]: record[EPlan.ID.Name],
+                        [EPlan.Status.Name]: EPlanStatus.Approved.Name,
+                      })
+                      .then((res) => {
+                        console.log("res", res);
+                      });
+                  }}
+                >
+                  通过
+                </a>
+                <a
+                  style={{ marginLeft: 10 }}
+                  onClick={() => {
+                    axios
+                      .post(`/home/api/plan/audit`, {
+                        [EPlan.ID.Name]: record[EPlan.ID.Name],
+                        [EPlan.Status.Name]: EPlanStatus.Rejected.Name,
+                      })
+                      .then((res) => {
+                        console.log("res", res);
+                      });
+                  }}
+                >
+                  驳回
+                </a>
+              </>
+            );
+          } else {
+            return EPlanStatus.Pending.label;
+          }
         }
         return (EPlanStatus as any)[record[EPlan.Status.Name]].label;
       },

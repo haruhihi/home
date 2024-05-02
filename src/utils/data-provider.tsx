@@ -1,11 +1,10 @@
+import { IAccountInfoRes } from "@dtos/api";
 import axios from "axios";
 import React, { useState, createContext, useEffect, useContext } from "react";
 
 export const DataContext = createContext<
   | {
-      userInfo: null | {
-        [key: string]: any;
-      };
+      userInfo: null | IAccountInfoRes;
       updateUserInfo: () => Promise<void>;
     }
   | undefined
