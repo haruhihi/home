@@ -8,6 +8,7 @@ export async function POST(request: Request) {
   try {
     const params = (await request.json()) as ILoginReq;
     const { User } = await getModels();
+    console.log(params);
     if (!params[EUser.Account] || !params[EUser.Password]) {
       return new Response(Res500({ result: "请输入合法的账号密码" }), {
         status: 500,

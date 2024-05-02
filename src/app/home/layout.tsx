@@ -2,7 +2,9 @@
 import { PageContainer, ProLayout } from "@ant-design/pro-components";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-import { ApiOutlined } from "@ant-design/icons";
+import { ApiOutlined, TeamOutlined } from "@ant-design/icons";
+import { useUserInfo } from "@utils/hooks";
+import { EUserRoleEnum } from "@dtos/db";
 
 const App: React.FC<{ children: React.ReactNode }> = (props) => {
   const router = useRouter();
@@ -40,12 +42,20 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
     }
   }
 
+  const userInfo = useUserInfo();
+
   return (
     <ProLayout
       location={{
         pathname: path,
       }}
-      logo={<ApiOutlined />}
+      logo={
+        userInfo?.Role === EUserRoleEnum.Admin ? (
+          <ApiOutlined />
+        ) : (
+          <TeamOutlined />
+        )
+      }
       title="国家电网"
       collapsed={false}
       collapsedButtonRender={false}

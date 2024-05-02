@@ -2,24 +2,26 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { LoginForm, ProFormText } from "@ant-design/pro-components";
 import { IRes } from "@dtos/api";
+import { EUser } from "@dtos/db";
 import { message } from "antd";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const App = () => {
   const router = useRouter();
   const onFinish = (values: { username: string; password: string }) => {
-    fetch("/home/api/account/login", {
-      body: JSON.stringify(values),
-      method: "POST",
-    })
-      .then((res) => res.json())
-      .then((res: IRes) => {
-        console.log("res", res);
-        if (res.success) {
+    axios
+      .post("/home/api/account/login", values)
+      .then((res) => {
+        if (res.data.success) {
           router.replace("/home/plan/search");
         } else {
           message.error("登录失败，请检查账号密码！");
         }
+      })
+      .catch((err) => {
+        console.log("err", err);
+        message.error("登录失败，请检查账号密码！");
       });
   };
   return (
@@ -29,7 +31,7 @@ const App = () => {
       onFinish={onFinish}
     >
       <ProFormText
-        name="username"
+        name={EUser.Account}
         fieldProps={{
           size: "large",
           prefix: <UserOutlined className={"prefixIcon"} />,
@@ -44,7 +46,7 @@ const App = () => {
         label="用户账号"
       />
       <ProFormText.Password
-        name="password"
+        name={EUser.Password}
         fieldProps={{
           size: "large",
           prefix: <LockOutlined className={"prefixIcon"} />,

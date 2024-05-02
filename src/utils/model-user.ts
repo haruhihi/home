@@ -59,7 +59,7 @@ export const initUser = async (User: TModel) => {
             [EUser.Name]: `${name}admin`,
             [EUser.IsWorkOwner]: false,
             [EUser.IsWorker]: false,
-            [EUser.Role]: "admin",
+            [EUser.Role]: EUserRoleEnum.Admin,
           },
           {
             [EUser.Account]: ``,
@@ -67,7 +67,7 @@ export const initUser = async (User: TModel) => {
             [EUser.Name]: `${name}owner`,
             [EUser.IsWorkOwner]: true,
             [EUser.IsWorker]: false,
-            [EUser.Role]: "admin",
+            [EUser.Role]: EUserRoleEnum.Admin,
           },
           {
             [EUser.Account]: ``,
@@ -75,15 +75,15 @@ export const initUser = async (User: TModel) => {
             [EUser.Name]: `${name}worker`,
             [EUser.IsWorkOwner]: false,
             [EUser.IsWorker]: true,
-            [EUser.Role]: "admin",
+            [EUser.Role]: EUserRoleEnum.User,
           },
           {
-            [EUser.Account]: ``,
-            [EUser.Password]: "",
+            [EUser.Account]: `${name}user`,
+            [EUser.Password]: "123",
             [EUser.Name]: `${name}user`,
             [EUser.IsWorkOwner]: false,
             [EUser.IsWorker]: false,
-            [EUser.Role]: "user",
+            [EUser.Role]: EUserRoleEnum.User,
           },
         ];
       })

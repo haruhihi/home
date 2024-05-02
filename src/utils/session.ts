@@ -28,7 +28,7 @@ export async function createSession(id: string, role: EUserRoleEnum) {
   const expires = Number(getConfig("COOKIE_EXPIRE"));
   const expiresAt = new Date(Date.now() + expires);
   const session = await encrypt({
-    [EUser.Account]: id,
+    [EUser.ID]: id,
     [EUser.Role]: role,
     expiresAt,
   });
