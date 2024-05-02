@@ -13,7 +13,7 @@ const App = () => {
       .then((res: IRes) => {
         console.log("res", res);
         if (res.success) {
-          router.replace("/home/search");
+          router.replace("/home/plan/search");
         } else {
           message.error("登录失败，请检查账号密码！");
         }

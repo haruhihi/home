@@ -63,9 +63,25 @@ export interface ISearchReq {
   pageSize: number;
 }
 export interface ISearchFilter extends ISearchReq {
-  [EPlan.Construction]?: string;
-  [EPlan.ConstructionDate]?: string;
-  [EPlan.ElectricLevel]?: string;
-  [EPlan.Place]?: string;
-  [EPlan.Section]?: string;
+  // [EPlan.Construction]?: string;
+  // [EPlan.ConstructionDate]?: string;
+  // [EPlan.ElectricLevel]?: string;
+  // [EPlan.Place]?: string;
+  // [EPlan.Section]?: string;
+}
+
+type TOptions = Array<{ label: string; value: string | number }>;
+
+export interface IFormConfigRes {
+  workOwnerOptions: TOptions;
+  workerOptions: TOptions;
+  maintainerOptions: TOptions;
+  operatorOptions: TOptions;
+}
+
+export interface ICreateReq {
+  [EPlan.WorkOwners.Name]: string[];
+  [EPlan.Workers.Name]: string[];
+  [EPlan.Maintainer.Name]: string;
+  [EPlan.Operator.Name]: string[];
 }

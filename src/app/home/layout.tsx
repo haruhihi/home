@@ -2,17 +2,50 @@
 import { PageContainer, ProLayout } from "@ant-design/pro-components";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-import { ThunderboltOutlined } from "@ant-design/icons";
+import { ApiOutlined } from "@ant-design/icons";
 
 const App: React.FC<{ children: React.ReactNode }> = (props) => {
   const router = useRouter();
   const path = usePathname();
+
+  let staticRoutes = [
+    {
+      path: "/home/plan/search",
+      name: "首页",
+      locale: "menu.home",
+    },
+    {
+      path: "/home/plan/upload",
+      name: "录入计划",
+      locale: "menu.upload",
+    },
+    {
+      path: "/home/login",
+      name: "切换账号",
+      locale: "menu.login",
+    },
+  ];
+
+  if (staticRoutes.every((route) => route.path !== path)) {
+    if (path.startsWith("/home/plan/audit")) {
+      staticRoutes.push({
+        path,
+        name: "审核计划",
+        locale: "menu.audit",
+      });
+    }
+    // clean routes when user is log in
+    if (path === "/home/login") {
+      staticRoutes = [];
+    }
+  }
+
   return (
     <ProLayout
       location={{
         pathname: path,
       }}
-      logo={<ThunderboltOutlined />}
+      logo={<ApiOutlined />}
       title="国家电网"
       collapsed={false}
       collapsedButtonRender={false}
@@ -47,18 +80,7 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
         </div>
       )}
       route={{
-        routes: [
-          {
-            path: "/home/search",
-            name: "首页",
-            locale: "menu.home",
-          },
-          {
-            path: "/home/upload",
-            name: "录入计划",
-            locale: "menu.upload",
-          },
-        ],
+        routes: staticRoutes,
       }}
       menu={{ defaultOpenAll: true, hideMenuWhenCollapsed: true }}
     >

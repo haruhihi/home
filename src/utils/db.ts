@@ -8,14 +8,23 @@ import {
 import { DataTypes, Model, ModelStatic, Options, Sequelize } from "sequelize";
 import mysql2 from "mysql2";
 import { EPlan } from "@dtos/db";
+import { initUserModel } from "./model-user";
+import { initPlanModel } from "./model-plan";
+import { initMaintainer, initMaintainerModel } from "./model-maintainer";
+import { initOperator, initOperatorModel } from "./model-operator";
 
-let cacheSequelize: Sequelize | null = null;
-let cachePlan: ModelStatic<Model<any, any>> | null = null;
+let cache: {
+  sequelize: Sequelize;
+  Plan: TModel;
+  User: TModel;
+  Maintainer: TModel;
+  Operator: TModel;
+} | null = null;
+
+export type TModel = ModelStatic<Model<any, any>>;
 
 export const getModels = async () => {
-  if (cachePlan && cacheSequelize) {
-    return { Plan: cachePlan, sequelize: cacheSequelize };
-  }
+  if (cache) return cache;
   // First time
   const params: Options = {
     host: DB_HOST,
@@ -28,78 +37,22 @@ export const getModels = async () => {
   const sequelize = new Sequelize(params);
 
   await sequelize.authenticate();
-  // cacheSequelize = sequelize;
-  const Plan = sequelize.define(
-    "Plan",
-    {
-      [EPlan.ID]: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        unique: true,
-        primaryKey: true,
-      },
-      // 供电所
-      [EPlan.Place]: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      // 台区
-      [EPlan.Section]: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      // 施工单位
-      [EPlan.Construction]: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      // 时间
-      [EPlan.ConstructionDate]: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
-      // 电压等级
-      [EPlan.ElectricLevel]: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      // 计划必要性 - 计划来源
-      necessityBackground: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      // 计划必要性 - 一停多用
-      necessityMulti: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      // 计划必要性 - 指标提升情况
-      necessityResult: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      // 计划必要性 - 负荷停用
-      cautionCutOff: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      // 计划必要性 - 带电作业
-      cautionElectric: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-      // 计划必要性 - 开工后过程督办
-      cautionSupervision: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
-    },
-    {
-      // Other model options go here
-    }
-  );
-  await Plan.sync();
-  cachePlan = Plan;
-  cacheSequelize = sequelize;
-  return { sequelize, Plan };
+  console.log("Connection has been established successfully.");
+
+  const User = await initUserModel(sequelize);
+
+  const Maintainer = await initMaintainerModel(sequelize);
+
+  const Operator = await initOperatorModel(sequelize);
+
+  const Plan = await initPlanModel(sequelize);
+
+  cache = {
+    sequelize,
+    Plan,
+    User,
+    Maintainer,
+    Operator,
+  };
+  return cache;
 };

@@ -1,5 +1,5 @@
-import { ISearchReq, ISearchRes, Res200, Res500 } from "@dtos/api";
-import { EPlan } from "@dtos/db";
+import { ISearchRes, Res200, Res500 } from "@dtos/api";
+import { EPlan, EUser } from "@dtos/db";
 import { getModels } from "@utils/db";
 import dayjs from "dayjs";
 import { Op, WhereOptions, where } from "sequelize";
@@ -15,32 +15,31 @@ export async function GET(request: Request) {
       throw new Error(`非法的 page: ${pageStr}, pageSize: ${pageSizeStr}`);
     }
 
-    const whereOptions = [
-      EPlan.Section,
-      EPlan.Construction,
-      EPlan.Place,
-      EPlan.ElectricLevel,
-    ].reduce<WhereOptions>((acc: any, cur) => {
-      if (
-        params.has(cur) &&
-        params.get(cur) !== "" &&
-        params.get(cur) !== null
-      ) {
-        acc[cur] = {
-          [Op.substring]: params.get(cur),
-        };
-      }
-      return acc;
-    }, {});
+    const whereOptions = [EPlan.Operator.Name].reduce<WhereOptions>(
+      (acc: any, cur) => {
+        const param = params.get(cur);
+        if (param !== null) {
+          acc[cur] = {
+            [Op.in]: param.split(","),
+          };
+        }
+        return acc;
+      },
+      {}
+    );
 
     if (
-      params.has(EPlan.ConstructionDate) &&
-      params.get(EPlan.ConstructionDate) !== "" &&
-      params.get(EPlan.ConstructionDate) !== null
+      params.has(EPlan.CreatedAt.Name) &&
+      params.get(EPlan.CreatedAt.Name) !== "" &&
+      params.get(EPlan.CreatedAt.Name) !== null
     ) {
-      (whereOptions as any)[EPlan.ConstructionDate] = dayjs(
-        params.get(EPlan.ConstructionDate)
-      ).toISOString();
+      const current = dayjs(params.get(EPlan.CreatedAt.Name));
+      (whereOptions as any)[EPlan.CreatedAt.Name] = {
+        [Op.between]: [
+          current.startOf("day").toISOString(),
+          current.endOf("day").toISOString(),
+        ],
+      };
     }
 
     const { Plan } = await getModels();

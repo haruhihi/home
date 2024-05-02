@@ -1,50 +1,19 @@
 "use client";
 import {
-  AlipayCircleOutlined,
-  LockOutlined,
-  PlusOutlined,
-  TaobaoCircleOutlined,
-  UserOutlined,
-  WeiboCircleOutlined,
-} from "@ant-design/icons";
-import {
-  DrawerForm,
-  LightFilter,
-  LoginForm,
-  ModalForm,
   ProForm,
   ProFormDatePicker,
-  ProFormDateRangePicker,
-  ProFormRadio,
   ProFormSelect,
-  ProFormText,
   QueryFilter,
-  StepsForm,
 } from "@ant-design/pro-components";
-import { ISearchFilter } from "@dtos/api";
+import { IFormConfigRes, ISearchFilter } from "@dtos/api";
 import { EPlan } from "@dtos/db";
-import { Button, Space, message } from "antd";
-import React, { useState } from "react";
+import React from "react";
 
-const iconStyles = {
-  marginInlineStart: "16px",
-  color: "rgba(0, 0, 0, 0.2)",
-  fontSize: "24px",
-  verticalAlign: "middle",
-  cursor: "pointer",
-};
-
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const Filters: React.FC<{ onFinish: (value: ISearchFilter) => any }> = (
-  props
-) => {
+export const Filters: React.FC<{
+  onFinish: (value: ISearchFilter) => any;
+  serverConfigs: IFormConfigRes;
+}> = (props) => {
+  const { serverConfigs, onFinish } = props;
   return (
     <QueryFilter
       // @ts-ignore
@@ -52,7 +21,7 @@ export const Filters: React.FC<{ onFinish: (value: ISearchFilter) => any }> = (
       onFinish={props.onFinish}
     >
       <ProForm.Group>
-        <ProFormText
+        {/* <ProFormText
           width="sm"
           name={EPlan.Place}
           label="供电所"
@@ -65,28 +34,28 @@ export const Filters: React.FC<{ onFinish: (value: ISearchFilter) => any }> = (
           label="台区"
           tooltip="请输入台区"
           placeholder="请输入台区"
-        />
-        <ProFormText
+        /> */}
+        <ProFormSelect
           width="sm"
-          name={EPlan.Construction}
+          name={EPlan.Operator.Name}
           label="施工单位"
-          tooltip="请输入施工单位"
           placeholder="请输入施工单位"
+          options={serverConfigs.operatorOptions}
         />
         <ProFormDatePicker
           width="sm"
-          name={EPlan.ConstructionDate}
+          name={EPlan.CreatedAt.Name}
           label="时间"
-          tooltip="请选择时间"
+          tooltip="查询当天所有计划"
           placeholder="请选择时间"
         />
-        <ProFormText
+        {/* <ProFormText
           width="sm"
           name={EPlan.ElectricLevel}
           label="电压等级"
           tooltip="请输入电压等级"
           placeholder="请输入电压等级"
-        />
+        /> */}
       </ProForm.Group>
     </QueryFilter>
   );

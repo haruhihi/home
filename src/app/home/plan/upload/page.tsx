@@ -4,9 +4,8 @@ import { Divider, Image, message } from "antd";
 import axios from "axios";
 import COS from "cos-js-sdk-v5";
 import {
-  FooterToolbar,
+  PageLoading,
   ProForm,
-  ProFormDatePicker,
   ProFormDateTimePicker,
   ProFormDependency,
   ProFormRadio,
@@ -16,10 +15,11 @@ import {
   ProFormUploadButton,
   ProFormUploadButtonProps,
 } from "@ant-design/pro-components";
-import { maintainTeamOptions, operationTeamOptions } from "./help";
 import { uploadFileToCOS } from "./upload-file";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { EPlan } from "@dtos/db";
+import { Footer } from "./footer";
+import { useServerConfigs } from "@utils/hooks";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -35,6 +35,7 @@ const App: React.FC = () => {
   const [cos, setCOS] = useState<COS>();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const optionsRes = useServerConfigs();
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
@@ -83,24 +84,6 @@ const App: React.FC = () => {
       autoSize: { minRows: 5 },
     },
   };
-
-  const operatorOptions = [
-    "台沛麒",
-    "李斌建",
-    "杨家辉",
-    "1台沛麒",
-    "1李斌建",
-    "1杨家辉",
-    "2台沛麒",
-    "2李斌建",
-    "2杨家辉",
-    "3台沛麒",
-    "3李斌建",
-    "3杨家辉",
-  ].map((item) => ({
-    label: item,
-    value: item,
-  }));
 
   const areaOptions = [
     "皇庄1#台区",
@@ -172,6 +155,14 @@ const App: React.FC = () => {
     setCOS(cos);
   }, []);
 
+  if (!optionsRes) return <PageLoading />;
+  console.log("optionsRes", optionsRes);
+  const {
+    workOwnerOptions,
+    workerOptions,
+    operatorOptions,
+    maintainerOptions,
+  } = optionsRes;
   return (
     <div>
       <ProForm
@@ -180,14 +171,22 @@ const App: React.FC = () => {
         wrapperCol={{ span: 14 }}
         initialValues={{
           withElectric: true,
-          [EPlan.ServicePlan]: "不需要",
-          [EPlan.LoadStop]: false,
+          // [EPlan.ServicePlan]: "不需要",
+          // [EPlan.LoadStop]: false,
         }}
         onFinish={(values) => {
-          console.log("values", values);
+          axios
+            .post("/home/api/plan/create", values)
+            .then((res) => {
+              message.success("创建成功");
+            })
+            .catch((err) => {
+              message.error(err.message ?? "创建失败");
+              console.log(err);
+            });
         }}
         submitter={{
-          render: (_, dom) => <FooterToolbar>{dom}</FooterToolbar>,
+          render: (_, dom) => <Footer ele={dom}></Footer>,
         }}
       >
         <Divider orientation="left">
@@ -195,30 +194,29 @@ const App: React.FC = () => {
         </Divider>
 
         <ProFormSelect
-          name="maintainTeam"
-          options={maintainTeamOptions}
-          labelAlign="right"
+          name={EPlan.Maintainer.Name}
+          options={maintainerOptions}
           width="md"
-          label="运维单位"
+          label={EPlan.Maintainer.label}
         />
         <ProFormSelect
-          name="operationTeam"
-          options={operationTeamOptions}
-          label="施工单位"
-          width="md"
-        />
-        <ProFormSelect
-          width="md"
-          name="maintainPerson"
-          label="工作负责人"
+          name={EPlan.Operator.Name}
           options={operatorOptions}
+          label={EPlan.Operator.label}
+          width="md"
+        />
+        <ProFormSelect
+          width="md"
+          name={EPlan.WorkOwners.Name}
+          label={EPlan.WorkOwners.label}
+          options={workOwnerOptions}
           mode="multiple"
         />
         <ProFormSelect
           width="md"
-          name="operationPerson"
-          label="施工人员"
-          options={operatorOptions}
+          name={EPlan.Workers.Name}
+          label={EPlan.Workers.label}
+          options={workerOptions}
           mode="multiple"
         />
         <Divider orientation="left">
@@ -312,14 +310,14 @@ const App: React.FC = () => {
           <ProFormSwitch
             tooltip="停用方式"
             label="负荷转供"
-            name={EPlan.LoadStop}
+            name={"负荷转供"}
           />
-          <ProFormDependency name={[EPlan.LoadStop]}>
+          <ProFormDependency name={["负荷转供"]}>
             {(values) => {
               return (
                 <div
                   style={{
-                    display: values[EPlan.LoadStop] ? "block" : "none",
+                    display: values["负荷转供"] ? "block" : "none",
                   }}
                 >
                   <ProFormTextArea
@@ -369,15 +367,14 @@ const App: React.FC = () => {
           <ProFormRadio.Group
             options={["需要", "不需要"]}
             label="服务方案"
-            name={EPlan.ServicePlan}
+            name={"服务方案"}
           />
-          <ProFormDependency name={[EPlan.ServicePlan]}>
+          <ProFormDependency name={["服务方案"]}>
             {(values) => {
               return (
                 <div
                   style={{
-                    display:
-                      values[EPlan.ServicePlan] === "需要" ? "block" : "none",
+                    display: values["服务方案"] === "需要" ? "block" : "none",
                   }}
                 >
                   <ProFormUploadButton

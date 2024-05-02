@@ -5,8 +5,11 @@ import { Table, message } from "antd";
 import { Filters } from "./components/filters";
 import { ISearchFilter, ISearchReq, ISearchRes } from "@dtos/api";
 import { serialize } from "@utils/helper";
-import { columns } from "./components/columns";
+import { getColumns } from "./components/columns";
 import { EPlan } from "@dtos/db";
+import { useServerConfigs } from "@utils/hooks";
+import { PageLoading } from "@ant-design/pro-components";
+import axios from "axios";
 
 interface DataType {
   key: React.Key;
@@ -33,15 +36,20 @@ const App: React.FC = () => {
     page: defaultPage,
     pageSize: 5,
   });
+  const serverConfigs = useServerConfigs();
 
   const fetchData = (params: ISearchFilter) => {
-    fetch("/home/api/search?" + serialize(params), {
-      method: "GET",
-    })
-      .then((res) => res.json())
+    axios
+      .get("/home/api/plan/search?" + serialize(params), {
+        method: "GET",
+      })
       .then((res) => {
-        setRes(res.result);
+        setRes(res.data.result);
         message.success("查询成功");
+      })
+      .catch((err) => {
+        message.error("查询失败");
+        console.log(err);
       });
   };
 
@@ -54,16 +62,22 @@ const App: React.FC = () => {
     setParams({ ...values, page: defaultPage, pageSize: params.pageSize });
   };
 
+  if (!serverConfigs) {
+    return <PageLoading />;
+  }
+
   return (
     <div>
-      <Filters onFinish={onFinish} />
+      <Filters onFinish={onFinish} serverConfigs={serverConfigs} />
 
       <Table
         style={{
           margin: 24,
         }}
         bordered
-        columns={columns}
+        columns={getColumns({
+          serverConfigs,
+        })}
         dataSource={res?.data}
         pagination={{
           total: res?.totalCount,
