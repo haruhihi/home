@@ -176,7 +176,7 @@ const App: React.FC = () => {
         }}
         onFinish={(values) => {
           axios
-            .post("/home/api/create", values)
+            .post("/home/api/plan/create", values)
             .then((res) => {
               message.success("创建成功");
             })

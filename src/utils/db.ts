@@ -45,7 +45,7 @@ export const getModels = async () => {
 
   const Operator = await initOperatorModel(sequelize);
 
-  const Plan = await initPlanModel(sequelize, { User, Maintainer, Operator });
+  const Plan = await initPlanModel(sequelize);
 
   cache = {
     sequelize,

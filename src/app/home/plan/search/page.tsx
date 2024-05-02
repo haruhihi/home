@@ -40,7 +40,7 @@ const App: React.FC = () => {
 
   const fetchData = (params: ISearchFilter) => {
     axios
-      .get("/home/api/search?" + serialize(params), {
+      .get("/home/api/plan/search?" + serialize(params), {
         method: "GET",
       })
       .then((res) => {

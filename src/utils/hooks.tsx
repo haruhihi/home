@@ -6,7 +6,7 @@ export const useServerConfigs = () => {
   const [optionsRes, setOptionsRes] = useState<IFormConfigRes>();
 
   useEffect(() => {
-    axios.get("/home/api/form/config").then((res) => {
+    axios.get("/home/api/plan/config").then((res) => {
       setOptionsRes(res.data.result);
     });
   }, []);

@@ -99,7 +99,7 @@ export const getColumns = (configs: {
                 style={{ marginLeft: 10 }}
                 onClick={() => {
                   axios
-                    .post(`/home/api/audit`, {
+                    .post(`/home/api/plan/audit`, {
                       [EPlan.ID.Name]: record[EPlan.ID.Name],
                       [EPlan.Status.Name]: EPlanStatus.Approved.Name,
                     })
@@ -114,7 +114,7 @@ export const getColumns = (configs: {
                 style={{ marginLeft: 10 }}
                 onClick={() => {
                   axios
-                    .post(`/home/api/audit`, {
+                    .post(`/home/api/plan/audit`, {
                       [EPlan.ID.Name]: record[EPlan.ID.Name],
                       [EPlan.Status.Name]: EPlanStatus.Rejected.Name,
                     })

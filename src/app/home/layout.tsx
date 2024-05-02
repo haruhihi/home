@@ -19,6 +19,11 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
       name: "录入计划",
       locale: "menu.upload",
     },
+    {
+      path: "/home/login",
+      name: "切换账号",
+      locale: "menu.login",
+    },
   ];
 
   if (staticRoutes.every((route) => route.path !== path)) {
