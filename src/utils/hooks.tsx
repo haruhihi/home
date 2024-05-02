@@ -13,13 +13,3 @@ export const useServerConfigs = () => {
 
   return optionsRes;
 };
-
-export const useUserInfo = () => {
-  const [userInfo, setUserInfo] = useState<IAccountInfoRes>();
-  useEffect(() => {
-    axios.post("/home/api/account/info").then((res) => {
-      setUserInfo(res.data.result);
-    });
-  }, []);
-  return userInfo;
-};

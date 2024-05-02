@@ -3,12 +3,21 @@ import { PageContainer, ProLayout } from "@ant-design/pro-components";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { ApiOutlined, TeamOutlined } from "@ant-design/icons";
-import { useUserInfo } from "@utils/hooks";
 import { EUserRoleEnum } from "@dtos/db";
+import { DataProvider, useData } from "@utils/data-provider";
+
+const Main: React.FC<{ children: React.ReactNode }> = (props) => {
+  return (
+    <DataProvider>
+      <App>{props.children}</App>
+    </DataProvider>
+  );
+};
 
 const App: React.FC<{ children: React.ReactNode }> = (props) => {
   const router = useRouter();
   const path = usePathname();
+  const { userInfo } = useData();
 
   let staticRoutes = [
     {
@@ -41,8 +50,6 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
       staticRoutes = [];
     }
   }
-
-  const userInfo = useUserInfo();
 
   return (
     <ProLayout
@@ -99,4 +106,4 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
   );
 };
 
-export default App;
+export default Main;
