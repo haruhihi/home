@@ -2,11 +2,22 @@
 import { PageContainer, ProLayout } from "@ant-design/pro-components";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-import { ApiOutlined } from "@ant-design/icons";
+import { ApiOutlined, TeamOutlined } from "@ant-design/icons";
+import { EUserRoleEnum } from "@dtos/db";
+import { DataProvider, useData } from "@utils/data-provider";
+
+const Main: React.FC<{ children: React.ReactNode }> = (props) => {
+  return (
+    <DataProvider>
+      <App>{props.children}</App>
+    </DataProvider>
+  );
+};
 
 const App: React.FC<{ children: React.ReactNode }> = (props) => {
   const router = useRouter();
   const path = usePathname();
+  const { userInfo } = useData();
 
   let staticRoutes = [
     {
@@ -45,7 +56,13 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
       location={{
         pathname: path,
       }}
-      logo={<ApiOutlined />}
+      logo={
+        userInfo?.Role === EUserRoleEnum.Admin ? (
+          <ApiOutlined />
+        ) : (
+          <TeamOutlined />
+        )
+      }
       title="国家电网"
       collapsed={false}
       collapsedButtonRender={false}
@@ -89,4 +106,4 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
   );
 };
 
-export default App;
+export default Main;

@@ -1,4 +1,4 @@
-import { EUser } from "@dtos/db";
+import { EUser, EUserRole, EUserRoleEnum } from "@dtos/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 import { TModel } from "./db";
 
@@ -31,7 +31,7 @@ export const initUserModel = async (
         type: DataTypes.BOOLEAN,
       },
       [EUser.Role]: {
-        type: DataTypes.ENUM("admin", "user"),
+        type: DataTypes.ENUM(EUserRoleEnum.Admin, EUserRoleEnum.User),
       },
     },
     {
@@ -54,12 +54,12 @@ export const initUser = async (User: TModel) => {
       .map((name) => {
         return [
           {
-            [EUser.Account]: `${name}admin`,
+            [EUser.Account]: name,
             [EUser.Password]: "123",
             [EUser.Name]: `${name}admin`,
             [EUser.IsWorkOwner]: false,
             [EUser.IsWorker]: false,
-            [EUser.Role]: "admin",
+            [EUser.Role]: EUserRoleEnum.Admin,
           },
           {
             [EUser.Account]: ``,
@@ -67,7 +67,7 @@ export const initUser = async (User: TModel) => {
             [EUser.Name]: `${name}owner`,
             [EUser.IsWorkOwner]: true,
             [EUser.IsWorker]: false,
-            [EUser.Role]: "admin",
+            [EUser.Role]: EUserRoleEnum.Admin,
           },
           {
             [EUser.Account]: ``,
@@ -75,15 +75,15 @@ export const initUser = async (User: TModel) => {
             [EUser.Name]: `${name}worker`,
             [EUser.IsWorkOwner]: false,
             [EUser.IsWorker]: true,
-            [EUser.Role]: "admin",
+            [EUser.Role]: EUserRoleEnum.User,
           },
           {
-            [EUser.Account]: ``,
-            [EUser.Password]: "",
+            [EUser.Account]: `${name}user`,
+            [EUser.Password]: "123",
             [EUser.Name]: `${name}user`,
             [EUser.IsWorkOwner]: false,
             [EUser.IsWorker]: false,
-            [EUser.Role]: "user",
+            [EUser.Role]: EUserRoleEnum.User,
           },
         ];
       })

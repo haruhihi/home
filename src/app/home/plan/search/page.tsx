@@ -5,7 +5,7 @@ import { Table, message } from "antd";
 import { Filters } from "./components/filters";
 import { ISearchFilter, ISearchReq, ISearchRes } from "@dtos/api";
 import { serialize } from "@utils/helper";
-import { getColumns } from "./components/columns";
+import { useColumns } from "./components/columns";
 import { EPlan } from "@dtos/db";
 import { useServerConfigs } from "@utils/hooks";
 import { PageLoading } from "@ant-design/pro-components";
@@ -62,6 +62,8 @@ const App: React.FC = () => {
     setParams({ ...values, page: defaultPage, pageSize: params.pageSize });
   };
 
+  const columns = useColumns({ serverConfigs });
+
   if (!serverConfigs) {
     return <PageLoading />;
   }
@@ -75,9 +77,7 @@ const App: React.FC = () => {
           margin: 24,
         }}
         bordered
-        columns={getColumns({
-          serverConfigs,
-        })}
+        columns={columns}
         dataSource={res?.data}
         pagination={{
           total: res?.totalCount,
