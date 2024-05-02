@@ -16,10 +16,10 @@ export const initMaintainerModel = async (
     "Maintainer",
     {
       [EMaintainer.ID]: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        unique: true,
+        type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
+        autoIncrementIdentity: true,
       },
       [EMaintainer.Name]: {
         type: DataTypes.STRING,
@@ -27,6 +27,7 @@ export const initMaintainerModel = async (
     },
     {
       // Other model options go here
+      initialAutoIncrement: "1000000",
     }
   );
   await Maintainer.sync(syncOptions);

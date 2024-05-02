@@ -10,10 +10,10 @@ export const initUserModel = async (
     "User",
     {
       [EUser.ID]: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        unique: true,
+        type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
+        autoIncrementIdentity: true,
       },
       [EUser.Account]: {
         type: DataTypes.STRING,
@@ -36,6 +36,7 @@ export const initUserModel = async (
     },
     {
       // Other model options go here
+      initialAutoIncrement: "1000000",
     }
   );
   await User.sync(syncOptions);

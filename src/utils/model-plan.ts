@@ -1,58 +1,37 @@
-import { EPlan, EPlanForeign, EUser } from "@dtos/db";
+import { EPlan } from "@dtos/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
-import { TModel } from "./db";
 
 export const initPlanModel = async (
   sequelize: Sequelize,
-  options: { User: TModel; Maintainer: TModel; Operator: TModel },
   syncOptions?: SyncOptions
 ) => {
   const Plan = sequelize.define(
     "Plan",
     {
-      [EPlan.ID]: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        unique: true,
+      [EPlan.ID.Name]: {
+        type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
+        autoIncrementIdentity: true,
       },
-      // 供电所
-      [EPlan.Place]: {
+      [EPlan.WorkOwners.Name]: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
-      // 台区
-      [EPlan.Section]: {
+      [EPlan.Workers.Name]: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
-      // 施工单位
-      [EPlan.Construction]: {
+      [EPlan.Maintainer.Name]: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
-      // 时间
-      [EPlan.ConstructionDate]: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
-      // 电压等级
-      [EPlan.ElectricLevel]: {
+      [EPlan.Operator.Name]: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
     },
     {
       // Other model options go here
+      initialAutoIncrement: "1000000",
     }
   );
-  // Plan.hasOne(options.User, { foreignKey: EPlanForeign.Worker, as: "Worker" });
-  // Plan.hasOne(options.User, {
-  //   foreignKey: EPlanForeign.WorkOwner,
-  //   as: "WorkOwner",
-  // });
-  // Plan.hasOne(options.Maintainer);
-  // Plan.hasOne(options.Operator);
 
   await Plan.sync(syncOptions);
   return Plan;

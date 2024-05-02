@@ -13,15 +13,17 @@ export async function GET(request: Request) {
     const force = params.get("force");
     if (force === "1") {
       const { sequelize } = await getModels();
+      // 禁用外键约束
+      // await sequelize.query("SET FOREIGN_KEY_CHECKS = 0", { raw: true });
+      // sequelize.sync({ force: true });
+
       const User = await initUserModel(sequelize, { force: true });
+      const Plan = await initPlanModel(sequelize, { force: true });
       const Maintainer = await initMaintainerModel(sequelize, { force: true });
       const Operator = await initOperatorModel(sequelize, { force: true });
-      const Plan = await initPlanModel(
-        sequelize,
-        { User, Maintainer, Operator },
-        { force: true }
-      );
 
+      // 启用外键约束
+      // await sequelize.query("SET FOREIGN_KEY_CHECKS = 1", { raw: true });
       return new Response(Res200({ result: "successful force init" }), {
         status: 200,
       });

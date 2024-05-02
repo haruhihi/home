@@ -1,4 +1,4 @@
-import { EPlan, EPlanForeign } from "./db";
+import { EPlan } from "./db";
 
 enum ResNum {
   Success = 0,
@@ -63,14 +63,14 @@ export interface ISearchReq {
   pageSize: number;
 }
 export interface ISearchFilter extends ISearchReq {
-  [EPlan.Construction]?: string;
-  [EPlan.ConstructionDate]?: string;
-  [EPlan.ElectricLevel]?: string;
-  [EPlan.Place]?: string;
-  [EPlan.Section]?: string;
+  // [EPlan.Construction]?: string;
+  // [EPlan.ConstructionDate]?: string;
+  // [EPlan.ElectricLevel]?: string;
+  // [EPlan.Place]?: string;
+  // [EPlan.Section]?: string;
 }
 
-type TOptions = Array<{ label: string; value: string }>;
+type TOptions = Array<{ label: string; value: string | number }>;
 
 export interface IFormConfigRes {
   workOwnerOptions: TOptions;
@@ -80,6 +80,8 @@ export interface IFormConfigRes {
 }
 
 export interface ICreateReq {
-  [EPlanForeign.WorkOwner]: string;
-  [EPlanForeign.Worker]: string;
+  [EPlan.WorkOwners.Name]: string[];
+  [EPlan.Workers.Name]: string[];
+  [EPlan.Maintainer.Name]: string;
+  [EPlan.Operator.Name]: string[];
 }

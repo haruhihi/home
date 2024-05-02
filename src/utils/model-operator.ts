@@ -1,4 +1,4 @@
-import { EMaintainer, EOperator, EPlan, EUser } from "@dtos/db";
+import { EOperator } from "@dtos/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 import { TModel } from "./db";
 
@@ -10,10 +10,10 @@ export const initOperatorModel = async (
     "Operator",
     {
       [EOperator.ID]: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        unique: true,
+        type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
+        autoIncrementIdentity: true,
       },
       [EOperator.Name]: {
         type: DataTypes.STRING,
@@ -21,6 +21,7 @@ export const initOperatorModel = async (
     },
     {
       // Other model options go here
+      initialAutoIncrement: "1000000",
     }
   );
   await Operator.sync(syncOptions);

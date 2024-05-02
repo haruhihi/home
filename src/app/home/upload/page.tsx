@@ -4,10 +4,8 @@ import { Divider, Image, message } from "antd";
 import axios from "axios";
 import COS from "cos-js-sdk-v5";
 import {
-  FooterToolbar,
   PageLoading,
   ProForm,
-  ProFormDatePicker,
   ProFormDateTimePicker,
   ProFormDependency,
   ProFormRadio,
@@ -19,9 +17,9 @@ import {
 } from "@ant-design/pro-components";
 import { uploadFileToCOS } from "./upload-file";
 import type { GetProp, UploadFile, UploadProps } from "antd";
-import { EPlan, EPlanForeign } from "@dtos/db";
+import { EPlan } from "@dtos/db";
 import { Footer } from "./footer";
-import { IFormConfigRes } from "@dtos/api";
+import { useServerConfigs } from "@utils/hooks";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -37,13 +35,7 @@ const App: React.FC = () => {
   const [cos, setCOS] = useState<COS>();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
-  const [optionsRes, setOptionsRes] = useState<IFormConfigRes>();
-
-  useEffect(() => {
-    axios.get("/home/api/form/config").then((res) => {
-      setOptionsRes(res.data.result);
-    });
-  }, []);
+  const optionsRes = useServerConfigs();
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
@@ -179,8 +171,8 @@ const App: React.FC = () => {
         wrapperCol={{ span: 14 }}
         initialValues={{
           withElectric: true,
-          [EPlan.ServicePlan]: "不需要",
-          [EPlan.LoadStop]: false,
+          // [EPlan.ServicePlan]: "不需要",
+          // [EPlan.LoadStop]: false,
         }}
         onFinish={(values) => {
           axios
@@ -202,29 +194,28 @@ const App: React.FC = () => {
         </Divider>
 
         <ProFormSelect
-          name="maintainTeam"
+          name={EPlan.Maintainer.Name}
           options={maintainerOptions}
-          labelAlign="right"
           width="md"
-          label="运维单位"
+          label={EPlan.Maintainer.label}
         />
         <ProFormSelect
-          name="operationTeam"
+          name={EPlan.Operator.Name}
           options={operatorOptions}
-          label="施工单位"
+          label={EPlan.Operator.label}
           width="md"
         />
         <ProFormSelect
           width="md"
-          name={EPlanForeign.WorkOwner}
-          label="工作负责人"
+          name={EPlan.WorkOwners.Name}
+          label={EPlan.WorkOwners.label}
           options={workOwnerOptions}
           mode="multiple"
         />
         <ProFormSelect
           width="md"
-          name={EPlanForeign.Worker}
-          label="施工人员"
+          name={EPlan.Workers.Name}
+          label={EPlan.Workers.label}
           options={workerOptions}
           mode="multiple"
         />
@@ -319,14 +310,14 @@ const App: React.FC = () => {
           <ProFormSwitch
             tooltip="停用方式"
             label="负荷转供"
-            name={EPlan.LoadStop}
+            name={"负荷转供"}
           />
-          <ProFormDependency name={[EPlan.LoadStop]}>
+          <ProFormDependency name={["负荷转供"]}>
             {(values) => {
               return (
                 <div
                   style={{
-                    display: values[EPlan.LoadStop] ? "block" : "none",
+                    display: values["负荷转供"] ? "block" : "none",
                   }}
                 >
                   <ProFormTextArea
@@ -376,15 +367,14 @@ const App: React.FC = () => {
           <ProFormRadio.Group
             options={["需要", "不需要"]}
             label="服务方案"
-            name={EPlan.ServicePlan}
+            name={"服务方案"}
           />
-          <ProFormDependency name={[EPlan.ServicePlan]}>
+          <ProFormDependency name={["服务方案"]}>
             {(values) => {
               return (
                 <div
                   style={{
-                    display:
-                      values[EPlan.ServicePlan] === "需要" ? "block" : "none",
+                    display: values["服务方案"] === "需要" ? "block" : "none",
                   }}
                 >
                   <ProFormUploadButton

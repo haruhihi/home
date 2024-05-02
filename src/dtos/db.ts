@@ -1,22 +1,40 @@
-export enum EPlan {
-  ID = "ID",
-  Place = "Place",
-  Section = "Section",
-  Construction = "Construction",
-  ConstructionDate = "ConstructionDate",
-  ElectricLevel = "ElectricLevel",
-  /** 服务方案 */
-  ServicePlan = "ServicePlan",
-  /** 负荷停用 */
-  LoadStop = "LoadStop",
-}
-
-export enum EPlanForeign {
+export const EPlan = {
+  /** 序号 */
+  ID: {
+    Name: "ID",
+    label: "序号",
+  },
   /** 工作负责人 */
-  WorkOwner = "WorkOwner",
+  WorkOwners: {
+    Name: "WorkOwners",
+    label: "工作负责人",
+  },
   /** 施工人员 */
-  Worker = "Worker",
-}
+  Workers: {
+    Name: "Workers",
+    label: "施工人员",
+  },
+  /** 运维单位 */
+  Maintainer: {
+    Name: "Maintainer",
+    label: "运维单位",
+  },
+  /** 施工单位 */
+  Operator: {
+    Name: "Operator",
+    label: "施工单位",
+  },
+  /** 创建时间 - Sequelize 自动 */
+  CreatedAt: {
+    Name: "createdAt",
+    label: "创建时间",
+  },
+  /** 更新时间 - Sequelize 自动 */
+  UpdatedAt: {
+    Name: "updatedAt",
+    label: "更新时间",
+  },
+} as const;
 
 export enum EUser {
   ID = "ID",
