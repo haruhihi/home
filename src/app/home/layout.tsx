@@ -7,6 +7,30 @@ import { ThunderboltOutlined } from "@ant-design/icons";
 const App: React.FC<{ children: React.ReactNode }> = (props) => {
   const router = useRouter();
   const path = usePathname();
+
+  const staticRoutes = [
+    {
+      path: "/home/search",
+      name: "首页",
+      locale: "menu.home",
+    },
+    {
+      path: "/home/upload",
+      name: "录入计划",
+      locale: "menu.upload",
+    },
+  ];
+
+  if (staticRoutes.every((route) => route.path !== path)) {
+    if (path.startsWith("/home/plan/audit")) {
+      staticRoutes.push({
+        path,
+        name: "审核计划",
+        locale: "menu.audit",
+      });
+    }
+  }
+
   return (
     <ProLayout
       location={{
@@ -47,18 +71,7 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
         </div>
       )}
       route={{
-        routes: [
-          {
-            path: "/home/search",
-            name: "首页",
-            locale: "menu.home",
-          },
-          {
-            path: "/home/upload",
-            name: "录入计划",
-            locale: "menu.upload",
-          },
-        ],
+        routes: staticRoutes,
       }}
       menu={{ defaultOpenAll: true, hideMenuWhenCollapsed: true }}
     >

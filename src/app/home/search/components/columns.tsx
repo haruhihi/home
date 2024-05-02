@@ -80,11 +80,15 @@ export const getColumns = (configs: {
     //   width: 150,
     // },
     {
-      title: "Action",
+      title: "操作",
       key: "operation",
       fixed: "right",
       width: 100,
-      render: () => <a>审核</a>,
+      render: (_, record) => (
+        <a href={`/home/plan/audit/${record[EPlan.ID.Name]}`} target="_blank">
+          审核
+        </a>
+      ),
     },
   ];
 };

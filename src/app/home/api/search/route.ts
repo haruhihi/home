@@ -6,7 +6,6 @@ import { Op, WhereOptions, where } from "sequelize";
 
 export async function GET(request: Request) {
   try {
-    console.log(111);
     const params = new URL(request.url).searchParams;
     const pageStr = params.get("page");
     const pageSizeStr = params.get("pageSize");
@@ -43,14 +42,13 @@ export async function GET(request: Request) {
       };
     }
 
-    console.log(whereOptions);
     const { Plan } = await getModels();
     const { count, rows } = await Plan.findAndCountAll({
       offset: (page - 1) * pageSize,
       limit: pageSize,
       where: whereOptions,
     });
-    console.log(count, rows);
+
     const result: ISearchRes = {
       totalCount: count,
       totalPages: 3,
