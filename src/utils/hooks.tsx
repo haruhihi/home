@@ -1,6 +1,6 @@
 import { IFormConfigRes } from "@dtos/api";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 export const useServerConfigs = () => {
   const [optionsRes, setOptionsRes] = useState<IFormConfigRes>();

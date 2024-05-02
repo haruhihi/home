@@ -1,4 +1,4 @@
-import { EPlan } from "./db";
+import { EPlan, EUser, EUserRole, EUserRoleEnum } from "./db";
 
 enum ResNum {
   Success = 0,
@@ -6,8 +6,8 @@ enum ResNum {
 }
 
 export interface ILoginReq {
-  username: string;
-  password: string;
+  [EUser.Account]: string;
+  [EUser.Password]: string;
 }
 
 export const Res200 = <T>(params: {
@@ -84,4 +84,9 @@ export interface ICreateReq {
   [EPlan.Workers.Name]: string[];
   [EPlan.Maintainer.Name]: string;
   [EPlan.Operator.Name]: string[];
+}
+
+export interface IAccountInfoRes {
+  [EUser.Account]: string;
+  [EUser.Role]: EUserRoleEnum;
 }

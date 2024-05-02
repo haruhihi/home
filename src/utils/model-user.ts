@@ -1,4 +1,4 @@
-import { EUser } from "@dtos/db";
+import { EUser, EUserRole, EUserRoleEnum } from "@dtos/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 import { TModel } from "./db";
 
@@ -31,7 +31,7 @@ export const initUserModel = async (
         type: DataTypes.BOOLEAN,
       },
       [EUser.Role]: {
-        type: DataTypes.ENUM("admin", "user"),
+        type: DataTypes.ENUM(EUserRoleEnum.Admin, EUserRoleEnum.User),
       },
     },
     {
@@ -54,7 +54,7 @@ export const initUser = async (User: TModel) => {
       .map((name) => {
         return [
           {
-            [EUser.Account]: `${name}admin`,
+            [EUser.Account]: name,
             [EUser.Password]: "123",
             [EUser.Name]: `${name}admin`,
             [EUser.IsWorkOwner]: false,

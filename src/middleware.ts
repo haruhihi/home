@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { decrypt } from "@utils/session";
 
-const publicRoutes = ["/home/login", "/home/api/login"];
+const publicRoutes = ["/home/login", "/home/api/account/login"];
 // https://nextjs.org/docs/app/building-your-application/authentication#optimistic-checks-with-middleware-optional
 export default async function middleware(req: NextRequest) {
   // Check if the current route is protected or public

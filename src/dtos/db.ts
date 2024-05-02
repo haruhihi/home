@@ -74,6 +74,27 @@ export enum EUser {
   /** 角色 */
   Role = "Role",
 }
+
+export enum EUserRoleEnum {
+  /** 管理员 */
+  Admin = "Admin",
+  /** 用户 */
+  User = "User",
+}
+
+export const EUserRole = {
+  /** 管理员 */
+  Admin: {
+    Name: EUserRoleEnum.Admin,
+    label: "管理员",
+  },
+  /** 用户 */
+  User: {
+    Name: EUserRoleEnum.User,
+    label: "用户",
+  },
+} as const;
+
 /** 运维单位 */
 export enum EMaintainer {
   /** ID */

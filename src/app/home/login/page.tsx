@@ -8,7 +8,10 @@ import { useRouter } from "next/navigation";
 const App = () => {
   const router = useRouter();
   const onFinish = (values: { username: string; password: string }) => {
-    fetch("/home/api/login", { body: JSON.stringify(values), method: "POST" })
+    fetch("/home/api/account/login", {
+      body: JSON.stringify(values),
+      method: "POST",
+    })
       .then((res) => res.json())
       .then((res: IRes) => {
         console.log("res", res);
