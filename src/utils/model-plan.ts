@@ -14,16 +14,16 @@ export const initPlanModel = async (
         autoIncrement: true,
         autoIncrementIdentity: true,
       },
-      [EPlan.WorkOwners.Name]: {
-        type: DataTypes.STRING,
-      },
-      [EPlan.Workers.Name]: {
-        type: DataTypes.STRING,
-      },
       [EPlan.Maintainer.Name]: {
         type: DataTypes.STRING,
       },
       [EPlan.Operator.Name]: {
+        type: DataTypes.STRING,
+      },
+      [EPlan.WorkOwners.Name]: {
+        type: DataTypes.STRING,
+      },
+      [EPlan.Workers.Name]: {
         type: DataTypes.STRING,
       },
       [EPlan.Status.Name]: {

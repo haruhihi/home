@@ -4,16 +4,6 @@ export const EPlan = {
     Name: "ID",
     label: "序号",
   },
-  /** 工作负责人 */
-  WorkOwners: {
-    Name: "WorkOwners",
-    label: "工作负责人",
-  },
-  /** 施工人员 */
-  Workers: {
-    Name: "Workers",
-    label: "施工人员",
-  },
   /** 运维单位 */
   Maintainer: {
     Name: "Maintainer",
@@ -23,6 +13,16 @@ export const EPlan = {
   Operator: {
     Name: "Operator",
     label: "施工单位",
+  },
+  /** 工作负责人 */
+  WorkOwners: {
+    Name: "WorkOwners",
+    label: "工作负责人",
+  },
+  /** 施工人员 */
+  Workers: {
+    Name: "Workers",
+    label: "施工人员",
   },
   /** 状态 */
   Status: {
