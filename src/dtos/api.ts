@@ -84,6 +84,47 @@ export interface ICreateReq {
   [EPlan.Workers.Name]: string[];
   [EPlan.Maintainer.Name]: string;
   [EPlan.Operator.Name]: string[];
+  [EPlan.VoltageLevel.Name]: string;
+  [EPlan.SpecialWorkers.Name]: string[];
+  [EPlan.Section.Name]: string[];
+  [EPlan.Classification.Name]: string;
+  [EPlan.WorkRiskLevel.Name]: string;
+  [EPlan.ElectricRiskLevel.Name]: string;
+  [EPlan.WorkContent.Name]: string;
+  [EPlan.WithElectric.Name]: string;
+  [EPlan.WithElectricWorkText.Name]: string;
+  [EPlan.WithElectricWorkImgs.Name]: string[];
+  [EPlan.PowerCut.Name]: string;
+  [EPlan.VerificationText.Name]: string;
+  [EPlan.VerificationImgs.Name]: string[];
+  [EPlan.Overview.Name]: string[];
+  [EPlan.BirdsEye.Name]: string[];
+  [EPlan.HighRiskPlaceText.Name]: string;
+  [EPlan.HighRiskPlaceImgs.Name]: string[];
+  [EPlan.LoadStop.Name]: string;
+  [EPlan.LoadShifting.Name]: string;
+  [EPlan.EquipmentCondition.Name]: string;
+  [EPlan.PatrolSwitch.Name]: string[];
+  [EPlan.PowerOutMethod.Name]: string[];
+  [EPlan.PowerOutPlace.Name]: string;
+  [EPlan.ExpectStartAt.Name]: string;
+  [EPlan.ExpectFinishAt.Name]: string;
+  [EPlan.LoadStopAt.Name]: string;
+  [EPlan.WithElectricWorkStartAt.Name]: string;
+  [EPlan.PlanSourceText.Name]: string;
+  [EPlan.PlanSourceImgs.Name]: string[];
+  [EPlan.OneStopMultiUseText.Name]: string;
+  [EPlan.OneStopMultiUseImgs.Name]: string[];
+  [EPlan.MetricsImprovementText.Name]: string;
+  [EPlan.MetricsImprovementImgs.Name]: string[];
+  [EPlan.PowerOutageHomesText.Name]: string;
+  [EPlan.PowerOutageHomesImgs.Name]: string[];
+  [EPlan.ServicePlan.Name]: string[];
+  [EPlan.ServicePlanContent.Name]: string;
+  [EPlan.EquipmentAllocation.Name]: string[];
+  [EPlan.EquipmentAllocationId.Name]: string;
+  [EPlan.MaterialAllocation.Name]: string[];
+  [EPlan.OnSiteWork.Name]: string;
 }
 
 export interface IAccountInfoRes {

@@ -20,7 +20,9 @@
     "paths": {
       "@constants/*": ["./src/constants/*"],
       "@utils/*": ["./src/utils/*"],
-      "@dtos/*": ["./src/dtos/*"]
+      "@dtos/*": ["./src/dtos/*"],
+      "@models/*": ["./src/models/*"],
+      "@components/*": ["./src/components/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

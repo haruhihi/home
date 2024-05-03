@@ -1,17 +1,11 @@
-import {
-  DB_DATABASE,
-  DB_HOST,
-  DB_PASSWORD,
-  DB_USER,
-  SessionSecret,
-} from "@constants/config";
-import { DataTypes, Model, ModelStatic, Options, Sequelize } from "sequelize";
+import { DB_DATABASE, DB_HOST, DB_PASSWORD, DB_USER } from "@constants/config";
+import { Model, ModelStatic, Options, Sequelize } from "sequelize";
 import mysql2 from "mysql2";
-import { EPlan } from "@dtos/db";
 import { initUserModel } from "./model-user";
 import { initPlanModel } from "./model-plan";
-import { initMaintainer, initMaintainerModel } from "./model-maintainer";
-import { initOperator, initOperatorModel } from "./model-operator";
+import { initMaintainerModel } from "./model-maintainer";
+import { initOperatorModel } from "./model-operator";
+import * as sections from "@models/sections";
 
 let cache: {
   sequelize: Sequelize;
@@ -19,6 +13,7 @@ let cache: {
   User: TModel;
   Maintainer: TModel;
   Operator: TModel;
+  Section: TModel;
 } | null = null;
 
 export type TModel = ModelStatic<Model<any, any>>;
@@ -47,12 +42,15 @@ export const getModels = async () => {
 
   const Plan = await initPlanModel(sequelize);
 
+  const Section = await sections.initModel(sequelize);
+
   cache = {
     sequelize,
     Plan,
     User,
     Maintainer,
     Operator,
+    Section,
   };
   return cache;
 };

@@ -5,6 +5,7 @@ import { initMaintainerModel } from "@utils/model-maintainer";
 import { initOperatorModel } from "@utils/model-operator";
 import { initPlanModel } from "@utils/model-plan";
 import { initUserModel } from "@utils/model-user";
+import * as sections from "@models/sections";
 
 export async function GET(request: Request) {
   try {
@@ -21,6 +22,7 @@ export async function GET(request: Request) {
       const Plan = await initPlanModel(sequelize, { force: true });
       const Maintainer = await initMaintainerModel(sequelize, { force: true });
       const Operator = await initOperatorModel(sequelize, { force: true });
+      await sections.initModel(sequelize, { force: true });
 
       // 启用外键约束
       // await sequelize.query("SET FOREIGN_KEY_CHECKS = 1", { raw: true });
