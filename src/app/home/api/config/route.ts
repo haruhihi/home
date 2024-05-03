@@ -40,7 +40,6 @@ export async function GET(request: Request) {
           }) ?? [],
       maintainerOptions: await getMaintainerOptions(),
       operatorOptions: await getOperatorOptions(),
-      sectionOptions: await getSelectionOptions(),
     };
     return new Response(
       Res200({

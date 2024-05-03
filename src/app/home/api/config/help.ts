@@ -49,20 +49,3 @@ export const getOperatorOptions = async () => {
     return [];
   }
 };
-
-export const getSelectionOptions = async () => {
-  try {
-    const { Section } = await getModels();
-    const rows = await Section?.findAll();
-    return (
-      rows?.map((row) => {
-        return {
-          label: (row as any)[EOperator.Name],
-          value: (row as any)[EOperator.ID],
-        };
-      }) ?? []
-    );
-  } catch (error) {
-    return [];
-  }
-};

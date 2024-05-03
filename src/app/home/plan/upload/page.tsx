@@ -21,6 +21,7 @@ import type { GetProp, UploadFile, UploadProps } from "antd";
 import { EPlan } from "@dtos/db";
 import { Footer } from "./footer";
 import { useServerConfigs } from "@utils/hooks";
+import { TOptions } from "@dtos/api";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -36,6 +37,7 @@ const App: React.FC = () => {
   const [cos, setCOS] = useState<COS>();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const [sectionOptions, setSectionOptions] = useState<TOptions>([]);
   const optionsRes = useServerConfigs();
 
   const handlePreview = async (file: UploadFile) => {
@@ -134,7 +136,6 @@ const App: React.FC = () => {
     specialWorkerOptions,
     operatorOptions,
     maintainerOptions,
-    sectionOptions,
   } = optionsRes;
   return (
     <div>
@@ -228,6 +229,17 @@ const App: React.FC = () => {
           name={EPlan.Section.Name}
           label={EPlan.Section.label}
           options={sectionOptions}
+          showSearch
+          placeholder="请输入关键词查找后选择"
+          fieldProps={{
+            options: sectionOptions,
+            onSearch: async (value) => {
+              const options = await axios
+                .get(`/home/api/config/sections?name=${value}`)
+                .then((res) => res.data.result);
+              setSectionOptions(options);
+            },
+          }}
           mode="multiple"
         />
         <ProFormSelect
