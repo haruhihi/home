@@ -78,6 +78,7 @@ export interface IFormConfigRes {
   specialWorkerOptions: TOptions;
   maintainerOptions: TOptions;
   operatorOptions: TOptions;
+  sectionOptions: TOptions;
 }
 
 export interface ICreateReq {

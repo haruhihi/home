@@ -331,3 +331,17 @@ export enum ESection {
   /** 姓名 */
   Name = "Name",
 }
+
+/** 人民 */
+export enum EPerson {
+  /** ID */
+  ID = "ID",
+  /** 姓名 */
+  Name = "Name",
+  /** 电话 */
+  PhoneNum = "PhoneNum",
+  /** 风险点 */
+  Risk = "Risk",
+  /** 台区 id */
+  SectionId = "SectionId",
+}

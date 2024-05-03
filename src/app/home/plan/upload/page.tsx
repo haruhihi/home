@@ -87,19 +87,6 @@ const App: React.FC = () => {
     },
   };
 
-  const areaOptions = [
-    "皇庄1#台区",
-    "皇庄2#台区",
-    "皇庄3#台区",
-    "宫塘1#台区",
-    "宫塘2#台区",
-    "宫塘3#台区",
-    "宫塘4#台区",
-  ].map((item) => ({
-    label: item,
-    value: item,
-  }));
-
   const specificAreaOptions = ["配电", "营销", "设备", "产业"];
 
   const riskLevelOptions = ["一级", "二级", "三级", "四级", "五级"];
@@ -147,6 +134,7 @@ const App: React.FC = () => {
     specialWorkerOptions,
     operatorOptions,
     maintainerOptions,
+    sectionOptions,
   } = optionsRes;
   return (
     <div>
@@ -235,12 +223,11 @@ const App: React.FC = () => {
           name={EPlan.VoltageLevel.Name}
           options={["35kV", "10kV", "0.38kV", "0.22kV"]}
         />
-        {/* TODO Need table */}
         <ProFormSelect
           width="md"
           name={EPlan.Section.Name}
           label={EPlan.Section.label}
-          options={areaOptions}
+          options={sectionOptions}
           mode="multiple"
         />
         <ProFormSelect

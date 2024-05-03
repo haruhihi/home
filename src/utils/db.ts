@@ -1,11 +1,12 @@
 import { DB_DATABASE, DB_HOST, DB_PASSWORD, DB_USER } from "@constants/config";
 import { Model, ModelStatic, Options, Sequelize } from "sequelize";
 import mysql2 from "mysql2";
-import { initUserModel } from "./model-user";
+import { initUserModel } from "@models/user";
 import { initPlanModel } from "./model-plan";
 import { initMaintainerModel } from "./model-maintainer";
 import { initOperatorModel } from "./model-operator";
 import * as sections from "@models/sections";
+import * as people from "@models/person";
 
 let cache: {
   sequelize: Sequelize;
@@ -14,6 +15,7 @@ let cache: {
   Maintainer: TModel;
   Operator: TModel;
   Section: TModel;
+  Person: TModel;
 } | null = null;
 
 export type TModel = ModelStatic<Model<any, any>>;
@@ -44,6 +46,8 @@ export const getModels = async () => {
 
   const Section = await sections.initModel(sequelize);
 
+  const Person = await people.initModel(sequelize);
+
   cache = {
     sequelize,
     Plan,
@@ -51,6 +55,7 @@ export const getModels = async () => {
     Maintainer,
     Operator,
     Section,
+    Person,
   };
   return cache;
 };

@@ -8,7 +8,6 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
   const {
     params: { slug },
   } = props;
-  console.log(props);
 
   useEffect(() => {
     axios
