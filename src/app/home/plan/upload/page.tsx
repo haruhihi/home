@@ -11,6 +11,7 @@ import {
   ProFormRadio,
   ProFormSelect,
   ProFormSwitch,
+  ProFormText,
   ProFormTextArea,
   ProFormUploadButton,
   ProFormUploadButtonProps,
@@ -48,6 +49,7 @@ const App: React.FC = () => {
 
   const commonUploadProps: Partial<ProFormUploadButtonProps> = {
     // onPreview: handlePreview,
+    width: "xl" as const,
     fieldProps: {
       showUploadList: {
         showPreviewIcon: false,
@@ -98,29 +100,11 @@ const App: React.FC = () => {
     value: item,
   }));
 
-  const specificAreaOptions = ["配电", "营销", "设备", "产业"].map((item) => ({
-    label: item,
-    value: item,
-  }));
+  const specificAreaOptions = ["配电", "营销", "设备", "产业"];
 
-  const riskLevelOptions = ["一级", "二级", "三级", "四级", "五级"].map(
-    (item) => ({
-      label: item,
-      value: item,
-    })
-  );
+  const riskLevelOptions = ["一级", "二级", "三级", "四级", "五级"];
 
-  const electricRiskLevelOptions = [
-    "四级",
-    "五级",
-    "六级",
-    "七级",
-    "八级",
-    "无",
-  ].map((item) => ({
-    label: item,
-    value: item,
-  }));
+  const electricRiskLevelOptions = ["四级", "五级", "六级", "七级", "八级"];
 
   // 初始化实例
   useEffect(() => {
@@ -167,7 +151,7 @@ const App: React.FC = () => {
     <div>
       <ProForm
         layout="horizontal"
-        labelCol={{ span: 3 }}
+        labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         initialValues={{
           withElectric: true,
@@ -175,8 +159,23 @@ const App: React.FC = () => {
           // [EPlan.LoadStop]: false,
         }}
         onFinish={(values) => {
+          console.log(values);
           axios
-            .post("/home/api/plan/create", values)
+            .post(
+              "/home/api/plan/create",
+              Object.keys(values).reduce((acc, key) => {
+                const value = values[key];
+                if (
+                  Array.isArray(value) &&
+                  value.some(
+                    (item) => item && item.originFileObj instanceof File
+                  )
+                ) {
+                  return { ...acc, [key]: value.map((item) => item.url) };
+                }
+                return { ...acc, [key]: value };
+              }, {})
+            )
             .then((res) => {
               message.success("创建成功");
             })
@@ -219,13 +218,27 @@ const App: React.FC = () => {
           options={workerOptions}
           mode="multiple"
         />
+        <ProFormSelect
+          width="md"
+          name={EPlan.SpecialWorkers.Name}
+          label={EPlan.SpecialWorkers.label}
+          options={workerOptions}
+          mode="multiple"
+        />
         <Divider orientation="left">
           <h2>工作内容</h2>
         </Divider>
         <ProFormSelect
           width="md"
-          name="area"
-          label="工作范围"
+          label={EPlan.VoltageLevel.label}
+          name={EPlan.VoltageLevel.Name}
+          options={["35kV", "10kV", "0.38kV", "0.22kV"]}
+        />
+        {/* TODO Need table */}
+        <ProFormSelect
+          width="md"
+          name={EPlan.Section.Name}
+          label={EPlan.Section.label}
           options={areaOptions}
           mode="multiple"
         />
@@ -237,122 +250,189 @@ const App: React.FC = () => {
         />
         <ProFormSelect
           width="md"
-          name="riskLevel"
-          label="作业风险等级"
+          name={EPlan.WorkRiskLevel.Name}
+          label={EPlan.WorkRiskLevel.label}
           options={riskLevelOptions}
         />
         <ProFormSelect
           width="md"
-          name="electricRiskLevel"
-          label="电网风险等级"
+          name={EPlan.ElectricRiskLevel.Name}
+          label={EPlan.ElectricRiskLevel.label}
           options={electricRiskLevelOptions}
         />
         <ProFormTextArea
-          name="workContent"
-          label="作业内容"
+          name={EPlan.WorkContent.Name}
+          label={EPlan.WorkContent.label}
           {...commonTextareaProps}
         />
-        <ProFormSwitch label="带电作业" width="md" name="withElectric" />
-        <ProFormDependency name={["withElectric"]}>
-          {({ withElectric }) => {
+        <ProFormSwitch
+          width="md"
+          name={EPlan.WithElectric.Name}
+          label={EPlan.WithElectric.label}
+        />
+        <ProFormDependency name={[EPlan.WithElectric.Name]}>
+          {(values) => {
             return (
               <div
                 style={{
-                  display: withElectric ? "block" : "none",
+                  display: values[EPlan.WithElectric.Name] ? "block" : "none",
                 }}
               >
-                <ProFormDateTimePicker label="带电作业开始时间" />
+                <ProFormDateTimePicker
+                  name={EPlan.WithElectricWorkStartAt.Name}
+                  label={EPlan.WithElectricWorkStartAt.label}
+                />
                 <ProFormTextArea
-                  width="md"
-                  name="withElectricWorkContent"
-                  label="带电作业内容"
-                  className="with-electric-work-content"
-                  fieldProps={{
-                    autoSize: { minRows: 5 },
-                  }}
+                  name={EPlan.WithElectricWorkText.Name}
+                  label={EPlan.WithElectricWorkText.label}
+                  {...commonTextareaProps}
                 />
                 <ProFormUploadButton
-                  width="xl"
-                  name="withElectricWorkImg"
-                  label="带电作业图片"
-                  {...commonUploadProps}
-                />
-                <ProFormUploadButton
-                  width="xl"
-                  name="withElectricWorkImg"
-                  label="风险防范"
-                  tooltip={
-                    <ul>
-                      {[
-                        "1、上传现勘、施工方案、工作票（word文档） ",
-                        "2、上传施工附图、鸟瞰图(图片)",
-                        "3、高风险作业点（文字+图片）",
-                      ].map((item) => {
-                        return <li key={item}>{item}</li>;
-                      })}
-                    </ul>
-                  }
+                  name={EPlan.WithElectricWorkImgs.Name}
+                  label={EPlan.WithElectricWorkImgs.label}
                   {...commonUploadProps}
                 />
               </div>
             );
           }}
         </ProFormDependency>
+        <ProFormSwitch
+          width="md"
+          name={EPlan.PowerCut.Name}
+          label={EPlan.PowerCut.label}
+        />
+        <ProFormTextArea
+          name={EPlan.VerificationText.Name}
+          label={EPlan.VerificationText.label}
+          {...commonTextareaProps}
+        />
+        <ProFormUploadButton
+          name={EPlan.VerificationImgs.Name}
+          label={EPlan.VerificationImgs.label}
+          {...commonUploadProps}
+        />
+        <Divider orientation="left">
+          <h2>风险防范</h2>
+        </Divider>
+        <>
+          <ProFormUploadButton
+            width="xl"
+            name={EPlan.Overview.Name}
+            label={EPlan.Overview.label}
+            {...commonUploadProps}
+          />
+          <ProFormUploadButton
+            width="xl"
+            name={EPlan.BirdsEye.Name}
+            label={EPlan.BirdsEye.label}
+            {...commonUploadProps}
+          />
+          <ProFormTextArea
+            name={EPlan.HighRiskPlaceText.Name}
+            label={EPlan.HighRiskPlaceText.label}
+            {...commonTextareaProps}
+          />
+          <ProFormUploadButton
+            name={EPlan.HighRiskPlaceImgs.Name}
+            label={EPlan.HighRiskPlaceImgs.label}
+            {...commonUploadProps}
+          />
+        </>
         <Divider orientation="left">
           <h2>负荷停用情况</h2>
         </Divider>
         <>
           <ProFormTextArea
-            tooltip="停用方式"
+            name={EPlan.LoadStop.Name}
+            label={EPlan.LoadStop.label}
             {...commonTextareaProps}
-            label="负荷停用"
           />
           <ProFormSwitch
-            tooltip="停用方式"
-            label="负荷转供"
-            name={"负荷转供"}
+            name={EPlan.LoadShifting.Name}
+            label={EPlan.LoadShifting.label}
           />
-          <ProFormDependency name={["负荷转供"]}>
+          <ProFormDependency name={[EPlan.LoadShifting.Name]}>
             {(values) => {
               return (
                 <div
                   style={{
-                    display: values["负荷转供"] ? "block" : "none",
+                    display: values[EPlan.LoadShifting.Name] ? "block" : "none",
                   }}
                 >
                   <ProFormTextArea
+                    name={EPlan.EquipmentCondition.Name}
+                    label={EPlan.EquipmentCondition.label}
                     {...commonTextareaProps}
-                    label="负荷转供内容"
                   />
                 </div>
               );
             }}
           </ProFormDependency>
-          <ProFormSwitch label="操巡队开关是否到位" />
-          <ProFormTextArea {...commonTextareaProps} label="停电方式及区域" />
+          <ProFormSwitch
+            name={EPlan.PatrolSwitch.Name}
+            label={EPlan.PatrolSwitch.label}
+          />
+          <ProFormRadio.Group
+            name={EPlan.PowerOutMethod.Name}
+            label={EPlan.PowerOutMethod.label}
+            options={["停用开关", "带电作业"]}
+          />
+          <ProFormTextArea
+            {...commonTextareaProps}
+            name={EPlan.PowerOutPlace.Name}
+            label={EPlan.PowerOutPlace.label}
+          />
         </>
         <Divider orientation="left">
           <h2>作业时间</h2>
         </Divider>
         <>
-          <ProFormDateTimePicker label="计划完工时间" />
-          <ProFormDateTimePicker label="负荷停用时间" />
+          <ProFormDateTimePicker
+            name={EPlan.ExpectStartAt.Name}
+            label={EPlan.ExpectStartAt.label}
+          />
+          <ProFormDateTimePicker
+            name={EPlan.ExpectFinishAt.Name}
+            label={EPlan.ExpectFinishAt.label}
+          />
+          <ProFormDateTimePicker
+            name={EPlan.LoadStopAt.Name}
+            label={EPlan.LoadStopAt.label}
+          />
         </>
         <Divider orientation="left">
           <h2>项目必要性</h2>
         </Divider>
         <>
-          <ProFormUploadButton {...commonUploadProps} label="计划来源（图）" />
-          <ProFormTextArea {...commonTextareaProps} label="计划来源（文）" />
-          <ProFormUploadButton {...commonUploadProps} label="一停多用（图）" />
-          <ProFormTextArea {...commonTextareaProps} label="一停多用（文）" />
           <ProFormUploadButton
             {...commonUploadProps}
-            label="指标提升情况（图）"
+            name={EPlan.PlanSourceImgs.Name}
+            label={EPlan.PlanSourceImgs.label}
           />
           <ProFormTextArea
             {...commonTextareaProps}
-            label="指标提升情况（文）"
+            name={EPlan.PlanSourceText.Name}
+            label={EPlan.PlanSourceText.label}
+          />
+          <ProFormUploadButton
+            {...commonUploadProps}
+            name={EPlan.OneStopMultiUseImgs.Name}
+            label={EPlan.OneStopMultiUseImgs.label}
+          />
+          <ProFormTextArea
+            {...commonTextareaProps}
+            name={EPlan.OneStopMultiUseText.Name}
+            label={EPlan.OneStopMultiUseText.label}
+          />
+          <ProFormUploadButton
+            {...commonUploadProps}
+            name={EPlan.MetricsImprovementImgs.Name}
+            label={EPlan.MetricsImprovementImgs.label}
+          />
+          <ProFormTextArea
+            {...commonTextareaProps}
+            name={EPlan.MetricsImprovementText.Name}
+            label={EPlan.MetricsImprovementText.label}
           />
         </>
         <Divider orientation="left">
@@ -361,29 +441,39 @@ const App: React.FC = () => {
         <>
           <ProFormUploadButton
             {...commonUploadProps}
-            label="停电时户数（图）"
+            name={EPlan.PowerOutageHomesImgs.Name}
+            label={EPlan.PowerOutageHomesImgs.label}
           />
-          <ProFormTextArea {...commonTextareaProps} label="停电时户数（文）" />
+          <ProFormTextArea
+            {...commonTextareaProps}
+            name={EPlan.PowerOutageHomesText.Name}
+            label={EPlan.PowerOutageHomesText.label}
+          />
           <ProFormRadio.Group
+            name={EPlan.ServicePlan.Name}
+            label={EPlan.ServicePlan.label}
             options={["需要", "不需要"]}
-            label="服务方案"
-            name={"服务方案"}
           />
-          <ProFormDependency name={["服务方案"]}>
+          <ProFormDependency name={[EPlan.ServicePlan.Name]}>
             {(values) => {
               return (
                 <div
                   style={{
-                    display: values["服务方案"] === "需要" ? "block" : "none",
+                    display:
+                      values[EPlan.ServicePlan.Name] === "需要"
+                        ? "block"
+                        : "none",
                   }}
                 >
-                  <ProFormUploadButton
+                  {/* <ProFormUploadButton
                     {...commonUploadProps}
-                    label="服务方案（文档）"
-                  />
+                    name={EPlan.ServicePlanContent.Name}
+                    label={EPlan.ServicePlanContent.label}
+                  /> */}
                   <ProFormTextArea
                     {...commonTextareaProps}
-                    label="服务方案（文）"
+                    name={EPlan.ServicePlanContent.Name}
+                    label={EPlan.ServicePlanContent.label}
                   />
                 </div>
               );
@@ -392,15 +482,29 @@ const App: React.FC = () => {
         </>
 
         <Divider orientation="left">
-          <h2>其他</h2>
+          <h2>物资</h2>
         </Divider>
         <>
-          <ProFormUploadButton
-            {...commonUploadProps}
-            label="物资"
-            tooltip="上传设备异动单、物资调拨单、编号"
+          <ProFormText
+            label={EPlan.EquipmentAllocationId.label}
+            {...commonTextareaProps}
+            name={EPlan.EquipmentAllocationId.Name}
           />
-          <ProFormTextArea label="现场作业组织" {...commonTextareaProps} />
+          <ProFormUploadButton
+            name={EPlan.EquipmentAllocation.Name}
+            label={EPlan.EquipmentAllocation.label}
+            {...commonUploadProps}
+          />
+          <ProFormUploadButton
+            name={EPlan.MaterialAllocation.Name}
+            label={EPlan.MaterialAllocation.label}
+            {...commonUploadProps}
+          />
+          <ProFormTextArea
+            {...commonTextareaProps}
+            name={EPlan.OnSiteWork.Name}
+            label={EPlan.OnSiteWork.label}
+          />
         </>
       </ProForm>
       {previewImage && (
