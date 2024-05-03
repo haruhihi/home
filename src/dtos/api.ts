@@ -75,6 +75,7 @@ type TOptions = Array<{ label: string; value: string | number }>;
 export interface IFormConfigRes {
   workOwnerOptions: TOptions;
   workerOptions: TOptions;
+  specialWorkerOptions: TOptions;
   maintainerOptions: TOptions;
   operatorOptions: TOptions;
 }

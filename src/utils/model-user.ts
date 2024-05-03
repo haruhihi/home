@@ -30,6 +30,9 @@ export const initUserModel = async (
       [EUser.IsWorker]: {
         type: DataTypes.BOOLEAN,
       },
+      [EUser.IsSpecialWorker]: {
+        type: DataTypes.BOOLEAN,
+      },
       [EUser.Role]: {
         type: DataTypes.ENUM(EUserRoleEnum.Admin, EUserRoleEnum.User),
       },
@@ -59,22 +62,34 @@ export const initUser = async (User: TModel) => {
             [EUser.Name]: `${name}admin`,
             [EUser.IsWorkOwner]: false,
             [EUser.IsWorker]: false,
+            [EUser.IsSpecialWorker]: false,
             [EUser.Role]: EUserRoleEnum.Admin,
           },
           {
             [EUser.Account]: ``,
             [EUser.Password]: "",
-            [EUser.Name]: `${name}owner`,
+            [EUser.Name]: `工作负责人${name}`,
             [EUser.IsWorkOwner]: true,
             [EUser.IsWorker]: false,
+            [EUser.IsSpecialWorker]: false,
             [EUser.Role]: EUserRoleEnum.Admin,
           },
           {
             [EUser.Account]: ``,
             [EUser.Password]: "",
-            [EUser.Name]: `${name}worker`,
+            [EUser.Name]: `施工人员${name}`,
             [EUser.IsWorkOwner]: false,
             [EUser.IsWorker]: true,
+            [EUser.IsSpecialWorker]: false,
+            [EUser.Role]: EUserRoleEnum.User,
+          },
+          {
+            [EUser.Account]: ``,
+            [EUser.Password]: "",
+            [EUser.Name]: `特种作业人员${name}`,
+            [EUser.IsWorkOwner]: false,
+            [EUser.IsWorker]: false,
+            [EUser.IsSpecialWorker]: true,
             [EUser.Role]: EUserRoleEnum.User,
           },
           {
@@ -83,6 +98,7 @@ export const initUser = async (User: TModel) => {
             [EUser.Name]: `${name}user`,
             [EUser.IsWorkOwner]: false,
             [EUser.IsWorker]: false,
+            [EUser.IsSpecialWorker]: false,
             [EUser.Role]: EUserRoleEnum.User,
           },
         ];

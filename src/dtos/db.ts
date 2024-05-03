@@ -282,6 +282,8 @@ export enum EUser {
   IsWorkOwner = "IsWorkOwner",
   /** 是否是施工人员 */
   IsWorker = "IsWorker",
+  /** 是否是特种作业人员 */
+  IsSpecialWorker = "IsSpecialWorker",
   /** 角色 */
   Role = "Role",
 }

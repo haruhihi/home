@@ -144,6 +144,7 @@ const App: React.FC = () => {
   const {
     workOwnerOptions,
     workerOptions,
+    specialWorkerOptions,
     operatorOptions,
     maintainerOptions,
   } = optionsRes;
@@ -222,7 +223,7 @@ const App: React.FC = () => {
           width="md"
           name={EPlan.SpecialWorkers.Name}
           label={EPlan.SpecialWorkers.label}
-          options={workerOptions}
+          options={specialWorkerOptions}
           mode="multiple"
         />
         <Divider orientation="left">
