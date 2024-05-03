@@ -110,3 +110,11 @@ export enum EOperator {
   /** 姓名 */
   Name = "Name",
 }
+
+/** 台区 */
+export enum ESection {
+  /** ID */
+  ID = "ID",
+  /** 姓名 */
+  Name = "Name",
+}
