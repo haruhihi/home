@@ -229,31 +229,35 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
           </ProFormDependency>
 
           <ProForm.Item label={"敏感用户"}>
-            <Table
-              bordered
-              dataSource={detail.people}
-              pagination={false}
-              columns={[
-                {
-                  title: EPersonData.Name.Label,
-                  width: 100,
-                  dataIndex: EPersonData.Name.Name,
-                  key: EPersonData.Name.Name,
-                },
-                {
-                  title: EPersonData.PhoneNum.Label,
-                  width: 100,
-                  dataIndex: EPersonData.PhoneNum.Name,
-                  key: EPersonData.PhoneNum.Name,
-                },
-                {
-                  title: EPersonData.Risk.Label,
-                  width: 100,
-                  dataIndex: EPersonData.Risk.Name,
-                  key: EPersonData.Risk.Name,
-                },
-              ]}
-            />
+            {detail.people && detail.people.length > 0 ? (
+              <Table
+                bordered
+                dataSource={detail.people}
+                pagination={false}
+                columns={[
+                  {
+                    title: EPersonData.Name.Label,
+                    width: 100,
+                    dataIndex: EPersonData.Name.Name,
+                    key: EPersonData.Name.Name,
+                  },
+                  {
+                    title: EPersonData.PhoneNum.Label,
+                    width: 100,
+                    dataIndex: EPersonData.PhoneNum.Name,
+                    key: EPersonData.PhoneNum.Name,
+                  },
+                  {
+                    title: EPersonData.Risk.Label,
+                    width: 100,
+                    dataIndex: EPersonData.Risk.Name,
+                    key: EPersonData.Risk.Name,
+                  },
+                ]}
+              />
+            ) : (
+              "-"
+            )}
           </ProForm.Item>
           <ProForm.Item label={"频繁停电"}>
             <div>TODO</div>
