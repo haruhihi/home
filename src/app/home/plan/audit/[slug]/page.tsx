@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Divider, Image, message } from "antd";
+import { Button, Divider, Image, Modal, message, Input } from "antd";
 import axios from "axios";
 import COS from "cos-js-sdk-v5";
 import {
@@ -17,10 +17,11 @@ import {
   ProFormUploadButtonProps,
 } from "@ant-design/pro-components";
 import type { GetProp, UploadFile, UploadProps } from "antd";
-import { EPlan } from "@dtos/db";
+import { EPlan, EPlanStatusEnum } from "@dtos/db";
 import { Footer } from "@components/footer-client";
 import { useServerConfigs } from "@utils/hooks";
-import { TOptions } from "@dtos/api";
+import { IPlanDetailRes, TOptions } from "@dtos/api";
+import { Footers } from "./double-check-modal";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -32,12 +33,28 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const App: React.FC = () => {
+const App: React.FC<{ params: { slug: string } }> = (props) => {
+  const {
+    params: { slug },
+  } = props;
+
   const [cos, setCOS] = useState<COS>();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [sectionOptions, setSectionOptions] = useState<TOptions>([]);
+  const [detail, setDetail] = useState<IPlanDetailRes>();
   const optionsRes = useServerConfigs();
+
+  useEffect(() => {
+    axios
+      .post("/home/api/plan/detail", { id: slug })
+      .then((res) => {
+        setDetail(res.data.result);
+      })
+      .catch((err) => {
+        message.error(err.message ?? "查询失败");
+      });
+  }, [slug]);
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
@@ -54,26 +71,6 @@ const App: React.FC = () => {
     fieldProps: {
       showUploadList: {
         showPreviewIcon: false,
-      },
-      customRequest: async (options: any) => {
-        const file = options.file as any;
-        console.log(file);
-        try {
-          const res = await uploadFileToCOS(file as any, cos!, (progress) => {
-            file.progress = Math.floor(progress.percent * 100);
-            const event = new Event("progress");
-            (event as any).percent = progress.percent * 100;
-            options.onProgress?.(event);
-          });
-          file.status = "done";
-          file.url = res;
-          options.onSuccess?.(res);
-          message.success("上传成功");
-        } catch (err) {
-          message.error("上传失败");
-          file.status = "fail";
-          options.onError?.(new Error());
-        }
       },
     },
     action: "http://secret",
@@ -174,7 +171,7 @@ const App: React.FC = () => {
             });
         }}
         submitter={{
-          render: (_, dom) => <Footer ele={dom}></Footer>,
+          render: (_, dom) => <Footers id={slug} />,
         }}
       >
         <Divider orientation="left">

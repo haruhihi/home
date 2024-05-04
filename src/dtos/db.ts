@@ -235,10 +235,10 @@ export const EPlan = {
     Name: "AuditComment",
     label: "审核评论",
   },
-  /** 状态 */
+  /** 计划状态 */
   Status: {
     Name: "Status",
-    label: "状态",
+    label: "计划状态",
   },
   /** 创建时间 - Sequelize 自动 */
   CreatedAt: {
@@ -252,21 +252,30 @@ export const EPlan = {
   },
 } as const;
 
+export enum EPlanStatusEnum {
+  /** 待审核 */
+  Pending = "Pending",
+  /** 审核通过 */
+  Approved = "Approved",
+  /** 审核驳回 */
+  Rejected = "Rejected",
+}
+
 export const EPlanStatus = {
   /** 待审核 */
-  Pending: {
+  [EPlanStatusEnum.Pending]: {
     Name: "Pending",
     label: "待审核",
   },
   /** 审核通过 */
-  Approved: {
+  [EPlanStatusEnum.Approved]: {
     Name: "Approved",
-    label: "审核通过",
+    label: "已批准",
   },
   /** 审核驳回 */
-  Rejected: {
+  [EPlanStatusEnum.Rejected]: {
     Name: "Rejected",
-    label: "审核不通过",
+    label: "已驳回",
   },
 } as const;
 

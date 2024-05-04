@@ -144,9 +144,10 @@ const App: React.FC = () => {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         initialValues={{
-          withElectric: true,
-          // [EPlan.ServicePlan]: "不需要",
-          // [EPlan.LoadStop]: false,
+          [EPlan.WithElectric.Name]: "需要",
+          [EPlan.PowerCut.Name]: "是",
+          [EPlan.LoadShifting.Name]: "是",
+          [EPlan.PatrolSwitch.Name]: "是",
         }}
         onFinish={(values) => {
           console.log(values);
@@ -265,8 +266,9 @@ const App: React.FC = () => {
           label={EPlan.WorkContent.label}
           {...commonTextareaProps}
         />
-        <ProFormSwitch
+        <ProFormRadio.Group
           width="md"
+          options={["需要", "不需要"]}
           name={EPlan.WithElectric.Name}
           label={EPlan.WithElectric.label}
         />
@@ -275,7 +277,10 @@ const App: React.FC = () => {
             return (
               <div
                 style={{
-                  display: values[EPlan.WithElectric.Name] ? "block" : "none",
+                  display:
+                    values[EPlan.WithElectric.Name] === "需要"
+                      ? "block"
+                      : "none",
                 }}
               >
                 <ProFormDateTimePicker
@@ -296,10 +301,11 @@ const App: React.FC = () => {
             );
           }}
         </ProFormDependency>
-        <ProFormSwitch
+        <ProFormRadio.Group
           width="md"
           name={EPlan.PowerCut.Name}
           label={EPlan.PowerCut.label}
+          options={["是", "否"]}
         />
         <ProFormTextArea
           name={EPlan.VerificationText.Name}
@@ -347,16 +353,20 @@ const App: React.FC = () => {
             label={EPlan.LoadStop.label}
             {...commonTextareaProps}
           />
-          <ProFormSwitch
+          <ProFormRadio.Group
             name={EPlan.LoadShifting.Name}
             label={EPlan.LoadShifting.label}
+            options={["是", "否"]}
           />
           <ProFormDependency name={[EPlan.LoadShifting.Name]}>
             {(values) => {
               return (
                 <div
                   style={{
-                    display: values[EPlan.LoadShifting.Name] ? "block" : "none",
+                    display:
+                      values[EPlan.LoadShifting.Name] === "是"
+                        ? "block"
+                        : "none",
                   }}
                 >
                   <ProFormTextArea
@@ -368,9 +378,10 @@ const App: React.FC = () => {
               );
             }}
           </ProFormDependency>
-          <ProFormSwitch
+          <ProFormRadio.Group
             name={EPlan.PatrolSwitch.Name}
             label={EPlan.PatrolSwitch.label}
+            options={["是", "否"]}
           />
           <ProFormRadio.Group
             name={EPlan.PowerOutMethod.Name}

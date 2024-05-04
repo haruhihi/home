@@ -1,4 +1,4 @@
-import { Res200, Res500 } from "@dtos/api";
+import { IPlanDetailRes, Res200, Res500 } from "@dtos/api";
 import { EPerson, EPlan } from "@dtos/db";
 import { getModels } from "@utils/db";
 import { Op } from "sequelize";
@@ -23,7 +23,8 @@ export async function POST(request: Request) {
         },
       },
     });
-    return new Response(Res200({ result: { plan, people } }), {
+    const result: IPlanDetailRes = { plan, people };
+    return new Response(Res200({ result }), {
       status: 200,
     });
   } catch (error) {
