@@ -7,7 +7,7 @@ const config = {
   secretId: ENV_LOCAL.COS_SECRET_ID, // 固定密钥
   secretKey: ENV_LOCAL.COS_SECRET_KEY, // 固定密钥
   proxy: "",
-  durationSeconds: 5 * 24 * 60 * 60,
+  durationSeconds: 24 * 60 * 60,
   // host: 'sts.tencentcloudapi.com', // 域名，非必须，默认为 sts.tencentcloudapi.com
   endpoint: "sts.tencentcloudapi.com", // 域名，非必须，与host二选一，默认为 sts.tencentcloudapi.com
 
