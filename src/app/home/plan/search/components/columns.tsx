@@ -1,9 +1,7 @@
 import { IFormConfigRes } from "@dtos/api";
 import { EPlan, EPlanStatus, EUser, EUserRoleEnum } from "@dtos/db";
 import { useData } from "@utils/data-provider";
-import type { TableColumnsType } from "antd";
-import axios from "axios";
-import dayjs from "dayjs";
+import { Button, Modal, Typography, type TableColumnsType } from "antd";
 
 export const useColumns = (configs: {
   serverConfigs?: IFormConfigRes;
@@ -13,25 +11,22 @@ export const useColumns = (configs: {
   if (!serverConfigs || !userInfo) return [];
   return [
     {
-      title: "编号",
+      title: EPlan.ID.label,
       width: 220,
       dataIndex: EPlan.ID.Name,
       key: EPlan.ID.Name,
     },
-    // {
-    //   title: "供电所",
-    //   width: 220,
-    //   dataIndex: EPlan.Place,
-    //   key: EPlan.Place,
-    // },
-    // {
-    //   title: "台区",
-    //   width: 220,
-    //   dataIndex: EPlan.Section,
-    //   key: EPlan.Section,
-    // },
     {
-      title: "施工单位",
+      title: EPlan.Maintainer.label,
+      width: 220,
+      dataIndex: EPlan.Maintainer.Name,
+      key: EPlan.Maintainer.Name,
+      render: (text) =>
+        serverConfigs.maintainerOptions.find((i) => `${i.value}` === text)
+          ?.label,
+    },
+    {
+      title: EPlan.Operator.label,
       width: 220,
       dataIndex: EPlan.Operator.Name,
       key: EPlan.Operator.Name,
@@ -39,55 +34,58 @@ export const useColumns = (configs: {
         serverConfigs.operatorOptions.find((i) => `${i.value}` === text)?.label,
     },
     {
-      title: "时间",
-      width: 220,
-      dataIndex: EPlan.CreatedAt.Name,
-      key: EPlan.CreatedAt.Name,
-      render: (text) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
+      title: EPlan.VoltageLevel.label,
+      width: 100,
+      dataIndex: EPlan.VoltageLevel.Name,
+      key: EPlan.VoltageLevel.Name,
+    },
+    {
+      title: EPlan.WorkContent.label,
+      width: 300,
+      dataIndex: EPlan.WorkContent.Name,
+      key: EPlan.WorkContent.Name,
+      render: (text) => {
+        return (
+          <Typography.Paragraph ellipsis={{ rows: 2, tooltip: text }}>
+            {text}
+          </Typography.Paragraph>
+        );
+      },
+    },
+    {
+      title: EPlan.WithElectric.label,
+      width: 100,
+      dataIndex: EPlan.WithElectric.Name,
+      key: EPlan.WithElectric.Name,
+    },
+    {
+      title: EPlan.PowerCut.label,
+      width: 100,
+      dataIndex: EPlan.PowerCut.Name,
+      key: EPlan.PowerCut.Name,
     },
     // {
-    //   title: "电压等级",
+    //   title: "时间",
     //   width: 220,
-    //   dataIndex: EPlan.ElectricLevel,
-    //   key: EPlan.ElectricLevel,
+    //   dataIndex: EPlan.CreatedAt.Name,
+    //   key: EPlan.CreatedAt.Name,
+    //   render: (text) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
     // },
-    // {
-    //   title: "项目必要性 - 一停多用",
-    //   width: 220,
-    //   dataIndex: "name",
-    //   key: "name",
-    //   render: (text) => <a>{text}</a>,
-    // },
-    // {
-    //   title: "项目必要性 - 指标提升情况",
-    //   width: 220,
-    //   dataIndex: "name",
-    //   key: "name",
-    //   render: (text) => <a>{text}</a>,
-    // },
-    // {
-    //   title: "计划预警",
-    //   width: 100,
-    //   dataIndex: "age",
-    //   key: "age",
-    // },
-    // {
-    //   title: "供电可靠性",
-    //   dataIndex: "address",
-    //   key: "1",
-    //   width: 150,
-    // },
-    // {
-    //   title: "风险防范",
-    //   dataIndex: "address",
-    //   key: "2",
-    //   width: 150,
-    // },
+    {
+      title: EPlan.Status.label,
+      key: EPlan.Status.Name,
+      dataIndex: EPlan.Status.Name,
+      fixed: "right",
+      width: 100,
+      render: (_, record) => {
+        return (EPlanStatus as any)[record[EPlan.Status.Name]].label;
+      },
+    },
     {
       title: "操作",
       key: "operation",
       fixed: "right",
-      width: 100,
+      width: 50,
       render: (_, record) => {
         // Pending 态
         if (record[EPlan.Status.Name] === EPlanStatus.Pending.Name) {
@@ -100,43 +98,22 @@ export const useColumns = (configs: {
                 >
                   去审核
                 </a>
-                <a
-                  style={{ marginLeft: 10 }}
-                  onClick={() => {
-                    axios
-                      .post(`/home/api/plan/audit`, {
-                        [EPlan.ID.Name]: record[EPlan.ID.Name],
-                        [EPlan.Status.Name]: EPlanStatus.Approved.Name,
-                      })
-                      .then((res) => {
-                        console.log("res", res);
-                      });
-                  }}
-                >
-                  通过
-                </a>
-                <a
-                  style={{ marginLeft: 10 }}
-                  onClick={() => {
-                    axios
-                      .post(`/home/api/plan/audit`, {
-                        [EPlan.ID.Name]: record[EPlan.ID.Name],
-                        [EPlan.Status.Name]: EPlanStatus.Rejected.Name,
-                      })
-                      .then((res) => {
-                        console.log("res", res);
-                      });
-                  }}
-                >
-                  驳回
-                </a>
               </>
             );
           } else {
-            return EPlanStatus.Pending.label;
+            return "-";
           }
         }
-        return (EPlanStatus as any)[record[EPlan.Status.Name]].label;
+        return (
+          <Button
+            onClick={() => {}}
+            type="link"
+            size="small"
+            style={{ padding: 0 }}
+          >
+            查看详情
+          </Button>
+        );
       },
     },
   ];

@@ -19,8 +19,9 @@ import {
 import { uploadFileToCOS } from "./upload-file";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { EPlan } from "@dtos/db";
-import { Footer } from "./footer";
+import { Footer } from "@components/footer-client";
 import { useServerConfigs } from "@utils/hooks";
+import { TOptions } from "@dtos/api";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -36,6 +37,7 @@ const App: React.FC = () => {
   const [cos, setCOS] = useState<COS>();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const [sectionOptions, setSectionOptions] = useState<TOptions>([]);
   const optionsRes = useServerConfigs();
 
   const handlePreview = async (file: UploadFile) => {
@@ -87,19 +89,6 @@ const App: React.FC = () => {
     },
   };
 
-  const areaOptions = [
-    "皇庄1#台区",
-    "皇庄2#台区",
-    "皇庄3#台区",
-    "宫塘1#台区",
-    "宫塘2#台区",
-    "宫塘3#台区",
-    "宫塘4#台区",
-  ].map((item) => ({
-    label: item,
-    value: item,
-  }));
-
   const specificAreaOptions = ["配电", "营销", "设备", "产业"];
 
   const riskLevelOptions = ["一级", "二级", "三级", "四级", "五级"];
@@ -144,6 +133,7 @@ const App: React.FC = () => {
   const {
     workOwnerOptions,
     workerOptions,
+    specialWorkerOptions,
     operatorOptions,
     maintainerOptions,
   } = optionsRes;
@@ -154,9 +144,10 @@ const App: React.FC = () => {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         initialValues={{
-          withElectric: true,
-          // [EPlan.ServicePlan]: "不需要",
-          // [EPlan.LoadStop]: false,
+          [EPlan.WithElectric.Name]: "需要",
+          [EPlan.PowerCut.Name]: "是",
+          [EPlan.LoadShifting.Name]: "是",
+          [EPlan.PatrolSwitch.Name]: "是",
         }}
         onFinish={(values) => {
           console.log(values);
@@ -222,7 +213,7 @@ const App: React.FC = () => {
           width="md"
           name={EPlan.SpecialWorkers.Name}
           label={EPlan.SpecialWorkers.label}
-          options={workerOptions}
+          options={specialWorkerOptions}
           mode="multiple"
         />
         <Divider orientation="left">
@@ -234,12 +225,22 @@ const App: React.FC = () => {
           name={EPlan.VoltageLevel.Name}
           options={["35kV", "10kV", "0.38kV", "0.22kV"]}
         />
-        {/* TODO Need table */}
         <ProFormSelect
           width="md"
           name={EPlan.Section.Name}
           label={EPlan.Section.label}
-          options={areaOptions}
+          options={sectionOptions}
+          showSearch
+          placeholder="请输入关键词查找后选择"
+          fieldProps={{
+            options: sectionOptions,
+            onSearch: async (value) => {
+              const options = await axios
+                .get(`/home/api/config/sections?name=${value}`)
+                .then((res) => res.data.result);
+              setSectionOptions(options);
+            },
+          }}
           mode="multiple"
         />
         <ProFormSelect
@@ -265,8 +266,9 @@ const App: React.FC = () => {
           label={EPlan.WorkContent.label}
           {...commonTextareaProps}
         />
-        <ProFormSwitch
+        <ProFormRadio.Group
           width="md"
+          options={["需要", "不需要"]}
           name={EPlan.WithElectric.Name}
           label={EPlan.WithElectric.label}
         />
@@ -275,7 +277,10 @@ const App: React.FC = () => {
             return (
               <div
                 style={{
-                  display: values[EPlan.WithElectric.Name] ? "block" : "none",
+                  display:
+                    values[EPlan.WithElectric.Name] === "需要"
+                      ? "block"
+                      : "none",
                 }}
               >
                 <ProFormDateTimePicker
@@ -296,10 +301,11 @@ const App: React.FC = () => {
             );
           }}
         </ProFormDependency>
-        <ProFormSwitch
+        <ProFormRadio.Group
           width="md"
           name={EPlan.PowerCut.Name}
           label={EPlan.PowerCut.label}
+          options={["是", "否"]}
         />
         <ProFormTextArea
           name={EPlan.VerificationText.Name}
@@ -347,16 +353,20 @@ const App: React.FC = () => {
             label={EPlan.LoadStop.label}
             {...commonTextareaProps}
           />
-          <ProFormSwitch
+          <ProFormRadio.Group
             name={EPlan.LoadShifting.Name}
             label={EPlan.LoadShifting.label}
+            options={["是", "否"]}
           />
           <ProFormDependency name={[EPlan.LoadShifting.Name]}>
             {(values) => {
               return (
                 <div
                   style={{
-                    display: values[EPlan.LoadShifting.Name] ? "block" : "none",
+                    display:
+                      values[EPlan.LoadShifting.Name] === "是"
+                        ? "block"
+                        : "none",
                   }}
                 >
                   <ProFormTextArea
@@ -368,9 +378,10 @@ const App: React.FC = () => {
               );
             }}
           </ProFormDependency>
-          <ProFormSwitch
+          <ProFormRadio.Group
             name={EPlan.PatrolSwitch.Name}
             label={EPlan.PatrolSwitch.label}
+            options={["是", "否"]}
           />
           <ProFormRadio.Group
             name={EPlan.PowerOutMethod.Name}

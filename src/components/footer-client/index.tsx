@@ -9,6 +9,6 @@ const FooterToolbar = dynamic(
   }
 );
 
-export const Footer: React.FC<{ ele: JSX.Element[] }> = ({ ele }) => {
+export const Footer: React.FC<{ ele: React.ReactNode }> = ({ ele }) => {
   return <FooterToolbar>{ele}</FooterToolbar>;
 };

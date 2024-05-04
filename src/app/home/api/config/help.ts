@@ -1,46 +1,19 @@
 import { EMaintainer, EOperator, EUser } from "@dtos/db";
 import { getModels } from "@utils/db";
+import { Op } from "sequelize";
 
-export const getWorkOwnerOptions = async () => {
-  try {
-    const { User, sequelize } = await getModels();
-    const rows = await User?.findAll({
-      where: {
+export const getUsersOptions = async () => {
+  const { User, sequelize } = await getModels();
+  const rows = await User?.findAll({
+    where: {
+      [Op.or]: {
         [EUser.IsWorkOwner]: true,
-      },
-    });
-    return (
-      rows?.map((row) => {
-        return {
-          label: (row as any)[EUser.Name],
-          value: (row as any)[EUser.ID],
-        };
-      }) ?? []
-    );
-  } catch (error) {
-    return [];
-  }
-};
-
-export const getWorkerOptions = async () => {
-  try {
-    const { User, sequelize } = await getModels();
-    const rows = await User?.findAll({
-      where: {
         [EUser.IsWorker]: true,
+        [EUser.IsSpecialWorker]: true,
       },
-    });
-    return (
-      rows?.map((row) => {
-        return {
-          label: (row as any)[EUser.Name],
-          value: (row as any)[EUser.ID],
-        };
-      }) ?? []
-    );
-  } catch (error) {
-    return [];
-  }
+    },
+  });
+  return rows;
 };
 
 export const getMaintainerOptions = async () => {

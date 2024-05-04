@@ -1,4 +1,10 @@
-import { EPlan, EUser, EUserRole, EUserRoleEnum } from "./db";
+import {
+  EPlan,
+  EUser,
+  EPlanStatus,
+  EUserRoleEnum,
+  EPlanStatusEnum,
+} from "./db";
 
 enum ResNum {
   Success = 0,
@@ -70,11 +76,12 @@ export interface ISearchFilter extends ISearchReq {
   // [EPlan.Section]?: string;
 }
 
-type TOptions = Array<{ label: string; value: string | number }>;
+export type TOptions = Array<{ label: string; value: string | number }>;
 
 export interface IFormConfigRes {
   workOwnerOptions: TOptions;
   workerOptions: TOptions;
+  specialWorkerOptions: TOptions;
   maintainerOptions: TOptions;
   operatorOptions: TOptions;
 }
@@ -130,4 +137,15 @@ export interface ICreateReq {
 export interface IAccountInfoRes {
   [EUser.Account]: string;
   [EUser.Role]: EUserRoleEnum;
+}
+
+export interface IPlanDetailRes {
+  plan: any;
+  people: any;
+}
+
+export interface IAuditReq {
+  [EPlan.Status.Name]: EPlanStatusEnum;
+  [EPlan.ID.Name]: string;
+  [EPlan.AuditComment.Name]: string;
 }

@@ -1,4 +1,4 @@
-import { ESection } from "@dtos/db";
+import { EPerson } from "@dtos/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 
 export const initModel = async (
@@ -6,16 +6,25 @@ export const initModel = async (
   syncOptions?: SyncOptions
 ) => {
   const Model = sequelize.define(
-    "Section",
+    "People",
     {
-      [ESection.ID]: {
+      [EPerson.ID]: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         autoIncrementIdentity: true,
       },
-      [ESection.Name]: {
+      [EPerson.Name]: {
         type: DataTypes.STRING,
+      },
+      [EPerson.PhoneNum]: {
+        type: DataTypes.STRING,
+      },
+      [EPerson.Risk]: {
+        type: DataTypes.STRING,
+      },
+      [EPerson.SectionId]: {
+        type: DataTypes.INTEGER,
       },
     },
     {
@@ -24,6 +33,5 @@ export const initModel = async (
     }
   );
   await Model.sync(syncOptions);
-
   return Model;
 };
