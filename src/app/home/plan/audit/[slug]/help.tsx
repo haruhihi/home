@@ -1,7 +1,8 @@
+import { ProForm } from "@ant-design/pro-components";
 import { Footer } from "@components/footer-client";
 import { IAuditReq } from "@dtos/api";
 import { EPlan, EPlanStatusEnum } from "@dtos/db";
-import { Button, Input, Modal, message } from "antd";
+import { Button, Image, Input, Modal, Space, message } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
 
@@ -72,5 +73,40 @@ export const Footers: React.FC<{ id: string }> = (props) => {
         </>
       }
     ></Footer>
+  );
+};
+
+export const ImgsFormItem: React.FC<{ value: string; label: string }> = (
+  props
+) => {
+  const { value, label } = props;
+  return (
+    <ProForm.Item label={label}>
+      {value ? (
+        <Image.PreviewGroup>
+          <Space size={12}>
+            {value.split(",").map((url: string) => (
+              <Image
+                key={url}
+                height={120}
+                width={120}
+                src={url}
+                preview
+                alt="计划来源"
+                style={{
+                  display: "block",
+                  objectFit: "contain",
+                  border: "1px solid #d9d9d9",
+                  borderRadius: 8,
+                  padding: "0 10px",
+                }}
+              />
+            ))}
+          </Space>
+        </Image.PreviewGroup>
+      ) : (
+        "-"
+      )}
+    </ProForm.Item>
   );
 };

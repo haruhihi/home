@@ -2,6 +2,7 @@ import { IFormConfigRes } from "@dtos/api";
 import { EPlan, EPlanStatus, EUser, EUserRoleEnum } from "@dtos/db";
 import { useData } from "@utils/data-provider";
 import { Button, Modal, Typography, type TableColumnsType } from "antd";
+import dayjs from "dayjs";
 
 export const useColumns = (configs: {
   serverConfigs?: IFormConfigRes;
@@ -64,13 +65,24 @@ export const useColumns = (configs: {
       dataIndex: EPlan.PowerCut.Name,
       key: EPlan.PowerCut.Name,
     },
-    // {
-    //   title: "时间",
-    //   width: 220,
-    //   dataIndex: EPlan.CreatedAt.Name,
-    //   key: EPlan.CreatedAt.Name,
-    //   render: (text) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
-    // },
+    ...(process.env.NODE_ENV === "development"
+      ? [
+          {
+            title: EPlan.ExpectStartAt.label,
+            width: 220,
+            dataIndex: EPlan.ExpectStartAt.Name,
+            key: EPlan.ExpectStartAt.Name,
+            render: (text: string) =>
+              text ? dayjs(text).format("YYYY-MM-DD HH:mm:ss") : "-",
+          },
+          {
+            title: EPlan.Section.label,
+            width: 220,
+            dataIndex: EPlan.Section.Name,
+            key: EPlan.Section.Name,
+          },
+        ]
+      : []),
     {
       title: EPlan.Status.label,
       key: EPlan.Status.Name,
@@ -85,7 +97,7 @@ export const useColumns = (configs: {
       title: "操作",
       key: "operation",
       fixed: "right",
-      width: 50,
+      width: 100,
       render: (_, record) => {
         // Pending 态
         if (record[EPlan.Status.Name] === EPlanStatus.Pending.Name) {
@@ -106,12 +118,27 @@ export const useColumns = (configs: {
         }
         return (
           <Button
-            onClick={() => {}}
+            onClick={() => {
+              const comment = record[EPlan.AuditComment.Name];
+              const status = record[EPlan.Status.Name];
+              const defaultComment =
+                status === EPlanStatus.Approved.Name
+                  ? "无审核意见"
+                  : "无驳回原因";
+              Modal.info({
+                title: "审核详情",
+                content: (
+                  <div>
+                    {!comment || comment === "" ? defaultComment : comment}
+                  </div>
+                ),
+              });
+            }}
             type="link"
             size="small"
             style={{ padding: 0 }}
           >
-            查看详情
+            审核详情
           </Button>
         );
       },

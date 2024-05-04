@@ -15,26 +15,27 @@ export async function GET(request: Request) {
       throw new Error(`非法的 page: ${pageStr}, pageSize: ${pageSizeStr}`);
     }
 
-    const whereOptions = [EPlan.Operator.Name].reduce<WhereOptions>(
-      (acc: any, cur) => {
-        const param = params.get(cur);
-        if (param !== null) {
-          acc[cur] = {
-            [Op.in]: param.split(","),
-          };
-        }
-        return acc;
-      },
-      {}
-    );
+    const whereOptions = [
+      EPlan.Maintainer.Name,
+      EPlan.Operator.Name,
+      EPlan.Section.Name,
+    ].reduce<WhereOptions>((acc: any, cur) => {
+      const param = params.get(cur);
+      if (param !== null) {
+        acc[cur] = {
+          [Op.in]: param.split(","),
+        };
+      }
+      return acc;
+    }, {});
 
     if (
-      params.has(EPlan.CreatedAt.Name) &&
-      params.get(EPlan.CreatedAt.Name) !== "" &&
-      params.get(EPlan.CreatedAt.Name) !== null
+      params.has(EPlan.ExpectStartAt.Name) &&
+      params.get(EPlan.ExpectStartAt.Name) !== "" &&
+      params.get(EPlan.ExpectStartAt.Name) !== null
     ) {
-      const current = dayjs(params.get(EPlan.CreatedAt.Name));
-      (whereOptions as any)[EPlan.CreatedAt.Name] = {
+      const current = dayjs(params.get(EPlan.ExpectStartAt.Name));
+      (whereOptions as any)[EPlan.ExpectStartAt.Name] = {
         [Op.between]: [
           current.startOf("day").toISOString(),
           current.endOf("day").toISOString(),
@@ -42,6 +43,26 @@ export async function GET(request: Request) {
       };
     }
 
+    if (
+      params.has(EPlan.VoltageLevel.Name) &&
+      params.get(EPlan.VoltageLevel.Name) !== "" &&
+      params.get(EPlan.VoltageLevel.Name) !== null
+    ) {
+      (whereOptions as any)[EPlan.VoltageLevel.Name] = params.get(
+        EPlan.VoltageLevel.Name
+      );
+    }
+
+    if (
+      params.has(EPlan.WithElectric.Name) &&
+      params.get(EPlan.WithElectric.Name) !== "" &&
+      params.get(EPlan.WithElectric.Name) !== null
+    ) {
+      (whereOptions as any)[EPlan.WithElectric.Name] = params.get(
+        EPlan.WithElectric.Name
+      );
+    }
+    console.log("whereOptions", whereOptions);
     const { Plan } = await getModels();
     const { count, rows } = await Plan.findAndCountAll({
       offset: (page - 1) * pageSize,

@@ -235,10 +235,10 @@ export const EPlan = {
     Name: "AuditComment",
     label: "审核评论",
   },
-  /** 计划状态 */
+  /** 审核状态 */
   Status: {
     Name: "Status",
-    label: "计划状态",
+    label: "审核状态",
   },
   /** 创建时间 - Sequelize 自动 */
   CreatedAt: {
@@ -354,3 +354,18 @@ export enum EPerson {
   /** 台区 id */
   SectionId = "SectionId",
 }
+
+export const EPersonData = {
+  Name: {
+    Name: EPerson.Name,
+    Label: "姓名",
+  },
+  PhoneNum: {
+    Name: EPerson.PhoneNum,
+    Label: "联系方式",
+  },
+  Risk: {
+    Name: EPerson.Risk,
+    Label: "风险点",
+  },
+};

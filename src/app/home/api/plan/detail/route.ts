@@ -1,7 +1,7 @@
 import { IPlanDetailRes, Res200, Res500 } from "@dtos/api";
 import { EPerson, EPlan } from "@dtos/db";
 import { getModels } from "@utils/db";
-import { Op } from "sequelize";
+import { Op, WhereOptions } from "sequelize";
 
 export async function POST(request: Request) {
   try {
@@ -16,13 +16,16 @@ export async function POST(request: Request) {
     if (!plan) {
       throw new Error(`未找到 id: ${id} 的计划`);
     }
-    const people = await Person.findAll({
-      where: {
-        [EPerson.SectionId]: {
-          [Op.in]: plan[EPlan.Section.Name].split(","),
-        },
-      },
-    });
+
+    let people: any[] = [];
+    const whereOptions: WhereOptions = {};
+    if (plan[EPlan.Section.Name]) {
+      // if section is null, find no people
+      whereOptions[EPerson.SectionId] = plan[EPlan.Section.Name];
+      people = await Person.findAll({
+        where: whereOptions,
+      });
+    }
     const result: IPlanDetailRes = { plan, people };
     return new Response(Res200({ result }), {
       status: 200,

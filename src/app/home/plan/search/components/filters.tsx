@@ -2,9 +2,12 @@
 import {
   ProForm,
   ProFormDatePicker,
+  ProFormRadio,
   ProFormSelect,
   QueryFilter,
 } from "@ant-design/pro-components";
+import { SectionFormItem } from "@components/section-form-item";
+import { WithElectricOptions, voltageLevelOptions } from "@constants/options";
 import { IFormConfigRes, ISearchFilter } from "@dtos/api";
 import { EPlan } from "@dtos/db";
 import React from "react";
@@ -19,43 +22,44 @@ export const Filters: React.FC<{
       // @ts-ignore
       labelWidth="auto"
       onFinish={props.onFinish}
+      defaultCollapsed={false}
     >
       <ProForm.Group>
-        {/* <ProFormText
+        <ProFormSelect
           width="sm"
-          name={EPlan.Place}
-          label="供电所"
-          tooltip="请输入供电所"
-          placeholder="请输入供电所"
+          name={EPlan.Maintainer.Name}
+          label={EPlan.Maintainer.label}
+          placeholder={`请选择${EPlan.Maintainer.label}`}
+          options={serverConfigs.operatorOptions}
         />
-        <ProFormText
-          width="sm"
-          name={EPlan.Section}
-          label="台区"
-          tooltip="请输入台区"
-          placeholder="请输入台区"
-        /> */}
         <ProFormSelect
           width="sm"
           name={EPlan.Operator.Name}
-          label="施工单位"
-          placeholder="请输入施工单位"
+          label={EPlan.Operator.label}
+          placeholder={`请选择${EPlan.Operator.label}`}
           options={serverConfigs.operatorOptions}
         />
         <ProFormDatePicker
           width="sm"
-          name={EPlan.CreatedAt.Name}
-          label="时间"
-          tooltip="查询当天所有计划"
-          placeholder="请选择时间"
+          name={EPlan.ExpectStartAt.Name}
+          label={EPlan.ExpectStartAt.label}
+          placeholder={`请选择${EPlan.ExpectStartAt.label}`}
         />
-        {/* <ProFormText
-          width="sm"
-          name={EPlan.ElectricLevel}
-          label="电压等级"
-          tooltip="请输入电压等级"
-          placeholder="请输入电压等级"
-        /> */}
+      </ProForm.Group>
+      <ProForm.Group>
+        <SectionFormItem width="sm" />
+        <ProFormSelect
+          width="md"
+          label={EPlan.VoltageLevel.label}
+          name={EPlan.VoltageLevel.Name}
+          options={voltageLevelOptions}
+        />
+        <ProFormSelect
+          width="md"
+          label={EPlan.WithElectric.label}
+          name={EPlan.WithElectric.Name}
+          options={WithElectricOptions}
+        />
       </ProForm.Group>
     </QueryFilter>
   );

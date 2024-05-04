@@ -15,142 +15,142 @@ export const initPlanModel = async (
         autoIncrementIdentity: true,
       },
       [EPlan.Maintainer.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.Operator.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.WorkOwners.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.Workers.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.VoltageLevel.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.SpecialWorkers.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.Section.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.Classification.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.WorkRiskLevel.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.ElectricRiskLevel.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.WorkContent.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.WithElectric.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.WithElectricWorkText.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.WithElectricWorkImgs.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.PowerCut.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.VerificationText.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.VerificationImgs.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.Overview.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.BirdsEye.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.HighRiskPlaceText.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.HighRiskPlaceImgs.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.LoadStop.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.LoadShifting.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.EquipmentCondition.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.PatrolSwitch.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.PowerOutMethod.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.PowerOutPlace.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.ExpectStartAt.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.ExpectFinishAt.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.LoadStopAt.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.WithElectricWorkStartAt.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.PlanSourceText.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.PlanSourceImgs.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.OneStopMultiUseText.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.OneStopMultiUseImgs.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.MetricsImprovementText.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.MetricsImprovementImgs.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.PowerOutageHomesText.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.PowerOutageHomesImgs.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.ServicePlan.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.ServicePlanContent.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.EquipmentAllocation.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.EquipmentAllocationId.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.MaterialAllocation.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.OnSiteWork.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.AuditComment.Name]: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       [EPlan.Status.Name]: {
         defaultValue: EPlanStatus.Pending.Name,
