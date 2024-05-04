@@ -90,7 +90,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
     <div>
       <ProForm
         layout="horizontal"
-        labelCol={{ span: 4 }}
+        labelCol={{ span: 3 }}
         wrapperCol={{ span: 14 }}
         initialValues={{
           ...detail.plan,
