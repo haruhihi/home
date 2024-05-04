@@ -106,12 +106,27 @@ export const useColumns = (configs: {
         }
         return (
           <Button
-            onClick={() => {}}
+            onClick={() => {
+              const comment = record[EPlan.AuditComment.Name];
+              const status = record[EPlan.Status.Name];
+              const defaultComment =
+                status === EPlanStatus.Approved.Name
+                  ? "无审核意见"
+                  : "无驳回原因";
+              Modal.info({
+                title: "审核详情",
+                content: (
+                  <div>
+                    {!comment || comment === "" ? defaultComment : comment}
+                  </div>
+                ),
+              });
+            }}
             type="link"
             size="small"
             style={{ padding: 0 }}
           >
-            查看详情
+            审核详情
           </Button>
         );
       },
