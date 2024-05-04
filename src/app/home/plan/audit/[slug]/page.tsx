@@ -286,6 +286,44 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
         <Divider orientation="left">
           <h2>现场作业组织</h2>
         </Divider>
+        <>
+          <ProFormDateTimePicker
+            readonly
+            name={EPlan.ExpectStartAt.Name}
+            label={EPlan.ExpectStartAt.label}
+          />
+          <ProFormDateTimePicker
+            name={EPlan.ExpectFinishAt.Name}
+            readonly
+            label={EPlan.ExpectFinishAt.label}
+          />
+          <ProFormDateTimePicker
+            readonly
+            name={EPlan.LoadStopAt.Name}
+            label={EPlan.LoadStopAt.label}
+          />
+          <ProFormDateTimePicker
+            readonly
+            name={EPlan.WithElectricWorkStartAt.Name}
+            label={EPlan.WithElectricWorkStartAt.label}
+          />
+          <ProFormTextArea
+            readonly
+            {...commonTextareaProps}
+            name={EPlan.OnSiteWork.Name}
+            label={EPlan.OnSiteWork.label}
+          />
+          <ProFormTextArea
+            readonly
+            name={EPlan.VerificationText.Name}
+            label={EPlan.VerificationText.label}
+            {...commonTextareaProps}
+          />
+          <ImgsFormItem
+            value={detail.plan[EPlan.VerificationImgs.Name]}
+            label={EPlan.VerificationImgs.label}
+          />
+        </>
         <Divider orientation="left">
           <h2>物资保障</h2>
         </Divider>
