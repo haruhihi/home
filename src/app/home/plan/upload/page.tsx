@@ -19,7 +19,7 @@ import {
 import { uploadFileToCOS } from "./upload-file";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { EPlan } from "@dtos/db";
-import { Footer } from "./footer";
+import { Footer } from "@components/footer-client";
 import { useServerConfigs } from "@utils/hooks";
 import { TOptions } from "@dtos/api";
 
