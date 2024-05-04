@@ -1,5 +1,7 @@
 import { Res200, Res500 } from "@dtos/api";
+import { EPerson, EPlan } from "@dtos/db";
 import { getModels } from "@utils/db";
+import { Op } from "sequelize";
 
 export async function POST(request: Request) {
   try {
@@ -9,13 +11,23 @@ export async function POST(request: Request) {
     if (!id) {
       throw new Error(`非法的 id: ${id}`);
     }
-    const { Plan } = await getModels();
-    const plan = await Plan.findByPk(id);
-
-    return new Response(Res200({ result: plan }), {
+    const { Plan, Person } = await getModels();
+    const plan = (await Plan.findByPk(id)) as any;
+    if (!plan) {
+      throw new Error(`未找到 id: ${id} 的计划`);
+    }
+    const people = await Person.findAll({
+      where: {
+        [EPerson.SectionId]: {
+          [Op.in]: plan[EPlan.Section.Name].split(","),
+        },
+      },
+    });
+    return new Response(Res200({ result: { plan, people } }), {
       status: 200,
     });
   } catch (error) {
+    console.error("error", error);
     return new Response(
       Res500({ result: `error: ${(error as Error)?.message ?? ""}` }),
       {

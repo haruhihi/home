@@ -1,5 +1,12 @@
 import { Res200, Res500 } from "@dtos/api";
-import { EPerson, EPlan, ESection, EUser, EUserRoleEnum } from "@dtos/db";
+import {
+  EMaintainer,
+  EPerson,
+  EPlan,
+  ESection,
+  EUser,
+  EUserRoleEnum,
+} from "@dtos/db";
 import { getModels } from "@utils/db";
 import { initMaintainerModel } from "@utils/model-maintainer";
 import { initOperatorModel } from "@utils/model-operator";
@@ -24,11 +31,20 @@ export async function GET(request: Request) {
       // 禁用外键约束
       // await sequelize.query("SET FOREIGN_KEY_CHECKS = 0", { raw: true });
       // sequelize.sync({ force: true });
-      const { User, Section, Person, Maintainer, Operator } = await getModels();
+      const { User, Section, Person, Maintainer, Operator, Plan } =
+        await getModels();
       const filePath = path.join(process.cwd(), "public", "seed.xlsx");
       const fileBuffer = await readFile(filePath);
       const workbook = xlsx.read(fileBuffer, { type: "buffer" });
       const sheetNames = workbook.SheetNames;
+
+      await Person.sync({ force: true });
+      await Section.sync({ force: true });
+      await User.sync({ force: true });
+      await Operator.sync({ force: true });
+      await Maintainer.sync({ force: true });
+      await Plan.sync({ force: true });
+
       for (const name of sheetNames) {
         const rows = xlsx.utils.sheet_to_json(workbook.Sheets[name]);
         if (name === "用户") {
@@ -50,10 +66,18 @@ export async function GET(request: Request) {
             })
           );
         } else if (name === "台区") {
+          const sectionNames = [
+            ...new Set(rows.map((row: any) => row["台区"])),
+          ];
+          console.log("sectionNames", sectionNames);
           const sectionIds = await Section.bulkCreate(
-            [...new Set(rows.map((row: any) => row["台区"]))].map((name) => ({
+            sectionNames.map((name) => ({
               [ESection.Name]: name,
             }))
+          );
+          console.log(
+            "sectionIds",
+            sectionIds.map((s: any) => [s[ESection.Name], s[ESection.ID]])
           );
           const sectionMap = new Map<string, number>();
           sectionIds.forEach((section) => {
@@ -64,8 +88,11 @@ export async function GET(request: Request) {
           });
           await Person.bulkCreate(
             rows.map((row: any) => {
-              if (sectionMap.get(row["台区"])) {
+              if (!sectionMap.get(row["台区"])) {
                 console.error("未找到台区", row["台区"]);
+              }
+              if (row["联系人"] === "雷金山") {
+                console.log("雷金山", sectionMap.get(row["台区"]));
               }
               return {
                 [EPerson.Name]: row["联系人"],
@@ -75,12 +102,20 @@ export async function GET(request: Request) {
               };
             })
           );
+        } else if (name === "运维单位") {
+          await Maintainer.bulkCreate(
+            rows.map((row: any) => ({
+              [EMaintainer.Name]: row["名称"],
+            }))
+          );
+        } else if (name === "施工单位") {
+          await Operator.bulkCreate(
+            rows.map((row: any) => ({
+              [EMaintainer.Name]: row["名称"],
+            }))
+          );
         }
       }
-      const Plan = await initPlanModel(sequelize, { force: true });
-      // await initMaintainerModel(sequelize, { force: true });
-      // await initOperatorModel(sequelize, { force: true });
-      // await sections.initModel(sequelize, { force: true });
       // 启用外键约束
       // await sequelize.query("SET FOREIGN_KEY_CHECKS = 1", { raw: true });
       return new Response(Res200({ result: "successful force init" }), {

@@ -1,6 +1,5 @@
 import { ESection } from "@dtos/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
-import { TModel } from "@utils/db";
 
 export const initModel = async (
   sequelize: Sequelize,

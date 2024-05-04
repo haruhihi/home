@@ -32,6 +32,6 @@ export const initModel = async (
       initialAutoIncrement: "1000000",
     }
   );
-  Model.sync(syncOptions);
+  await Model.sync(syncOptions);
   return Model;
 };
