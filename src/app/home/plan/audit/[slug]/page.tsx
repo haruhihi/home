@@ -327,6 +327,22 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
         <Divider orientation="left">
           <h2>物资保障</h2>
         </Divider>
+        <>
+          <ProFormText
+            label={EPlan.EquipmentAllocationId.label}
+            {...commonTextareaProps}
+            name={EPlan.EquipmentAllocationId.Name}
+            readonly
+          />
+          <ImgsFormItem
+            value={detail.plan[EPlan.EquipmentAllocation.Name]}
+            label={EPlan.EquipmentAllocation.label}
+          />
+          <ImgsFormItem
+            value={detail.plan[EPlan.MaterialAllocation.Name]}
+            label={EPlan.MaterialAllocation.label}
+          />
+        </>
       </ProForm>
     </div>
   );
