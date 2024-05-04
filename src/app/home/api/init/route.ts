@@ -17,7 +17,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import * as xlsx from "xlsx";
 
-export const excelIs = (text: unknown) => {
+const excelIs = (text: unknown) => {
   return text === "1" || text === 1 || text === "是";
 };
 

@@ -16,7 +16,7 @@ const audit = async (params: IAuditReq) => {
 
 export const Footers: React.FC<{ id: string }> = (props) => {
   const { id } = props;
-  const [comment, setComment] = useState("111");
+  const [comment, setComment] = useState("");
   const [modalProps, setModalProps] = useState({
     open: false,
     toType: EPlanStatusEnum.Approved,
@@ -57,6 +57,7 @@ export const Footers: React.FC<{ id: string }> = (props) => {
               audit({
                 [EPlan.ID.Name]: id,
                 [EPlan.Status.Name]: toType,
+                [EPlan.AuditComment.Name]: comment,
               });
             }}
           >

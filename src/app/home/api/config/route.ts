@@ -3,7 +3,6 @@ import { EUser } from "@dtos/db";
 import {
   getMaintainerOptions,
   getOperatorOptions,
-  getSelectionOptions,
   getUsersOptions,
 } from "./help";
 
