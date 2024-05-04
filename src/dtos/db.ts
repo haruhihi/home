@@ -235,10 +235,10 @@ export const EPlan = {
     Name: "AuditComment",
     label: "审核评论",
   },
-  /** 计划状态 */
+  /** 审核状态 */
   Status: {
     Name: "Status",
-    label: "计划状态",
+    label: "审核状态",
   },
   /** 创建时间 - Sequelize 自动 */
   CreatedAt: {

@@ -97,7 +97,7 @@ export const useColumns = (configs: {
       title: "操作",
       key: "operation",
       fixed: "right",
-      width: 50,
+      width: 100,
       render: (_, record) => {
         // Pending 态
         if (record[EPlan.Status.Name] === EPlanStatus.Pending.Name) {
