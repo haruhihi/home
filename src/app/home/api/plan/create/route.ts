@@ -20,7 +20,8 @@ export async function POST(request: Request) {
           [EPlan.SpecialWorkers.Name]: (
             params[EPlan.SpecialWorkers.Name] ?? []
           ).join(","),
-          [EPlan.Section.Name]: (params[EPlan.Section.Name] ?? []).join(","),
+          // [EPlan.Section.Name]: (params[EPlan.Section.Name] ?? []).join(","),
+          [EPlan.Section.Name]: params[EPlan.Section.Name],
           [EPlan.Classification.Name]: params[EPlan.Classification.Name],
           [EPlan.WorkRiskLevel.Name]: params[EPlan.WorkRiskLevel.Name],
           [EPlan.ElectricRiskLevel.Name]: params[EPlan.ElectricRiskLevel.Name],

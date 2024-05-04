@@ -22,6 +22,8 @@ import { EPlan } from "@dtos/db";
 import { Footer } from "@components/footer-client";
 import { useServerConfigs } from "@utils/hooks";
 import { TOptions } from "@dtos/api";
+import { SectionFormItem } from "@components/section-form-item";
+import { WithElectricOptions, voltageLevelOptions } from "@constants/options";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -37,7 +39,6 @@ const App: React.FC = () => {
   const [cos, setCOS] = useState<COS>();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
-  const [sectionOptions, setSectionOptions] = useState<TOptions>([]);
   const optionsRes = useServerConfigs();
 
   const handlePreview = async (file: UploadFile) => {
@@ -129,7 +130,7 @@ const App: React.FC = () => {
   }, []);
 
   if (!optionsRes) return <PageLoading />;
-  console.log("optionsRes", optionsRes);
+
   const {
     workOwnerOptions,
     workerOptions,
@@ -148,6 +149,7 @@ const App: React.FC = () => {
           [EPlan.PowerCut.Name]: "是",
           [EPlan.LoadShifting.Name]: "是",
           [EPlan.PatrolSwitch.Name]: "是",
+          [EPlan.ServicePlan.Name]: "需要",
         }}
         onFinish={(values) => {
           console.log(values);
@@ -223,26 +225,9 @@ const App: React.FC = () => {
           width="md"
           label={EPlan.VoltageLevel.label}
           name={EPlan.VoltageLevel.Name}
-          options={["35kV", "10kV", "0.38kV", "0.22kV"]}
+          options={voltageLevelOptions}
         />
-        <ProFormSelect
-          width="md"
-          name={EPlan.Section.Name}
-          label={EPlan.Section.label}
-          options={sectionOptions}
-          showSearch
-          placeholder="请输入关键词查找后选择"
-          fieldProps={{
-            options: sectionOptions,
-            onSearch: async (value) => {
-              const options = await axios
-                .get(`/home/api/config/sections?name=${value}`)
-                .then((res) => res.data.result);
-              setSectionOptions(options);
-            },
-          }}
-          mode="multiple"
-        />
+        <SectionFormItem />
         <ProFormSelect
           width="md"
           name="specificArea"
@@ -268,7 +253,7 @@ const App: React.FC = () => {
         />
         <ProFormRadio.Group
           width="md"
-          options={["需要", "不需要"]}
+          options={WithElectricOptions}
           name={EPlan.WithElectric.Name}
           label={EPlan.WithElectric.label}
         />

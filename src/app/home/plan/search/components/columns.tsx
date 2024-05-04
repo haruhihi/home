@@ -2,6 +2,7 @@ import { IFormConfigRes } from "@dtos/api";
 import { EPlan, EPlanStatus, EUser, EUserRoleEnum } from "@dtos/db";
 import { useData } from "@utils/data-provider";
 import { Button, Modal, Typography, type TableColumnsType } from "antd";
+import dayjs from "dayjs";
 
 export const useColumns = (configs: {
   serverConfigs?: IFormConfigRes;
@@ -64,13 +65,24 @@ export const useColumns = (configs: {
       dataIndex: EPlan.PowerCut.Name,
       key: EPlan.PowerCut.Name,
     },
-    // {
-    //   title: "时间",
-    //   width: 220,
-    //   dataIndex: EPlan.CreatedAt.Name,
-    //   key: EPlan.CreatedAt.Name,
-    //   render: (text) => dayjs(text).format("YYYY-MM-DD HH:mm:ss"),
-    // },
+    ...(process.env.NODE_ENV === "development"
+      ? [
+          {
+            title: EPlan.ExpectStartAt.label,
+            width: 220,
+            dataIndex: EPlan.ExpectStartAt.Name,
+            key: EPlan.ExpectStartAt.Name,
+            render: (text: string) =>
+              text ? dayjs(text).format("YYYY-MM-DD HH:mm:ss") : "-",
+          },
+          {
+            title: EPlan.Section.label,
+            width: 220,
+            dataIndex: EPlan.Section.Name,
+            key: EPlan.Section.Name,
+          },
+        ]
+      : []),
     {
       title: EPlan.Status.label,
       key: EPlan.Status.Name,
