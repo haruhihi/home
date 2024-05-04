@@ -354,3 +354,18 @@ export enum EPerson {
   /** 台区 id */
   SectionId = "SectionId",
 }
+
+export const EPersonData = {
+  Name: {
+    Name: EPerson.Name,
+    Label: "姓名",
+  },
+  PhoneNum: {
+    Name: EPerson.PhoneNum,
+    Label: "联系方式",
+  },
+  Risk: {
+    Name: EPerson.Risk,
+    Label: "风险点",
+  },
+};

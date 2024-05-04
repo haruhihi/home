@@ -461,11 +461,6 @@ const App: React.FC = () => {
                         : "none",
                   }}
                 >
-                  {/* <ProFormUploadButton
-                    {...commonUploadProps}
-                    name={EPlan.ServicePlanContent.Name}
-                    label={EPlan.ServicePlanContent.label}
-                  /> */}
                   <ProFormTextArea
                     {...commonTextareaProps}
                     name={EPlan.ServicePlanContent.Name}
