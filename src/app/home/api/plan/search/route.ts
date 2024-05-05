@@ -62,7 +62,7 @@ export async function GET(request: Request) {
         EPlan.WithElectric.Name
       );
     }
-    console.log("whereOptions", whereOptions);
+    // console.log("whereOptions", whereOptions);
     const { Plan } = await getModels();
     const { count, rows } = await Plan.findAndCountAll({
       offset: (page - 1) * pageSize,

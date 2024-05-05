@@ -1,10 +1,7 @@
 import { EUser, EUserRoleEnum } from "@dtos/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 
-export const initUserModel = async (
-  sequelize: Sequelize,
-  syncOptions?: SyncOptions
-) => {
+export const initUserModel = async (sequelize: Sequelize) => {
   const User = sequelize.define(
     "User",
     {
@@ -41,7 +38,6 @@ export const initUserModel = async (
       initialAutoIncrement: "1000000",
     }
   );
-  await User.sync(syncOptions);
 
   return User;
 };
