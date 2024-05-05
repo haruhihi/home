@@ -1,49 +1,23 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Divider,
-  Image,
-  Modal,
-  message,
-  Space,
-  List,
-  Avatar,
-  Table,
-} from "antd";
+import { Divider, message, Table } from "antd";
 import axios from "axios";
-import COS from "cos-js-sdk-v5";
 import {
   PageLoading,
   ProForm,
   ProFormDateTimePicker,
   ProFormDependency,
   ProFormRadio,
-  ProFormSelect,
-  ProFormSwitch,
   ProFormText,
   ProFormTextArea,
-  ProFormUploadButton,
-  ProFormUploadButtonProps,
 } from "@ant-design/pro-components";
-import type { GetProp, UploadFile, UploadProps } from "antd";
 import { EPerson, EPersonData, EPlan, EPlanStatusEnum, EUser } from "@dtos/db";
-import { Footer } from "@components/footer-client";
 import { useServerConfigs } from "@utils/hooks";
-import { IPlanDetailRes, TOptions } from "@dtos/api";
+import { IPlanDetailRes } from "@dtos/api";
 import { Footers, ImgsFormItem } from "./help";
 import { WithElectricOptions } from "@constants/options";
-import { UserOutlined } from "@ant-design/icons";
-
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
+import { useRouter } from "next/navigation";
+import { commonTextareaProps } from "../../upload/help";
 
 const App: React.FC<{ params: { slug: string } }> = (props) => {
   const {
@@ -51,6 +25,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
   } = props;
 
   const [detail, setDetail] = useState<IPlanDetailRes>();
+  const router = useRouter();
   const optionsRes = useServerConfigs();
 
   useEffect(() => {
@@ -64,21 +39,8 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
       });
   }, [slug]);
 
-  const commonTextareaProps = {
-    width: "md" as const,
-    fieldProps: {
-      autoSize: { minRows: 5 },
-    },
-  };
-
-  const specificAreaOptions = ["配电", "营销", "设备", "产业"];
-
-  const riskLevelOptions = ["一级", "二级", "三级", "四级", "五级"];
-
-  const electricRiskLevelOptions = ["四级", "五级", "六级", "七级", "八级"];
-
   if (!optionsRes || !detail) return <PageLoading />;
-  console.log("optionsRes", optionsRes);
+
   const {
     workOwnerOptions,
     workerOptions,
@@ -86,6 +48,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
     operatorOptions,
     maintainerOptions,
   } = optionsRes;
+
   return (
     <div>
       <ProForm
@@ -100,7 +63,16 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
             ),
         }}
         submitter={{
-          render: (_, dom) => <Footers id={slug} />,
+          render: (_, dom) => (
+            <Footers
+              id={slug}
+              onSuccess={() => {
+                if (process.env.NODE_ENV === "production") {
+                  router.push("/home/plan/search");
+                }
+              }}
+            />
+          ),
         }}
       >
         <Divider orientation="left">

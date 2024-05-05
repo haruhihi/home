@@ -69,8 +69,8 @@ const App: React.FC = () => {
           await onFinish({
             values,
             onClose: () => {
-              router.push("/home/plan/search");
               if (process.env.NODE_ENV === "production") {
+                router.push("/home/plan/search");
               }
             },
           });
