@@ -99,23 +99,26 @@ export const ImgsFormItem: React.FC<{ value: string; label: string }> = (
       {value ? (
         <Image.PreviewGroup>
           <Space size={12}>
-            {value.split(",").map((url: string) => (
-              <Image
-                key={url}
-                height={120}
-                width={120}
-                src={url}
-                preview
-                alt="计划来源"
-                style={{
-                  display: "block",
-                  objectFit: "contain",
-                  border: "1px solid #d9d9d9",
-                  borderRadius: 8,
-                  padding: "0 10px",
-                }}
-              />
-            ))}
+            {value
+              .split(",")
+              .filter((v) => v)
+              .map((url: string) => (
+                <Image
+                  key={url}
+                  height={120}
+                  width={120}
+                  src={url}
+                  preview
+                  alt="计划来源"
+                  style={{
+                    display: "block",
+                    objectFit: "contain",
+                    border: "1px solid #d9d9d9",
+                    borderRadius: 8,
+                    padding: "0 10px",
+                  }}
+                />
+              ))}
           </Space>
         </Image.PreviewGroup>
       ) : (
