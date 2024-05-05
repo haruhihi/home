@@ -6,18 +6,26 @@ import { Button, Image, Input, Modal, Space, message } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
 
-const audit = async (params: IAuditReq) => {
+const audit = async (params: IAuditReq, onSuccess: () => void) => {
   try {
     await axios.post("/home/api/plan/audit", params);
-    message.success(`提交成功`);
+    return new Promise((resolve) => {
+      message.success("提交成功", 2, () => {
+        onSuccess();
+        resolve("提交成功");
+      });
+    });
   } catch (err) {
     message.error((err as Error)?.message ?? `提交失败`);
   }
 };
 
-export const Footers: React.FC<{ id: string }> = (props) => {
-  const { id } = props;
+export const Footers: React.FC<{ id: string; onSuccess: () => void }> = (
+  props
+) => {
+  const { id, onSuccess } = props;
   const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
   const [modalProps, setModalProps] = useState({
     open: false,
     toType: EPlanStatusEnum.Approved,
@@ -54,13 +62,19 @@ export const Footers: React.FC<{ id: string }> = (props) => {
             onCancel={() =>
               setModalProps((state) => ({ ...state, open: false }))
             }
-            onOk={() => {
-              audit({
-                [EPlan.ID.Name]: id,
-                [EPlan.Status.Name]: toType,
-                [EPlan.AuditComment.Name]: comment,
-              });
+            onOk={async () => {
+              setLoading(true);
+              await audit(
+                {
+                  [EPlan.ID.Name]: id,
+                  [EPlan.Status.Name]: toType,
+                  [EPlan.AuditComment.Name]: comment,
+                },
+                onSuccess
+              );
+              setLoading(false);
             }}
+            confirmLoading={loading}
           >
             <Input.TextArea
               value={comment}

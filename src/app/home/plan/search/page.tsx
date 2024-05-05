@@ -36,21 +36,27 @@ const App: React.FC = () => {
     page: defaultPage,
     pageSize: 5,
   });
+  const [loading, setLoading] = useState(false);
   const serverConfigs = useServerConfigs();
 
-  const fetchData = (params: ISearchFilter) => {
-    axios
-      .get("/home/api/plan/search?" + serialize(params), {
-        method: "GET",
-      })
-      .then((res) => {
-        setRes(res.data.result);
-        message.success("查询成功");
-      })
-      .catch((err) => {
-        message.error("查询失败");
-        console.log(err);
-      });
+  const fetchData = async (params: ISearchFilter) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        "/home/api/plan/search?" + serialize(params),
+        {
+          method: "GET",
+        }
+      );
+
+      setRes(res.data.result);
+      message.success("查询成功");
+      setLoading(false);
+    } catch (err) {
+      message.error("查询失败");
+      console.log(err);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -77,6 +83,7 @@ const App: React.FC = () => {
           margin: 24,
         }}
         bordered
+        loading={loading}
         columns={columns}
         dataSource={res?.data}
         pagination={{

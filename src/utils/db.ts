@@ -1,12 +1,13 @@
 import { DB_DATABASE, DB_HOST, DB_PASSWORD, DB_USER } from "@constants/config";
-import { Model, ModelStatic, Options, Sequelize } from "sequelize";
+import { Model, ModelStatic, Options, Sequelize, SyncOptions } from "sequelize";
 import mysql2 from "mysql2";
-import { initUserModel } from "@models/user";
-import { initPlanModel } from "./model-plan";
-import { initMaintainerModel } from "./model-maintainer";
-import { initOperatorModel } from "./model-operator";
-import * as sections from "@models/sections";
+import { user } from "@models/user";
+import { initPlanModel } from "@models/plan";
+import { initMaintainerModel } from "@models/maintainer";
+import { initOperatorModel } from "@models/operator";
+import { section } from "@models/section";
 import * as people from "@models/person";
+import { planSection } from "@models/plan-section";
 
 let cache: {
   sequelize: Sequelize;
@@ -16,12 +17,17 @@ let cache: {
   Operator: TModel;
   Section: TModel;
   Person: TModel;
+  PlanSection: TModel;
 } | null = null;
 
 export type TModel = ModelStatic<Model<any, any>>;
 
-export const getModels = async () => {
-  if (cache) return cache;
+export const getModels = async (
+  configs: { dangerousDropAllTables?: boolean } = {}
+) => {
+  const { dangerousDropAllTables = false } = configs;
+  // should skip cache, when you want to drop and rebuild all tables
+  if (cache && !dangerousDropAllTables) return cache;
   // First time
   const params: Options = {
     host: DB_HOST,
@@ -36,7 +42,7 @@ export const getModels = async () => {
   await sequelize.authenticate();
   console.log("Connection has been established successfully.");
 
-  const User = await initUserModel(sequelize);
+  const User = await user.define(sequelize);
 
   const Maintainer = await initMaintainerModel(sequelize);
 
@@ -44,9 +50,18 @@ export const getModels = async () => {
 
   const Plan = await initPlanModel(sequelize);
 
-  const Section = await sections.initModel(sequelize);
+  const Section = await section.define(sequelize);
 
   const Person = await people.initModel(sequelize);
+
+  const PlanSection = await planSection.define(sequelize);
+
+  if (dangerousDropAllTables) {
+    await sequelize.drop();
+    console.warn("----------drop all tables!!!-----------");
+  }
+
+  await sequelize.sync();
 
   cache = {
     sequelize,
@@ -56,6 +71,7 @@ export const getModels = async () => {
     Operator,
     Section,
     Person,
+    PlanSection,
   };
   return cache;
 };

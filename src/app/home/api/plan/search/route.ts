@@ -62,12 +62,13 @@ export async function GET(request: Request) {
         EPlan.WithElectric.Name
       );
     }
-    console.log("whereOptions", whereOptions);
+    // console.log("whereOptions", whereOptions);
     const { Plan } = await getModels();
     const { count, rows } = await Plan.findAndCountAll({
       offset: (page - 1) * pageSize,
       limit: pageSize,
       where: whereOptions,
+      order: [["updatedAt", "DESC"]],
     });
 
     const result: ISearchRes = {

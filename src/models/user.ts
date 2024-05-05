@@ -1,10 +1,10 @@
 import { EUser, EUserRoleEnum } from "@dtos/db";
+import { getModels } from "@utils/db";
+import { excelIs } from "@utils/helper";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
+import * as xlsx from "xlsx";
 
-export const initUserModel = async (
-  sequelize: Sequelize,
-  syncOptions?: SyncOptions
-) => {
+const define = async (sequelize: Sequelize) => {
   const User = sequelize.define(
     "User",
     {
@@ -41,7 +41,33 @@ export const initUserModel = async (
       initialAutoIncrement: "1000000",
     }
   );
-  await User.sync(syncOptions);
 
   return User;
+};
+
+const seed = async (sheets: xlsx.WorkBook["Sheets"]) => {
+  const sheet = sheets["用户"];
+  if (!sheet) throw new Error("无用户表");
+  const rows = xlsx.utils.sheet_to_json(sheet);
+  const { User } = await getModels();
+  await User.bulkCreate(
+    rows.map((row: any) => {
+      const name = row["姓名"];
+      const isAdmin = excelIs(row["管理员"]);
+      return {
+        [EUser.Account]: isAdmin ? name : "",
+        [EUser.Password]: isAdmin ? "123456" : "",
+        [EUser.Name]: name,
+        [EUser.IsWorkOwner]: excelIs(row["工作负责人"]),
+        [EUser.IsWorker]: excelIs(row["施工人员"]),
+        [EUser.IsSpecialWorker]: excelIs(row["特种作业人员"]),
+        [EUser.Role]: isAdmin ? EUserRoleEnum.Admin : EUserRoleEnum.User,
+      };
+    })
+  );
+};
+
+export const user = {
+  seed,
+  define,
 };

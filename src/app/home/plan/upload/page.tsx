@@ -1,133 +1,46 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Divider, Image, message } from "antd";
-import axios from "axios";
-import COS from "cos-js-sdk-v5";
+import React from "react";
+import { Divider } from "antd";
 import {
   PageLoading,
   ProForm,
   ProFormDateTimePicker,
-  ProFormDependency,
   ProFormRadio,
   ProFormSelect,
-  ProFormSwitch,
   ProFormText,
   ProFormTextArea,
   ProFormUploadButton,
-  ProFormUploadButtonProps,
 } from "@ant-design/pro-components";
-import { uploadFileToCOS } from "./upload-file";
-import type { GetProp, UploadFile, UploadProps } from "antd";
 import { EPlan } from "@dtos/db";
 import { Footer } from "@components/footer-client";
 import { useServerConfigs } from "@utils/hooks";
-import { TOptions } from "@dtos/api";
 import { SectionFormItem } from "@components/section-form-item";
-import { WithElectricOptions, voltageLevelOptions } from "@constants/options";
-
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
+import {
+  LoadShiftingOptionEnum,
+  LoadShiftingOptions,
+  PatrolSwitchEnum,
+  PatrolSwitchOptions,
+  PowerCutOptionEnum,
+  PowerCutOptions,
+  PowerOutMethodEnum,
+  PowerOutMethodOptions,
+  ServicePlanEnum,
+  ServicePlanOptions,
+  WithElectricOptionEnum,
+  WithElectricOptions,
+  electricRiskLevelOptions,
+  riskLevelOptions,
+  specificAreaOptions,
+  voltageLevelOptions,
+} from "@constants/options";
+import { useUpload } from "@utils/use-upload";
+import { Dependence, commonTextareaProps, onFinish } from "./help";
+import { useRouter } from "next/navigation";
 
 const App: React.FC = () => {
-  const [cos, setCOS] = useState<COS>();
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
   const optionsRes = useServerConfigs();
-
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as FileType);
-    }
-
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-  };
-
-  const commonUploadProps: Partial<ProFormUploadButtonProps> = {
-    // onPreview: handlePreview,
-    width: "xl" as const,
-    fieldProps: {
-      showUploadList: {
-        showPreviewIcon: false,
-      },
-      customRequest: async (options: any) => {
-        const file = options.file as any;
-        console.log(file);
-        try {
-          const res = await uploadFileToCOS(file as any, cos!, (progress) => {
-            file.progress = Math.floor(progress.percent * 100);
-            const event = new Event("progress");
-            (event as any).percent = progress.percent * 100;
-            options.onProgress?.(event);
-          });
-          file.status = "done";
-          file.url = res;
-          options.onSuccess?.(res);
-          message.success("上传成功");
-        } catch (err) {
-          message.error("上传失败");
-          file.status = "fail";
-          options.onError?.(new Error());
-        }
-      },
-    },
-    action: "http://secret",
-    listType: "picture-card",
-    max: 5,
-  };
-
-  const commonTextareaProps = {
-    width: "md" as const,
-    fieldProps: {
-      autoSize: { minRows: 5 },
-    },
-  };
-
-  const specificAreaOptions = ["配电", "营销", "设备", "产业"];
-
-  const riskLevelOptions = ["一级", "二级", "三级", "四级", "五级"];
-
-  const electricRiskLevelOptions = ["四级", "五级", "六级", "七级", "八级"];
-
-  // 初始化实例
-  useEffect(() => {
-    const cos = new COS({
-      // getAuthorization 必选参数
-      getAuthorization: function (options, callback) {
-        // 初始化时不会调用，只有调用 cos 方法（例如 cos.putObject）时才会进入
-        // 异步获取临时密钥
-        // 服务端 JS 和 PHP 例子：https://github.com/tencentyun/cos-js-sdk-v5/blob/master/server/
-        // 服务端其他语言参考 COS STS SDK ：https://github.com/tencentyun/qcloud-cos-sts-sdk
-        // STS 详细文档指引看：https://cloud.tencent.com/document/product/436/14048
-
-        axios
-          .get("/home/api/secret/temp")
-          .then((res) => {
-            const result = JSON.parse(res.data.result);
-            const { credentials, startTime, expiredTime } = result;
-            callback({
-              TmpSecretId: credentials.tmpSecretId,
-              TmpSecretKey: credentials.tmpSecretKey,
-              SecurityToken: credentials.sessionToken,
-              // 建议返回服务器时间作为签名的开始时间，避免用户浏览器本地时间偏差过大导致签名错误
-              StartTime: startTime, // 时间戳，单位秒，如：1580000000
-              ExpiredTime: expiredTime, // 时间戳，单位秒，如：1580000000
-            });
-          })
-          .catch((err) => {
-            message.error(err.message ?? "获取临时密钥失败");
-          });
-      },
-    });
-    setCOS(cos);
-  }, []);
+  const router = useRouter();
+  const { commonUploadProps } = useUpload();
 
   if (!optionsRes) return <PageLoading />;
 
@@ -145,37 +58,22 @@ const App: React.FC = () => {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         initialValues={{
-          [EPlan.WithElectric.Name]: "需要",
-          [EPlan.PowerCut.Name]: "是",
-          [EPlan.LoadShifting.Name]: "是",
-          [EPlan.PatrolSwitch.Name]: "是",
-          [EPlan.ServicePlan.Name]: "需要",
+          [EPlan.WithElectric.Name]: WithElectricOptionEnum.Yes,
+          [EPlan.PowerCut.Name]: PowerCutOptionEnum.Yes,
+          [EPlan.LoadShifting.Name]: LoadShiftingOptionEnum.Yes,
+          [EPlan.PatrolSwitch.Name]: PatrolSwitchEnum.Yes,
+          [EPlan.PowerOutMethod.Name]: PowerOutMethodEnum.CutOff,
+          [EPlan.ServicePlan.Name]: ServicePlanEnum.Yes,
         }}
-        onFinish={(values) => {
-          console.log(values);
-          axios
-            .post(
-              "/home/api/plan/create",
-              Object.keys(values).reduce((acc, key) => {
-                const value = values[key];
-                if (
-                  Array.isArray(value) &&
-                  value.some(
-                    (item) => item && item.originFileObj instanceof File
-                  )
-                ) {
-                  return { ...acc, [key]: value.map((item) => item.url) };
-                }
-                return { ...acc, [key]: value };
-              }, {})
-            )
-            .then((res) => {
-              message.success("创建成功");
-            })
-            .catch((err) => {
-              message.error(err.message ?? "创建失败");
-              console.log(err);
-            });
+        onFinish={async (values) => {
+          await onFinish({
+            values,
+            onClose: () => {
+              if (process.env.NODE_ENV === "production") {
+                router.push("/home/plan/search");
+              }
+            },
+          });
         }}
         submitter={{
           render: (_, dom) => <Footer ele={dom}></Footer>,
@@ -230,8 +128,8 @@ const App: React.FC = () => {
         <SectionFormItem />
         <ProFormSelect
           width="md"
-          name="specificArea"
-          label="专业分类"
+          name={EPlan.Classification.Name}
+          label={EPlan.Classification.label}
           options={specificAreaOptions}
         />
         <ProFormSelect
@@ -257,40 +155,30 @@ const App: React.FC = () => {
           name={EPlan.WithElectric.Name}
           label={EPlan.WithElectric.label}
         />
-        <ProFormDependency name={[EPlan.WithElectric.Name]}>
-          {(values) => {
-            return (
-              <div
-                style={{
-                  display:
-                    values[EPlan.WithElectric.Name] === "需要"
-                      ? "block"
-                      : "none",
-                }}
-              >
-                <ProFormDateTimePicker
-                  name={EPlan.WithElectricWorkStartAt.Name}
-                  label={EPlan.WithElectricWorkStartAt.label}
-                />
-                <ProFormTextArea
-                  name={EPlan.WithElectricWorkText.Name}
-                  label={EPlan.WithElectricWorkText.label}
-                  {...commonTextareaProps}
-                />
-                <ProFormUploadButton
-                  name={EPlan.WithElectricWorkImgs.Name}
-                  label={EPlan.WithElectricWorkImgs.label}
-                  {...commonUploadProps}
-                />
-              </div>
-            );
-          }}
-        </ProFormDependency>
+        <Dependence
+          dependOn={EPlan.WithElectric.Name}
+          equals={WithElectricOptionEnum.Yes}
+        >
+          <ProFormDateTimePicker
+            name={EPlan.WithElectricWorkStartAt.Name}
+            label={EPlan.WithElectricWorkStartAt.label}
+          />
+          <ProFormTextArea
+            name={EPlan.WithElectricWorkText.Name}
+            label={EPlan.WithElectricWorkText.label}
+            {...commonTextareaProps}
+          />
+          <ProFormUploadButton
+            name={EPlan.WithElectricWorkImgs.Name}
+            label={EPlan.WithElectricWorkImgs.label}
+            {...commonUploadProps}
+          />
+        </Dependence>
         <ProFormRadio.Group
           width="md"
           name={EPlan.PowerCut.Name}
           label={EPlan.PowerCut.label}
-          options={["是", "否"]}
+          options={PowerCutOptions}
         />
         <ProFormTextArea
           name={EPlan.VerificationText.Name}
@@ -341,37 +229,29 @@ const App: React.FC = () => {
           <ProFormRadio.Group
             name={EPlan.LoadShifting.Name}
             label={EPlan.LoadShifting.label}
-            options={["是", "否"]}
+            options={LoadShiftingOptions}
           />
-          <ProFormDependency name={[EPlan.LoadShifting.Name]}>
-            {(values) => {
-              return (
-                <div
-                  style={{
-                    display:
-                      values[EPlan.LoadShifting.Name] === "是"
-                        ? "block"
-                        : "none",
-                  }}
-                >
-                  <ProFormTextArea
-                    name={EPlan.EquipmentCondition.Name}
-                    label={EPlan.EquipmentCondition.label}
-                    {...commonTextareaProps}
-                  />
-                </div>
-              );
-            }}
-          </ProFormDependency>
+
+          <Dependence
+            dependOn={EPlan.LoadShifting.Name}
+            equals={LoadShiftingOptionEnum.Yes}
+          >
+            <ProFormTextArea
+              name={EPlan.EquipmentCondition.Name}
+              label={EPlan.EquipmentCondition.label}
+              {...commonTextareaProps}
+            />
+          </Dependence>
+
           <ProFormRadio.Group
             name={EPlan.PatrolSwitch.Name}
             label={EPlan.PatrolSwitch.label}
-            options={["是", "否"]}
+            options={PatrolSwitchOptions}
           />
           <ProFormRadio.Group
             name={EPlan.PowerOutMethod.Name}
             label={EPlan.PowerOutMethod.label}
-            options={["停用开关", "带电作业"]}
+            options={PowerOutMethodOptions}
           />
           <ProFormTextArea
             {...commonTextareaProps}
@@ -448,28 +328,18 @@ const App: React.FC = () => {
           <ProFormRadio.Group
             name={EPlan.ServicePlan.Name}
             label={EPlan.ServicePlan.label}
-            options={["需要", "不需要"]}
+            options={ServicePlanOptions}
           />
-          <ProFormDependency name={[EPlan.ServicePlan.Name]}>
-            {(values) => {
-              return (
-                <div
-                  style={{
-                    display:
-                      values[EPlan.ServicePlan.Name] === "需要"
-                        ? "block"
-                        : "none",
-                  }}
-                >
-                  <ProFormTextArea
-                    {...commonTextareaProps}
-                    name={EPlan.ServicePlanContent.Name}
-                    label={EPlan.ServicePlanContent.label}
-                  />
-                </div>
-              );
-            }}
-          </ProFormDependency>
+          <Dependence
+            dependOn={EPlan.ServicePlan.Name}
+            equals={ServicePlanEnum.Yes}
+          >
+            <ProFormTextArea
+              {...commonTextareaProps}
+              name={EPlan.ServicePlanContent.Name}
+              label={EPlan.ServicePlanContent.label}
+            />
+          </Dependence>
         </>
 
         <Divider orientation="left">
@@ -498,18 +368,6 @@ const App: React.FC = () => {
           />
         </>
       </ProForm>
-      {previewImage && (
-        <Image
-          alt="预览"
-          wrapperStyle={{ display: "none" }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
     </div>
   );
 };

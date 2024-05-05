@@ -167,6 +167,5 @@ export const initPlanModel = async (
     }
   );
 
-  await Plan.sync(syncOptions);
   return Plan;
 };

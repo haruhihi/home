@@ -1,20 +1,21 @@
-import { ESection } from "@dtos/db";
+import { EOperator } from "@dtos/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
+import { TModel } from "../utils/db";
 
-export const initModel = async (
+export const initOperatorModel = async (
   sequelize: Sequelize,
   syncOptions?: SyncOptions
 ) => {
-  const Model = sequelize.define(
-    "Section",
+  const Operator = sequelize.define(
+    "Operator",
     {
-      [ESection.ID]: {
+      [EOperator.ID]: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         autoIncrementIdentity: true,
       },
-      [ESection.Name]: {
+      [EOperator.Name]: {
         type: DataTypes.STRING,
       },
     },
@@ -23,7 +24,6 @@ export const initModel = async (
       initialAutoIncrement: "1000000",
     }
   );
-  await Model.sync(syncOptions);
 
-  return Model;
+  return Operator;
 };

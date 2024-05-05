@@ -1,49 +1,30 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Divider,
-  Image,
-  Modal,
-  message,
-  Space,
-  List,
-  Avatar,
-  Table,
-} from "antd";
+import { Divider, message, Table } from "antd";
 import axios from "axios";
-import COS from "cos-js-sdk-v5";
 import {
   PageLoading,
   ProForm,
   ProFormDateTimePicker,
   ProFormDependency,
   ProFormRadio,
-  ProFormSelect,
-  ProFormSwitch,
   ProFormText,
   ProFormTextArea,
-  ProFormUploadButton,
-  ProFormUploadButtonProps,
 } from "@ant-design/pro-components";
-import type { GetProp, UploadFile, UploadProps } from "antd";
-import { EPerson, EPersonData, EPlan, EPlanStatusEnum, EUser } from "@dtos/db";
-import { Footer } from "@components/footer-client";
+import {
+  EPerson,
+  EPersonData,
+  EPlan,
+  EPlanStatusEnum,
+  ESection,
+  EUser,
+} from "@dtos/db";
 import { useServerConfigs } from "@utils/hooks";
-import { IPlanDetailRes, TOptions } from "@dtos/api";
+import { IPlanDetailRes } from "@dtos/api";
 import { Footers, ImgsFormItem } from "./help";
 import { WithElectricOptions } from "@constants/options";
-import { UserOutlined } from "@ant-design/icons";
-
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
+import { useRouter } from "next/navigation";
+import { commonTextareaProps } from "../../upload/help";
 
 const App: React.FC<{ params: { slug: string } }> = (props) => {
   const {
@@ -51,6 +32,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
   } = props;
 
   const [detail, setDetail] = useState<IPlanDetailRes>();
+  const router = useRouter();
   const optionsRes = useServerConfigs();
 
   useEffect(() => {
@@ -64,21 +46,8 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
       });
   }, [slug]);
 
-  const commonTextareaProps = {
-    width: "md" as const,
-    fieldProps: {
-      autoSize: { minRows: 5 },
-    },
-  };
-
-  const specificAreaOptions = ["配电", "营销", "设备", "产业"];
-
-  const riskLevelOptions = ["一级", "二级", "三级", "四级", "五级"];
-
-  const electricRiskLevelOptions = ["四级", "五级", "六级", "七级", "八级"];
-
   if (!optionsRes || !detail) return <PageLoading />;
-  console.log("optionsRes", optionsRes);
+
   const {
     workOwnerOptions,
     workerOptions,
@@ -86,6 +55,9 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
     operatorOptions,
     maintainerOptions,
   } = optionsRes;
+
+  const { sections, people, plan } = detail;
+
   return (
     <div>
       <ProForm
@@ -93,14 +65,23 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
         labelCol={{ span: 3 }}
         wrapperCol={{ span: 14 }}
         initialValues={{
-          ...detail.plan,
+          ...plan,
           [EPlan.OneStopMultiUseImgs.Name]:
             "https://cjxt-1325833079.cos.ap-nanjing.myqcloud.com/up/2024-05-04/KgLvPwcPUz1pmo-UdpTc4.png,https://cjxt-1325833079.cos.ap-nanjing.myqcloud.com/up/2024-05-04/F92m-kp0EtCOkowFYUefZ.jpg,https://cjxt-1325833079.cos.ap-nanjing.myqcloud.com/up/2024-05-04/43CjegLDgo119umPhh4Gp.jpg".split(
               ","
             ),
         }}
         submitter={{
-          render: (_, dom) => <Footers id={slug} />,
+          render: (_, dom) => (
+            <Footers
+              id={slug}
+              onSuccess={() => {
+                if (process.env.NODE_ENV === "production") {
+                  router.push("/home/plan/search");
+                }
+              }}
+            />
+          ),
         }}
       >
         <Divider orientation="left">
@@ -109,7 +90,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
         <>
           <ImgsFormItem
             label={EPlan.PlanSourceImgs.label}
-            value={detail.plan[EPlan.PlanSourceImgs.Name]}
+            value={plan[EPlan.PlanSourceImgs.Name]}
           />
           <ProFormTextArea
             {...commonTextareaProps}
@@ -119,7 +100,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
           />
           <ImgsFormItem
             label={EPlan.OneStopMultiUseImgs.label}
-            value={detail.plan[EPlan.OneStopMultiUseImgs.Name]}
+            value={plan[EPlan.OneStopMultiUseImgs.Name]}
           />
           <ProFormTextArea
             {...commonTextareaProps}
@@ -129,7 +110,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
           />
           <ImgsFormItem
             label={EPlan.MetricsImprovementImgs.label}
-            value={detail.plan[EPlan.MetricsImprovementImgs.Name]}
+            value={plan[EPlan.MetricsImprovementImgs.Name]}
           />
           <ProFormTextArea
             {...commonTextareaProps}
@@ -179,7 +160,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
                   />
                   <ImgsFormItem
                     label={EPlan.WithElectricWorkImgs.label}
-                    value={detail.plan[EPlan.WithElectricWorkImgs.Name]}
+                    value={plan[EPlan.WithElectricWorkImgs.Name]}
                   />
                 </div>
               );
@@ -192,7 +173,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
         <>
           <ImgsFormItem
             label={EPlan.PowerOutageHomesImgs.label}
-            value={detail.plan[EPlan.PowerOutageHomesImgs.Name]}
+            value={plan[EPlan.PowerOutageHomesImgs.Name]}
           />
           <ProFormTextArea
             {...commonTextareaProps}
@@ -229,10 +210,10 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
           </ProFormDependency>
 
           <ProForm.Item label={"敏感用户"}>
-            {detail.people && detail.people.length > 0 ? (
+            {people && people.length > 0 ? (
               <Table
                 bordered
-                dataSource={detail.people}
+                dataSource={people}
                 pagination={false}
                 columns={[
                   {
@@ -253,6 +234,19 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
                     dataIndex: EPersonData.Risk.Name,
                     key: EPersonData.Risk.Name,
                   },
+                  {
+                    title: EPersonData.SectionId.Label,
+                    width: 100,
+                    dataIndex: EPersonData.SectionId.Name,
+                    key: EPersonData.SectionId.Name,
+                    render: (text) => {
+                      return (
+                        sections.find(
+                          (section) => section[ESection.ID] === text
+                        )?.[ESection.Name] ?? "-"
+                      );
+                    },
+                  },
                 ]}
               />
             ) : (
@@ -270,7 +264,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
         <>
           <ImgsFormItem
             label={EPlan.BirdsEye.label}
-            value={detail.plan[EPlan.BirdsEye.Name]}
+            value={plan[EPlan.BirdsEye.Name]}
           />
           <ProFormTextArea
             readonly
@@ -280,11 +274,11 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
           />
           <ImgsFormItem
             label={EPlan.HighRiskPlaceImgs.label}
-            value={detail.plan[EPlan.HighRiskPlaceImgs.Name]}
+            value={plan[EPlan.HighRiskPlaceImgs.Name]}
           />
           <ImgsFormItem
             label={EPlan.Overview.label}
-            value={detail.plan[EPlan.Overview.Name]}
+            value={plan[EPlan.Overview.Name]}
           />
         </>
         <Divider orientation="left">
@@ -324,7 +318,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
             {...commonTextareaProps}
           />
           <ImgsFormItem
-            value={detail.plan[EPlan.VerificationImgs.Name]}
+            value={plan[EPlan.VerificationImgs.Name]}
             label={EPlan.VerificationImgs.label}
           />
         </>
@@ -339,11 +333,11 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
             readonly
           />
           <ImgsFormItem
-            value={detail.plan[EPlan.EquipmentAllocation.Name]}
+            value={plan[EPlan.EquipmentAllocation.Name]}
             label={EPlan.EquipmentAllocation.label}
           />
           <ImgsFormItem
-            value={detail.plan[EPlan.MaterialAllocation.Name]}
+            value={plan[EPlan.MaterialAllocation.Name]}
             label={EPlan.MaterialAllocation.label}
           />
         </>
