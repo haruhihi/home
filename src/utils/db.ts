@@ -4,7 +4,7 @@ import mysql2 from "mysql2";
 import { initUserModel } from "@models/user";
 import { initPlanModel } from "./model-plan";
 import { initMaintainerModel } from "@models/maintainer";
-import { initOperatorModel } from "./model-operator";
+import { initOperatorModel } from "@models/operator";
 import * as sections from "@models/sections";
 import * as people from "@models/person";
 
