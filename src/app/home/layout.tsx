@@ -9,7 +9,7 @@ import React from "react";
 import { ApiOutlined, TeamOutlined } from "@ant-design/icons";
 import { EUserRoleEnum } from "@dtos/db";
 import { DataProvider, useData } from "@utils/data-provider";
-import { EName } from "@constants/static";
+import { ERoute } from "@constants/route";
 
 const Main: React.FC<{ children: React.ReactNode }> = (props) => {
   return (
@@ -41,27 +41,141 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
       locale: "menu.login",
     },
   ];
+  const id = path.split("/").pop();
+
+  // avoid page blink
+  const staticRoutesForAudit = React.useMemo(() => {
+    return [
+      {
+        path: ERoute.NoUsePlanDetailRoot,
+        name: "项目必要性",
+        routes: [
+          {
+            path: `${ERoute.PlanSource}/${id}`,
+            name: "计划来源",
+          },
+          {
+            path: `${ERoute.OneStopMultiUse}/${id}`,
+            name: "一停多用",
+          },
+          {
+            path: `${ERoute.MetricsImprovement}/${id}`,
+            name: "指标提升情况",
+          },
+        ],
+      },
+      {
+        path: ERoute.NoUsePlanDetailRoot,
+        name: "计划全过程",
+        locale: "menu.audit",
+        routes: [
+          {
+            path: `${ERoute.LoadStop}/${id}`,
+            name: "负荷停用",
+            locale: "menu.audit",
+          },
+          {
+            path: `${ERoute.WithElectricity}/${id}`,
+            name: "带电作业",
+            locale: "menu.audit",
+          },
+        ],
+      },
+      {
+        path: ERoute.NoUsePlanDetailRoot,
+        name: "供电可靠性",
+        locale: "menu.audit",
+        routes: [
+          {
+            path: `${ERoute.PowerCutHouseholds}/${id}`,
+            name: "停电时户数",
+            locale: "menu.audit",
+          },
+          {
+            path: `${ERoute.FrequentPowerCut}/${id}`,
+            name: "频繁停电",
+            locale: "menu.audit",
+          },
+          {
+            path: `${ERoute.RiskUsers}/${id}`,
+            name: "敏感用户",
+            locale: "menu.audit",
+          },
+          {
+            path: `${ERoute.ServicePlan}/${id}`,
+            name: "服务方案",
+            locale: "menu.audit",
+          },
+        ],
+      },
+      {
+        path: ERoute.NoUsePlanDetailRoot,
+        name: "风险防范",
+        locale: "menu.audit",
+        routes: [
+          {
+            path: `${ERoute.ConstructionPic}/${id}`,
+            name: "施工附图",
+            locale: "menu.audit",
+          },
+          {
+            path: `${ERoute.HighRiskPlace}/${id}`,
+            name: "高风险作业点",
+            locale: "menu.audit",
+          },
+          {
+            path: `${ERoute.OnSiteInfo}/${id}`,
+            name: "现场资料",
+            locale: "menu.audit",
+          },
+          {
+            path: `${ERoute.OnSitePic}/${id}`,
+            name: "现场照片",
+            locale: "menu.audit",
+          },
+        ],
+      },
+      {
+        path: ERoute.NoUsePlanDetailRoot,
+        name: "现场作业组织",
+        locale: "menu.audit",
+        routes: [
+          {
+            path: `${ERoute.DateAndSource}/${id}`,
+            name: "作业时间及人员安排",
+            locale: "menu.audit",
+          },
+          {
+            path: `${ERoute.Review}/${id}`,
+            name: "甲方履责及现场验收",
+            locale: "menu.audit",
+          },
+        ],
+      },
+      {
+        path: ERoute.NoUsePlanDetailRoot,
+        name: "物资保障",
+        locale: "menu.audit",
+        routes: [
+          {
+            path: `${ERoute.EquipmentAllocation}/${id}`,
+            name: "上传设备异动单",
+            locale: "menu.audit",
+          },
+          {
+            path: `${ERoute.MaterialAllocation}/${id}`,
+            name: "物资调拨单",
+            locale: "menu.audit",
+          },
+        ],
+      },
+    ];
+  }, [id]);
 
   if (staticRoutes.every((route) => route.path !== path)) {
     if (path.startsWith("/home/plan/audit")) {
-      staticRoutes.push({
-        path,
-        name: "审核计划",
-        locale: "menu.audit",
-      });
-      // staticRoutes = [
-      //   {
-      //     path,
-      //     name: "审核计划",
-      //     locale: "menu.audit",
-      //     routes: [
-      //       { path: `${path}#${EName.Essential}`, name: EName.Essential },
-      //       { path: `${path}#${EName.FullProcess}`, name: EName.FullProcess },
-      //       { path: `${path}#${EName.Stable}`, name: EName.Stable },
-      //       { path: `${path}#${EName.Risk}`, name: EName.Risk },
-      //     ],
-      //   },
-      // ];
+      // get the id in url
+      staticRoutes = staticRoutesForAudit;
     }
     // clean routes when user is log in
     if (path === "/home/login") {
@@ -84,6 +198,7 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
       title="作业集约管控"
       collapsed={false}
       collapsedButtonRender={false}
+      onMenuHeaderClick={() => router.push("/home/plan/search")}
       bgLayoutImgList={[
         {
           src: "https://img.alicdn.com/imgextra/i2/O1CN01O4etvp1DvpFLKfuWq_!!6000000000279-2-tps-609-606.png",
@@ -117,7 +232,11 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
       route={{
         routes: staticRoutes,
       }}
-      menu={{ defaultOpenAll: true, hideMenuWhenCollapsed: true }}
+      menu={{
+        defaultOpenAll: true,
+        hideMenuWhenCollapsed: true,
+        ignoreFlatMenu: true,
+      }}
     >
       {props.children}
     </ProLayout>
