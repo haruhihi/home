@@ -12,6 +12,8 @@ import { readFile } from "fs/promises";
 import path from "path";
 import * as xlsx from "xlsx";
 import { user } from "@models/user";
+import { section } from "@models/section";
+import { person } from "@models/person";
 
 const excelIs = (text: unknown) => {
   return text === "1" || text === 1 || text === "是";
@@ -32,40 +34,12 @@ export async function GET(request: Request) {
       const fileBuffer = await readFile(filePath);
       const workbook = xlsx.read(fileBuffer, { type: "buffer" });
       const sheetNames = workbook.SheetNames;
-
+      const users = await user.seed(workbook.Sheets);
+      const { sectionName2IdMap } = await section.seed(workbook);
+      await person.seed(workbook, sectionName2IdMap);
       for (const name of sheetNames) {
         const rows = xlsx.utils.sheet_to_json(workbook.Sheets[name]);
-        await user.seed({ name, rows });
-        if (name === "台区") {
-          const sectionNames = [
-            ...new Set(rows.map((row: any) => row["台区"])),
-          ];
-          const sectionIds = await Section.bulkCreate(
-            sectionNames.map((name) => ({
-              [ESection.Name]: name,
-            }))
-          );
-          const sectionMap = new Map<string, number>();
-          sectionIds.forEach((section) => {
-            sectionMap.set(
-              (section as any)[ESection.Name],
-              (section as any)[ESection.ID]
-            );
-          });
-          await Person.bulkCreate(
-            rows.map((row: any) => {
-              if (!sectionMap.get(row["台区"])) {
-                console.error("未找到台区", row["台区"]);
-              }
-              return {
-                [EPerson.Name]: row["联系人"],
-                [EPerson.PhoneNum]: row["联系电话"],
-                [EPerson.Risk]: row["风险点"],
-                [EPerson.SectionId]: sectionMap.get(row["台区"]),
-              };
-            })
-          );
-        } else if (name === "运维单位") {
+        if (name === "运维单位") {
           await Maintainer.bulkCreate(
             rows.map((row: any) => ({
               [EMaintainer.Name]: row["名称"],

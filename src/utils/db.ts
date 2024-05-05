@@ -5,7 +5,7 @@ import { user } from "@models/user";
 import { initPlanModel } from "@models/plan";
 import { initMaintainerModel } from "@models/maintainer";
 import { initOperatorModel } from "@models/operator";
-import * as sections from "@models/sections";
+import { section } from "@models/section";
 import * as people from "@models/person";
 
 let cache: {
@@ -48,7 +48,7 @@ export const getModels = async (
 
   const Plan = await initPlanModel(sequelize);
 
-  const Section = await sections.initModel(sequelize);
+  const Section = await section.define(sequelize);
 
   const Person = await people.initModel(sequelize);
 
