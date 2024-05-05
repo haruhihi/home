@@ -10,7 +10,6 @@ import {
   ProFormDependency,
   ProFormRadio,
   ProFormSelect,
-  ProFormSwitch,
   ProFormText,
   ProFormTextArea,
   ProFormUploadButton,
@@ -21,9 +20,25 @@ import type { GetProp, UploadFile, UploadProps } from "antd";
 import { EPlan } from "@dtos/db";
 import { Footer } from "@components/footer-client";
 import { useServerConfigs } from "@utils/hooks";
-import { TOptions } from "@dtos/api";
 import { SectionFormItem } from "@components/section-form-item";
-import { WithElectricOptions, voltageLevelOptions } from "@constants/options";
+import {
+  LoadShiftingOptionEnum,
+  LoadShiftingOptions,
+  PatrolSwitchEnum,
+  PatrolSwitchOptions,
+  PowerCutOptionEnum,
+  PowerCutOptions,
+  PowerOutMethodEnum,
+  PowerOutMethodOptions,
+  ServicePlanEnum,
+  ServicePlanOptions,
+  WithElectricOptionEnum,
+  WithElectricOptions,
+  electricRiskLevelOptions,
+  riskLevelOptions,
+  specificAreaOptions,
+  voltageLevelOptions,
+} from "@constants/options";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -90,12 +105,6 @@ const App: React.FC = () => {
     },
   };
 
-  const specificAreaOptions = ["配电", "营销", "设备", "产业"];
-
-  const riskLevelOptions = ["一级", "二级", "三级", "四级", "五级"];
-
-  const electricRiskLevelOptions = ["四级", "五级", "六级", "七级", "八级"];
-
   // 初始化实例
   useEffect(() => {
     const cos = new COS({
@@ -145,11 +154,12 @@ const App: React.FC = () => {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         initialValues={{
-          [EPlan.WithElectric.Name]: "需要",
-          [EPlan.PowerCut.Name]: "是",
-          [EPlan.LoadShifting.Name]: "是",
-          [EPlan.PatrolSwitch.Name]: "是",
-          [EPlan.ServicePlan.Name]: "需要",
+          [EPlan.WithElectric.Name]: WithElectricOptionEnum.Yes,
+          [EPlan.PowerCut.Name]: PowerCutOptionEnum.Yes,
+          [EPlan.LoadShifting.Name]: LoadShiftingOptionEnum.Yes,
+          [EPlan.PatrolSwitch.Name]: PatrolSwitchEnum.Yes,
+          [EPlan.PowerOutMethod.label]: PowerOutMethodEnum.CutOff,
+          [EPlan.ServicePlan.Name]: ServicePlanEnum.Yes,
         }}
         onFinish={(values) => {
           console.log(values);
@@ -230,8 +240,8 @@ const App: React.FC = () => {
         <SectionFormItem />
         <ProFormSelect
           width="md"
-          name="specificArea"
-          label="专业分类"
+          name={EPlan.Classification.Name}
+          label={EPlan.Classification.label}
           options={specificAreaOptions}
         />
         <ProFormSelect
@@ -263,7 +273,8 @@ const App: React.FC = () => {
               <div
                 style={{
                   display:
-                    values[EPlan.WithElectric.Name] === "需要"
+                    values[EPlan.WithElectric.Name] ===
+                    WithElectricOptionEnum.Yes
                       ? "block"
                       : "none",
                 }}
@@ -290,7 +301,7 @@ const App: React.FC = () => {
           width="md"
           name={EPlan.PowerCut.Name}
           label={EPlan.PowerCut.label}
-          options={["是", "否"]}
+          options={PowerCutOptions}
         />
         <ProFormTextArea
           name={EPlan.VerificationText.Name}
@@ -341,7 +352,7 @@ const App: React.FC = () => {
           <ProFormRadio.Group
             name={EPlan.LoadShifting.Name}
             label={EPlan.LoadShifting.label}
-            options={["是", "否"]}
+            options={LoadShiftingOptions}
           />
           <ProFormDependency name={[EPlan.LoadShifting.Name]}>
             {(values) => {
@@ -349,7 +360,8 @@ const App: React.FC = () => {
                 <div
                   style={{
                     display:
-                      values[EPlan.LoadShifting.Name] === "是"
+                      values[EPlan.LoadShifting.Name] ===
+                      LoadShiftingOptionEnum.Yes
                         ? "block"
                         : "none",
                   }}
@@ -366,12 +378,12 @@ const App: React.FC = () => {
           <ProFormRadio.Group
             name={EPlan.PatrolSwitch.Name}
             label={EPlan.PatrolSwitch.label}
-            options={["是", "否"]}
+            options={PatrolSwitchOptions}
           />
           <ProFormRadio.Group
             name={EPlan.PowerOutMethod.Name}
             label={EPlan.PowerOutMethod.label}
-            options={["停用开关", "带电作业"]}
+            options={PowerOutMethodOptions}
           />
           <ProFormTextArea
             {...commonTextareaProps}
@@ -448,7 +460,7 @@ const App: React.FC = () => {
           <ProFormRadio.Group
             name={EPlan.ServicePlan.Name}
             label={EPlan.ServicePlan.label}
-            options={["需要", "不需要"]}
+            options={ServicePlanOptions}
           />
           <ProFormDependency name={[EPlan.ServicePlan.Name]}>
             {(values) => {
@@ -456,7 +468,7 @@ const App: React.FC = () => {
                 <div
                   style={{
                     display:
-                      values[EPlan.ServicePlan.Name] === "需要"
+                      values[EPlan.ServicePlan.Name] === ServicePlanEnum.Yes
                         ? "block"
                         : "none",
                   }}
