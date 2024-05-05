@@ -102,7 +102,6 @@ export async function POST(request: Request) {
 
       return plan;
     });
-    console.log("result", result.toJSON());
     return new Response(Res200({ result: result.toJSON() }), {
       status: 200,
     });
