@@ -1,19 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Divider, Image, message } from "antd";
-import axios from "axios";
+import React from "react";
+import { Divider } from "antd";
 import {
   PageLoading,
   ProForm,
   ProFormDateTimePicker,
-  ProFormDependency,
   ProFormRadio,
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
   ProFormUploadButton,
 } from "@ant-design/pro-components";
-import type { GetProp, UploadFile, UploadProps } from "antd";
 import { EPlan } from "@dtos/db";
 import { Footer } from "@components/footer-client";
 import { useServerConfigs } from "@utils/hooks";
@@ -37,39 +34,12 @@ import {
   voltageLevelOptions,
 } from "@constants/options";
 import { useUpload } from "@utils/use-upload";
-
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
+import { Dependence, commonTextareaProps, onFinish } from "./help";
 
 const App: React.FC = () => {
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
   const optionsRes = useServerConfigs();
 
   const { commonUploadProps } = useUpload();
-
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as FileType);
-    }
-
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-  };
-
-  const commonTextareaProps = {
-    width: "md" as const,
-    fieldProps: {
-      autoSize: { minRows: 5 },
-    },
-  };
 
   if (!optionsRes) return <PageLoading />;
 
@@ -94,32 +64,7 @@ const App: React.FC = () => {
           [EPlan.PowerOutMethod.Name]: PowerOutMethodEnum.CutOff,
           [EPlan.ServicePlan.Name]: ServicePlanEnum.Yes,
         }}
-        onFinish={(values) => {
-          console.log(values);
-          axios
-            .post(
-              "/home/api/plan/create",
-              Object.keys(values).reduce((acc, key) => {
-                const value = values[key];
-                if (
-                  Array.isArray(value) &&
-                  value.some(
-                    (item) => item && item.originFileObj instanceof File
-                  )
-                ) {
-                  return { ...acc, [key]: value.map((item) => item.url) };
-                }
-                return { ...acc, [key]: value };
-              }, {})
-            )
-            .then((res) => {
-              message.success("创建成功");
-            })
-            .catch((err) => {
-              message.error(err.message ?? "创建失败");
-              console.log(err);
-            });
-        }}
+        onFinish={onFinish}
         submitter={{
           render: (_, dom) => <Footer ele={dom}></Footer>,
         }}
@@ -200,36 +145,25 @@ const App: React.FC = () => {
           name={EPlan.WithElectric.Name}
           label={EPlan.WithElectric.label}
         />
-        <ProFormDependency name={[EPlan.WithElectric.Name]}>
-          {(values) => {
-            return (
-              <div
-                style={{
-                  display:
-                    values[EPlan.WithElectric.Name] ===
-                    WithElectricOptionEnum.Yes
-                      ? "block"
-                      : "none",
-                }}
-              >
-                <ProFormDateTimePicker
-                  name={EPlan.WithElectricWorkStartAt.Name}
-                  label={EPlan.WithElectricWorkStartAt.label}
-                />
-                <ProFormTextArea
-                  name={EPlan.WithElectricWorkText.Name}
-                  label={EPlan.WithElectricWorkText.label}
-                  {...commonTextareaProps}
-                />
-                <ProFormUploadButton
-                  name={EPlan.WithElectricWorkImgs.Name}
-                  label={EPlan.WithElectricWorkImgs.label}
-                  {...commonUploadProps}
-                />
-              </div>
-            );
-          }}
-        </ProFormDependency>
+        <Dependence
+          dependOn={EPlan.WithElectric.Name}
+          equals={WithElectricOptionEnum.Yes}
+        >
+          <ProFormDateTimePicker
+            name={EPlan.WithElectricWorkStartAt.Name}
+            label={EPlan.WithElectricWorkStartAt.label}
+          />
+          <ProFormTextArea
+            name={EPlan.WithElectricWorkText.Name}
+            label={EPlan.WithElectricWorkText.label}
+            {...commonTextareaProps}
+          />
+          <ProFormUploadButton
+            name={EPlan.WithElectricWorkImgs.Name}
+            label={EPlan.WithElectricWorkImgs.label}
+            {...commonUploadProps}
+          />
+        </Dependence>
         <ProFormRadio.Group
           width="md"
           name={EPlan.PowerCut.Name}
@@ -287,27 +221,18 @@ const App: React.FC = () => {
             label={EPlan.LoadShifting.label}
             options={LoadShiftingOptions}
           />
-          <ProFormDependency name={[EPlan.LoadShifting.Name]}>
-            {(values) => {
-              return (
-                <div
-                  style={{
-                    display:
-                      values[EPlan.LoadShifting.Name] ===
-                      LoadShiftingOptionEnum.Yes
-                        ? "block"
-                        : "none",
-                  }}
-                >
-                  <ProFormTextArea
-                    name={EPlan.EquipmentCondition.Name}
-                    label={EPlan.EquipmentCondition.label}
-                    {...commonTextareaProps}
-                  />
-                </div>
-              );
-            }}
-          </ProFormDependency>
+
+          <Dependence
+            dependOn={EPlan.LoadShifting.Name}
+            equals={LoadShiftingOptionEnum.Yes}
+          >
+            <ProFormTextArea
+              name={EPlan.EquipmentCondition.Name}
+              label={EPlan.EquipmentCondition.label}
+              {...commonTextareaProps}
+            />
+          </Dependence>
+
           <ProFormRadio.Group
             name={EPlan.PatrolSwitch.Name}
             label={EPlan.PatrolSwitch.label}
@@ -395,26 +320,16 @@ const App: React.FC = () => {
             label={EPlan.ServicePlan.label}
             options={ServicePlanOptions}
           />
-          <ProFormDependency name={[EPlan.ServicePlan.Name]}>
-            {(values) => {
-              return (
-                <div
-                  style={{
-                    display:
-                      values[EPlan.ServicePlan.Name] === ServicePlanEnum.Yes
-                        ? "block"
-                        : "none",
-                  }}
-                >
-                  <ProFormTextArea
-                    {...commonTextareaProps}
-                    name={EPlan.ServicePlanContent.Name}
-                    label={EPlan.ServicePlanContent.label}
-                  />
-                </div>
-              );
-            }}
-          </ProFormDependency>
+          <Dependence
+            dependOn={EPlan.ServicePlan.Name}
+            equals={ServicePlanEnum.Yes}
+          >
+            <ProFormTextArea
+              {...commonTextareaProps}
+              name={EPlan.ServicePlanContent.Name}
+              label={EPlan.ServicePlanContent.label}
+            />
+          </Dependence>
         </>
 
         <Divider orientation="left">
@@ -443,18 +358,6 @@ const App: React.FC = () => {
           />
         </>
       </ProForm>
-      {previewImage && (
-        <Image
-          alt="预览"
-          wrapperStyle={{ display: "none" }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
     </div>
   );
 };
