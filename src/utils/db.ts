@@ -7,6 +7,7 @@ import { initMaintainerModel } from "@models/maintainer";
 import { initOperatorModel } from "@models/operator";
 import { section } from "@models/section";
 import * as people from "@models/person";
+import { planSection } from "@models/plan-section";
 
 let cache: {
   sequelize: Sequelize;
@@ -16,6 +17,7 @@ let cache: {
   Operator: TModel;
   Section: TModel;
   Person: TModel;
+  PlanSection: TModel;
 } | null = null;
 
 export type TModel = ModelStatic<Model<any, any>>;
@@ -52,6 +54,8 @@ export const getModels = async (
 
   const Person = await people.initModel(sequelize);
 
+  const PlanSection = await planSection.define(sequelize);
+
   if (dangerousDropAllTables) {
     await sequelize.drop();
     console.warn("----------drop all tables!!!-----------");
@@ -67,6 +71,7 @@ export const getModels = async (
     Operator,
     Section,
     Person,
+    PlanSection,
   };
   return cache;
 };

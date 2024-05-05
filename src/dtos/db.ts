@@ -341,6 +341,14 @@ export enum ESection {
   Name = "Name",
 }
 
+/** 计划 - 台区 */
+export enum EPlanSection {
+  /** PlanId */
+  PlanId = "PlanId",
+  /** SectionId */
+  SectionId = "SectionId",
+}
+
 /** 人民 */
 export enum EPerson {
   /** ID */
@@ -367,5 +375,9 @@ export const EPersonData = {
   Risk: {
     Name: EPerson.Risk,
     Label: "风险点",
+  },
+  SectionId: {
+    Name: EPerson.SectionId,
+    Label: "所属台区",
   },
 };

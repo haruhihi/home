@@ -25,7 +25,7 @@ export const SectionFormItem: React.FC<Partial<ProFormSelectProps>> = (
           setSectionOptions(options);
         },
       }}
-      // mode="multiple"
+      mode="multiple"
       {...props}
     />
   );

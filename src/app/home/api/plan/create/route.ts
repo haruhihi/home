@@ -1,12 +1,12 @@
 import { ICreateReq, Res200, Res500 } from "@dtos/api";
-import { EPlan } from "@dtos/db";
+import { EPlan, EPlanSection } from "@dtos/db";
 import { getModels } from "@utils/db";
 
 export async function POST(request: Request) {
   try {
     // parse body of POST request
     const params = (await request.json()) as ICreateReq;
-    const { Plan, User, sequelize } = await getModels();
+    const { Plan, PlanSection, sequelize } = await getModels();
     const result = await sequelize.transaction(async (t) => {
       const plan = await Plan.create(
         {
@@ -20,8 +20,6 @@ export async function POST(request: Request) {
           [EPlan.SpecialWorkers.Name]: (
             params[EPlan.SpecialWorkers.Name] ?? []
           ).join(","),
-          // [EPlan.Section.Name]: (params[EPlan.Section.Name] ?? []).join(","),
-          [EPlan.Section.Name]: params[EPlan.Section.Name],
           [EPlan.Classification.Name]: params[EPlan.Classification.Name],
           [EPlan.WorkRiskLevel.Name]: params[EPlan.WorkRiskLevel.Name],
           [EPlan.ElectricRiskLevel.Name]: params[EPlan.ElectricRiskLevel.Name],
@@ -89,6 +87,18 @@ export async function POST(request: Request) {
         },
         { transaction: t }
       );
+
+      // update planSection table
+      const sectionIds = params[EPlan.Section.Name];
+      if (plan && Array.isArray(sectionIds) && sectionIds.length > 0) {
+        await PlanSection.bulkCreate(
+          sectionIds.map((sectionId) => ({
+            [EPlanSection.PlanId]: (plan as any)[EPlan.ID.Name],
+            [EPlanSection.SectionId]: sectionId,
+          })),
+          { transaction: t }
+        );
+      }
 
       return plan;
     });

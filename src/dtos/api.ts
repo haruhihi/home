@@ -141,7 +141,8 @@ export interface IAccountInfoRes {
 
 export interface IPlanDetailRes {
   plan: any;
-  people: any;
+  people: any[];
+  sections: any[];
 }
 
 export interface IAuditReq {
