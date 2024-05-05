@@ -3,7 +3,7 @@ import { Model, ModelStatic, Options, Sequelize } from "sequelize";
 import mysql2 from "mysql2";
 import { initUserModel } from "@models/user";
 import { initPlanModel } from "./model-plan";
-import { initMaintainerModel } from "./model-maintainer";
+import { initMaintainerModel } from "@models/maintainer";
 import { initOperatorModel } from "./model-operator";
 import * as sections from "@models/sections";
 import * as people from "@models/person";

@@ -8,11 +8,6 @@ import {
   EUserRoleEnum,
 } from "@dtos/db";
 import { getModels } from "@utils/db";
-import { initMaintainerModel } from "@utils/model-maintainer";
-import { initOperatorModel } from "@utils/model-operator";
-import { initPlanModel } from "@utils/model-plan";
-import { initUserModel } from "@models/user";
-import * as sections from "@models/sections";
 import { readFile } from "fs/promises";
 import path from "path";
 import * as xlsx from "xlsx";
@@ -27,7 +22,6 @@ export async function GET(request: Request) {
     const params = new URL(request.url).searchParams;
     const force = params.get("force");
     if (force === "1") {
-      const { sequelize } = await getModels();
       // 禁用外键约束
       // await sequelize.query("SET FOREIGN_KEY_CHECKS = 0", { raw: true });
       // sequelize.sync({ force: true });
