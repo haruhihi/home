@@ -47,7 +47,10 @@ export const useColumns = (configs: {
       key: EPlan.WorkContent.Name,
       render: (text) => {
         return (
-          <Typography.Paragraph ellipsis={{ rows: 2, tooltip: text }}>
+          <Typography.Paragraph
+            ellipsis={{ rows: 2, tooltip: text }}
+            style={{ marginBottom: 0 }}
+          >
             {text}
           </Typography.Paragraph>
         );
