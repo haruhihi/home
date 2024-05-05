@@ -3,8 +3,8 @@ import { getModels } from "@utils/db";
 import { Op } from "sequelize";
 
 export const getUsersOptions = async () => {
-  const { User, sequelize } = await getModels();
-  const rows = await User?.findAll({
+  const { Users, sequelize } = await getModels();
+  const rows = await Users?.findAll({
     where: {
       [Op.or]: {
         [EUser.IsWorkOwner]: true,

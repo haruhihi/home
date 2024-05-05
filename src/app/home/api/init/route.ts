@@ -11,6 +11,7 @@ import { getModels } from "@utils/db";
 import { readFile } from "fs/promises";
 import path from "path";
 import * as xlsx from "xlsx";
+import { users } from "@models/user";
 
 const excelIs = (text: unknown) => {
   return text === "1" || text === 1 || text === "是";
@@ -24,7 +25,7 @@ export async function GET(request: Request) {
     if (force === "1") {
       // 禁用外键约束
       // await sequelize.query("SET FOREIGN_KEY_CHECKS = 0", { raw: true });
-      const { User, Section, Person, Maintainer, Operator } = await getModels({
+      const { Section, Person, Maintainer, Operator } = await getModels({
         dangerousDropAllTables: true,
       });
       const filePath = path.join(process.cwd(), "public", "seed.xlsx");
@@ -34,25 +35,8 @@ export async function GET(request: Request) {
 
       for (const name of sheetNames) {
         const rows = xlsx.utils.sheet_to_json(workbook.Sheets[name]);
-        if (name === "用户") {
-          await User.bulkCreate(
-            rows.map((row: any) => {
-              const name = row["姓名"];
-              const isAdmin = excelIs(row["管理员"]);
-              return {
-                [EUser.Account]: isAdmin ? name : "",
-                [EUser.Password]: isAdmin ? "123456" : "",
-                [EUser.Name]: name,
-                [EUser.IsWorkOwner]: excelIs(row["工作负责人"]),
-                [EUser.IsWorker]: excelIs(row["施工人员"]),
-                [EUser.IsSpecialWorker]: excelIs(row["特种作业人员"]),
-                [EUser.Role]: isAdmin
-                  ? EUserRoleEnum.Admin
-                  : EUserRoleEnum.User,
-              };
-            })
-          );
-        } else if (name === "台区") {
+        await users.seed({ name, rows });
+        if (name === "台区") {
           const sectionNames = [
             ...new Set(rows.map((row: any) => row["台区"])),
           ];

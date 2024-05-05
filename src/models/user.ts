@@ -1,8 +1,10 @@
 import { EUser, EUserRoleEnum } from "@dtos/db";
+import { getModels } from "@utils/db";
+import { excelIs } from "@utils/helper";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 
-export const initUserModel = async (sequelize: Sequelize) => {
-  const User = sequelize.define(
+const define = async (sequelize: Sequelize) => {
+  const Users = sequelize.define(
     "User",
     {
       [EUser.ID]: {
@@ -39,5 +41,32 @@ export const initUserModel = async (sequelize: Sequelize) => {
     }
   );
 
-  return User;
+  return Users;
+};
+
+const seed = async (params: { name: string; rows: any[] }) => {
+  const { name, rows } = params;
+  if (name === "用户") {
+    const { Users } = await getModels();
+    await Users.bulkCreate(
+      rows.map((row: any) => {
+        const name = row["姓名"];
+        const isAdmin = excelIs(row["管理员"]);
+        return {
+          [EUser.Account]: isAdmin ? name : "",
+          [EUser.Password]: isAdmin ? "123456" : "",
+          [EUser.Name]: name,
+          [EUser.IsWorkOwner]: excelIs(row["工作负责人"]),
+          [EUser.IsWorker]: excelIs(row["施工人员"]),
+          [EUser.IsSpecialWorker]: excelIs(row["特种作业人员"]),
+          [EUser.Role]: isAdmin ? EUserRoleEnum.Admin : EUserRoleEnum.User,
+        };
+      })
+    );
+  }
+};
+
+export const users = {
+  seed,
+  define,
 };
