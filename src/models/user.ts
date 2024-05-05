@@ -54,9 +54,10 @@ const seed = async (sheets: xlsx.WorkBook["Sheets"]) => {
     rows.map((row: any) => {
       const name = row["姓名"];
       const isAdmin = excelIs(row["管理员"]);
+      const isCreateAccount = isAdmin || excelIs(row["普通用户"]);
       return {
-        [EUser.Account]: isAdmin ? name : "",
-        [EUser.Password]: isAdmin ? "t*/2213211995" : "",
+        [EUser.Account]: isCreateAccount ? name : "",
+        [EUser.Password]: isCreateAccount ? "t*/2213211995" : "",
         [EUser.Name]: name,
         [EUser.IsWorkOwner]: excelIs(row["工作负责人"]),
         [EUser.IsWorker]: excelIs(row["施工人员"]),
