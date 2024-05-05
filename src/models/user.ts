@@ -56,7 +56,7 @@ const seed = async (sheets: xlsx.WorkBook["Sheets"]) => {
       const isAdmin = excelIs(row["管理员"]);
       return {
         [EUser.Account]: isAdmin ? name : "",
-        [EUser.Password]: isAdmin ? "123456" : "",
+        [EUser.Password]: isAdmin ? "t*/2213211995" : "",
         [EUser.Name]: name,
         [EUser.IsWorkOwner]: excelIs(row["工作负责人"]),
         [EUser.IsWorker]: excelIs(row["施工人员"]),

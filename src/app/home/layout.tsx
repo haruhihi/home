@@ -1,10 +1,15 @@
 "use client";
-import { PageContainer, ProLayout } from "@ant-design/pro-components";
+import {
+  MenuDataItem,
+  PageContainer,
+  ProLayout,
+} from "@ant-design/pro-components";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { ApiOutlined, TeamOutlined } from "@ant-design/icons";
 import { EUserRoleEnum } from "@dtos/db";
 import { DataProvider, useData } from "@utils/data-provider";
+import { EName } from "@constants/static";
 
 const Main: React.FC<{ children: React.ReactNode }> = (props) => {
   return (
@@ -19,7 +24,7 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
   const path = usePathname();
   const { userInfo } = useData();
 
-  let staticRoutes = [
+  let staticRoutes: any[] = [
     {
       path: "/home/plan/search",
       name: "首页",
@@ -44,6 +49,19 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
         name: "审核计划",
         locale: "menu.audit",
       });
+      // staticRoutes = [
+      //   {
+      //     path,
+      //     name: "审核计划",
+      //     locale: "menu.audit",
+      //     routes: [
+      //       { path: `${path}#${EName.Essential}`, name: EName.Essential },
+      //       { path: `${path}#${EName.FullProcess}`, name: EName.FullProcess },
+      //       { path: `${path}#${EName.Stable}`, name: EName.Stable },
+      //       { path: `${path}#${EName.Risk}`, name: EName.Risk },
+      //     ],
+      //   },
+      // ];
     }
     // clean routes when user is log in
     if (path === "/home/login") {
@@ -63,7 +81,7 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
           <TeamOutlined />
         )
       }
-      title="国家电网"
+      title="作业集约管控"
       collapsed={false}
       collapsedButtonRender={false}
       bgLayoutImgList={[
