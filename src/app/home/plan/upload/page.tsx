@@ -35,10 +35,11 @@ import {
 } from "@constants/options";
 import { useUpload } from "@utils/use-upload";
 import { Dependence, commonTextareaProps, onFinish } from "./help";
+import { useRouter } from "next/navigation";
 
 const App: React.FC = () => {
   const optionsRes = useServerConfigs();
-
+  const router = useRouter();
   const { commonUploadProps } = useUpload();
 
   if (!optionsRes) return <PageLoading />;
@@ -64,7 +65,16 @@ const App: React.FC = () => {
           [EPlan.PowerOutMethod.Name]: PowerOutMethodEnum.CutOff,
           [EPlan.ServicePlan.Name]: ServicePlanEnum.Yes,
         }}
-        onFinish={onFinish}
+        onFinish={async (values) => {
+          await onFinish({
+            values,
+            onClose: () => {
+              router.push("/home/plan/search");
+              if (process.env.NODE_ENV === "production") {
+              }
+            },
+          });
+        }}
         submitter={{
           render: (_, dom) => <Footer ele={dom}></Footer>,
         }}

@@ -68,6 +68,7 @@ export async function GET(request: Request) {
       offset: (page - 1) * pageSize,
       limit: pageSize,
       where: whereOptions,
+      order: [["updatedAt", "DESC"]],
     });
 
     const result: ISearchRes = {

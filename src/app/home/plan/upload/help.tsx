@@ -11,10 +11,13 @@ export const commonTextareaProps = {
   },
 };
 
-export const onFinish = (values: any) => {
-  console.log(values);
-  axios
-    .post(
+export const onFinish = async (params: {
+  values: any;
+  onClose: () => void;
+}) => {
+  const { values, onClose } = params;
+  try {
+    await axios.post(
       "/home/api/plan/create",
       Object.keys(values).reduce((acc, key) => {
         const value = values[key];
@@ -26,14 +29,17 @@ export const onFinish = (values: any) => {
         }
         return { ...acc, [key]: value };
       }, {})
-    )
-    .then((res) => {
-      message.success("创建成功");
-    })
-    .catch((err) => {
-      message.error(err.message ?? "创建失败");
-      console.log(err);
+    );
+    return new Promise((resolve) => {
+      message.success("创建成功", 2, () => {
+        onClose();
+        resolve("创建成功");
+      });
     });
+  } catch (err) {
+    message.error((err as Error).message ?? "创建失败");
+    console.log(err);
+  }
 };
 
 export const Dependence: React.FC<{
