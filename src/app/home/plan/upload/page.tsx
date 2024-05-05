@@ -158,7 +158,7 @@ const App: React.FC = () => {
           [EPlan.PowerCut.Name]: PowerCutOptionEnum.Yes,
           [EPlan.LoadShifting.Name]: LoadShiftingOptionEnum.Yes,
           [EPlan.PatrolSwitch.Name]: PatrolSwitchEnum.Yes,
-          [EPlan.PowerOutMethod.label]: PowerOutMethodEnum.CutOff,
+          [EPlan.PowerOutMethod.Name]: PowerOutMethodEnum.CutOff,
           [EPlan.ServicePlan.Name]: ServicePlanEnum.Yes,
         }}
         onFinish={(values) => {
