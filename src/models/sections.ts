@@ -26,3 +26,5 @@ export const initModel = async (
 
   return Model;
 };
+
+const seed = async (params: { name: string; rows: any[] }) => {};

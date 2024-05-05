@@ -1,7 +1,7 @@
 import { DB_DATABASE, DB_HOST, DB_PASSWORD, DB_USER } from "@constants/config";
 import { Model, ModelStatic, Options, Sequelize, SyncOptions } from "sequelize";
 import mysql2 from "mysql2";
-import { users } from "@models/user";
+import { user } from "@models/user";
 import { initPlanModel } from "@models/plan";
 import { initMaintainerModel } from "@models/maintainer";
 import { initOperatorModel } from "@models/operator";
@@ -11,7 +11,7 @@ import * as people from "@models/person";
 let cache: {
   sequelize: Sequelize;
   Plan: TModel;
-  Users: TModel;
+  User: TModel;
   Maintainer: TModel;
   Operator: TModel;
   Section: TModel;
@@ -40,7 +40,7 @@ export const getModels = async (
   await sequelize.authenticate();
   console.log("Connection has been established successfully.");
 
-  const Users = await users.define(sequelize);
+  const User = await user.define(sequelize);
 
   const Maintainer = await initMaintainerModel(sequelize);
 
@@ -62,7 +62,7 @@ export const getModels = async (
   cache = {
     sequelize,
     Plan,
-    Users,
+    User,
     Maintainer,
     Operator,
     Section,

@@ -11,7 +11,7 @@ import { getModels } from "@utils/db";
 import { readFile } from "fs/promises";
 import path from "path";
 import * as xlsx from "xlsx";
-import { users } from "@models/user";
+import { user } from "@models/user";
 
 const excelIs = (text: unknown) => {
   return text === "1" || text === 1 || text === "是";
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
 
       for (const name of sheetNames) {
         const rows = xlsx.utils.sheet_to_json(workbook.Sheets[name]);
-        await users.seed({ name, rows });
+        await user.seed({ name, rows });
         if (name === "台区") {
           const sectionNames = [
             ...new Set(rows.map((row: any) => row["台区"])),

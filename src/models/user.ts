@@ -4,7 +4,7 @@ import { excelIs } from "@utils/helper";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 
 const define = async (sequelize: Sequelize) => {
-  const Users = sequelize.define(
+  const User = sequelize.define(
     "User",
     {
       [EUser.ID]: {
@@ -41,14 +41,14 @@ const define = async (sequelize: Sequelize) => {
     }
   );
 
-  return Users;
+  return User;
 };
 
 const seed = async (params: { name: string; rows: any[] }) => {
   const { name, rows } = params;
   if (name === "用户") {
-    const { Users } = await getModels();
-    await Users.bulkCreate(
+    const { User } = await getModels();
+    await User.bulkCreate(
       rows.map((row: any) => {
         const name = row["姓名"];
         const isAdmin = excelIs(row["管理员"]);
@@ -66,7 +66,7 @@ const seed = async (params: { name: string; rows: any[] }) => {
   }
 };
 
-export const users = {
+export const user = {
   seed,
   define,
 };
