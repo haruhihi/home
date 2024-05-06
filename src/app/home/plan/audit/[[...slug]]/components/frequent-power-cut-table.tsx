@@ -6,6 +6,12 @@ export const FrequentPowerCutTable = () => {
   const { detail } = usePlanDetail();
   if (!detail) return "-";
   const { sections } = detail;
+  const getTimeArr = (text: string) => {
+    if (!text) {
+      return [];
+    }
+    return text.split(",");
+  };
   return (
     <Table
       bordered
@@ -30,9 +36,11 @@ export const FrequentPowerCutTable = () => {
           dataIndex: ESection.YearPlanStop.Name,
           key: ESection.YearPlanStop.Name,
           render: (text) => {
+            const arr = getTimeArr(text);
+            if (arr.length === 0) return null;
             return (
               <List
-                dataSource={text.split(",")}
+                dataSource={arr}
                 renderItem={(item: any) => (
                   <List.Item>
                     <Typography.Text>{item}</Typography.Text>
@@ -48,9 +56,11 @@ export const FrequentPowerCutTable = () => {
           dataIndex: ESection.ExceptionStop2Months.Name,
           key: ESection.ExceptionStop2Months.Name,
           render: (text) => {
+            const arr = getTimeArr(text);
+            if (arr.length === 0) return null;
             return (
               <List
-                dataSource={text.split(",")}
+                dataSource={arr}
                 renderItem={(item: any) => (
                   <List.Item>
                     <Typography.Text>{item}</Typography.Text>
@@ -65,6 +75,24 @@ export const FrequentPowerCutTable = () => {
           width: 120,
           dataIndex: ESection.ExceptionStopUserCount2Months.Name,
           key: ESection.ExceptionStopUserCount2Months.Name,
+        },
+        {
+          title: <div>是否通过</div>,
+          width: 80,
+          dataIndex: "是否通过",
+          key: "是否通过",
+          render: (_, record) => {
+            const yearStop = getTimeArr(record[ESection.YearPlanStop.Name]);
+            const stop2 = getTimeArr(
+              record[ESection.ExceptionStop2Months.Name]
+            );
+            const isPass = yearStop.length <= 2 && stop2.length <= 1;
+            return (
+              <Typography.Text type={isPass ? "success" : "danger"}>{`${
+                isPass ? "" : "不"
+              }通过`}</Typography.Text>
+            );
+          },
         },
       ]}
     />

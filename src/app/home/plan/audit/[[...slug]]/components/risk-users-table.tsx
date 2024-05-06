@@ -36,6 +36,9 @@ export const RiskUsersTable = () => {
           dataIndex: EPersonData.SectionId.Name,
           key: EPersonData.SectionId.Name,
           render: (text) => {
+            if (!text || text.split(",").length === 0) {
+              return "";
+            }
             return (
               sections.find((section) => section[ESection.ID.Name] === text)?.[
                 ESection.Name.Name
