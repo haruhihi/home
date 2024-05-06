@@ -12,6 +12,13 @@ const nextConfig = {
       },
     ];
   },
+  /**
+   * https://github.com/vercel/next.js/discussions/50587#discussioncomment-6134092
+   * Fix sequelize error:
+   */
+  experimental: {
+    serverComponentsExternalPackages: ["sequelize"],
+  },
 };
 
 export default nextConfig;

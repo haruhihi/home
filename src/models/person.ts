@@ -46,10 +46,13 @@ export const person = {
     if (!sheet) throw new Error("无敏感用户表");
     const rows = xlsx.utils.sheet_to_json(sheet);
     const { Person } = await getModels();
+    const totalCount = rows.length;
+    let unFoundSectionCount = 0;
+    console.log(sectionName2IdMap);
     await Person.bulkCreate(
       rows.map((row: any) => {
         if (!sectionName2IdMap.get(row["台区"])) {
-          console.error("未找到台区", row);
+          unFoundSectionCount += 1;
         }
         return {
           [EPerson.Name]: row["联系人"],
@@ -58,6 +61,9 @@ export const person = {
           [EPerson.SectionId]: sectionName2IdMap.get(row["台区"]),
         };
       })
+    );
+    console.log(
+      `共创建${totalCount}个敏感用户，其中${unFoundSectionCount}个未找到台区`
     );
   },
 };

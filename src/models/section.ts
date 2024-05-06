@@ -1,4 +1,4 @@
-import { ESection } from "@dtos/db";
+import { ESection, ESectionData } from "@dtos/db";
 import { getModels } from "@utils/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 import * as xlsx from "xlsx";
@@ -43,14 +43,16 @@ export const section = {
 
     const sectionIds = await Section.bulkCreate(
       rows.map((row) => ({
-        [ESection.Name]: row[ESection.Name],
-        [ESection.YearPlanStop]: row[ESection.YearPlanStop],
+        [ESection.Name]: row[ESectionData[ESection.Name].Label],
+        [ESection.YearPlanStop]: row[ESectionData[ESection.YearPlanStop].Label],
         [ESection.ExceptionStop2Months]:
-          row[ESection.ExceptionStopUserCount2Months],
+          row[ESectionData[ESection.ExceptionStop2Months].Label],
         [ESection.ExceptionStopUserCount2Months]:
-          row[ESection.ExceptionStopUserCount2Months],
+          row[ESectionData[ESection.ExceptionStopUserCount2Months].Label],
       }))
     );
+
+    console.log(`共创建${sectionIds.length}个台区`);
 
     const sectionName2IdMap = new Map<string, number>();
 
