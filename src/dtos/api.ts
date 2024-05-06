@@ -117,7 +117,8 @@ export interface ICreateReq {
   [EPlan.ExpectStartAt.Name]: string;
   [EPlan.ExpectFinishAt.Name]: string;
   [EPlan.LoadStopAt.Name]: string;
-  [EPlan.WithElectricWorkStartAt.Name]: string;
+  [EPlan.WithElectricWorkTimeRange.Name]: [string, string];
+  [EPlan.WithElectricWorkTimeRange2.Name]: [string, string];
   [EPlan.PlanSourceText.Name]: string;
   [EPlan.PlanSourceImgs.Name]: string[];
   [EPlan.OneStopMultiUseText.Name]: string;

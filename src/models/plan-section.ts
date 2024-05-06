@@ -31,14 +31,14 @@ export const planSection = {
     const sectionNames = [...new Set(rows.map((row: any) => row["台区"]))];
     const sectionIds = await Section.bulkCreate(
       sectionNames.map((name) => ({
-        [ESection.Name]: name,
+        [ESection.Name.Name]: name,
       }))
     );
     const sectionName2IdMap = new Map<string, number>();
     sectionIds.forEach((section) => {
       sectionName2IdMap.set(
-        (section as any)[ESection.Name],
-        (section as any)[ESection.ID]
+        (section as any)[ESection.Name.Name],
+        (section as any)[ESection.ID.Name]
       );
     });
     return { sectionName2IdMap };

@@ -64,10 +64,15 @@ export const EPlan = {
     Name: "WithElectric",
     label: "带电作业",
   },
-  /** 带电作业开始时间 */
-  WithElectricWorkStartAt: {
-    Name: "WithElectricWorkStartAt",
-    label: "带电作业开始时间",
+  /** 带电作业时间 */
+  WithElectricWorkTimeRange: {
+    Name: "WithElectricWorkTimeRange",
+    label: "带电作业时间",
+  },
+  /** 带电作业时间2 */
+  WithElectricWorkTimeRange2: {
+    Name: "WithElectricWorkTimeRange2",
+    label: "带电作业时间2",
   },
   /** 带电作业任务 */
   WithElectricWorkText: {
@@ -124,10 +129,10 @@ export const EPlan = {
     Name: "LoadShifting",
     label: "负荷转供",
   },
-  /** 设备是否满足条件 */
+  /** 转供方案 */
   EquipmentCondition: {
     Name: "EquipmentCondition",
-    label: "设备是否满足条件",
+    label: "转供方案",
   },
   /** 操巡队开关是否到位 */
   PatrolSwitch: {
@@ -334,12 +339,33 @@ export enum EOperator {
 }
 
 /** 台区 */
-export enum ESection {
+export const ESection = {
   /** ID */
-  ID = "ID",
+  ID: {
+    Name: "ID",
+    Label: "编号",
+  },
   /** 姓名 */
-  Name = "Name",
-}
+  Name: {
+    Name: "Name",
+    Label: "台区",
+  },
+  /** 年度计划停运 */
+  YearPlanStop: {
+    Name: "YearPlanStop",
+    Label: "年度计划停运",
+  },
+  /** 2月内台区停运情况 */
+  ExceptionStop2Months: {
+    Name: "ExceptionStop2Months",
+    Label: "2月内台区停运情况",
+  },
+  /** 近2月用户停电情况 */
+  ExceptionStopUserCount2Months: {
+    Name: "ExceptionStopUserCount2Months",
+    Label: "近2月用户停电情况",
+  },
+};
 
 /** 计划 - 台区 */
 export enum EPlanSection {

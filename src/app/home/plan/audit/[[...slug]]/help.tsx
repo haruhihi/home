@@ -127,3 +127,12 @@ export const ImgsFormItem: React.FC<{ value: string; label: string }> = (
     </ProForm.Item>
   );
 };
+
+export const DataTimeRangePickerFormItem: React.FC<{
+  value: string;
+  label: string;
+}> = (props) => {
+  const { value, label } = props;
+
+  return <ProForm.Item label={label}>{value}</ProForm.Item>;
+};

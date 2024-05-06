@@ -5,18 +5,22 @@ import {
   PageLoading,
   ProForm,
   ProFormDateTimePicker,
+  ProFormDateTimeRangePicker,
   ProFormDependency,
   ProFormRadio,
   ProFormText,
   ProFormTextArea,
 } from "@ant-design/pro-components";
 import { EPersonData, EPlan, ESection } from "@dtos/db";
-import { Footers, ImgsFormItem } from "./help";
+import { DataTimeRangePickerFormItem, Footers, ImgsFormItem } from "./help";
 import { WithElectricOptions } from "@constants/options";
 import { useRouter } from "next/navigation";
 import { commonTextareaProps } from "../../upload/help";
 import { usePlanDetail } from "@utils/detail-plan-provider";
 import { ERoute } from "@constants/route";
+import { TIME_RANGE_SEPARATOR } from "@constants/config";
+import { FrequentPowerCutTable } from "./components/frequent-power-cut-table";
+import { RiskUsersTable } from "./components/risk-users-table";
 
 const App: React.FC<{ params: { slug: string } }> = (props) => {
   const router = useRouter();
@@ -117,10 +121,13 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
                       : "none",
                 }}
               >
-                <ProFormDateTimePicker
-                  name={EPlan.WithElectricWorkStartAt.Name}
-                  label={EPlan.WithElectricWorkStartAt.label}
-                  readonly
+                <DataTimeRangePickerFormItem
+                  value={plan[EPlan.WithElectricWorkTimeRange.Name]}
+                  label={EPlan.WithElectricWorkTimeRange.label}
+                />
+                <DataTimeRangePickerFormItem
+                  value={plan[EPlan.WithElectricWorkTimeRange2.Name]}
+                  label={EPlan.WithElectricWorkTimeRange2.label}
                 />
                 <ProFormTextArea
                   name={EPlan.WithElectricWorkText.Name}
@@ -155,55 +162,14 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
     [ERoute.FrequentPowerCut]: (
       <>
         <ProForm.Item label={"频繁停电"}>
-          <div>TODO</div>
+          <FrequentPowerCutTable />
         </ProForm.Item>
       </>
     ),
     [ERoute.RiskUsers]: (
       <>
         <ProForm.Item label={"敏感用户"}>
-          {people && people.length > 0 ? (
-            <Table
-              bordered
-              dataSource={people}
-              pagination={false}
-              columns={[
-                {
-                  title: EPersonData.Name.Label,
-                  width: 100,
-                  dataIndex: EPersonData.Name.Name,
-                  key: EPersonData.Name.Name,
-                },
-                {
-                  title: EPersonData.PhoneNum.Label,
-                  width: 100,
-                  dataIndex: EPersonData.PhoneNum.Name,
-                  key: EPersonData.PhoneNum.Name,
-                },
-                {
-                  title: EPersonData.Risk.Label,
-                  width: 100,
-                  dataIndex: EPersonData.Risk.Name,
-                  key: EPersonData.Risk.Name,
-                },
-                {
-                  title: EPersonData.SectionId.Label,
-                  width: 100,
-                  dataIndex: EPersonData.SectionId.Name,
-                  key: EPersonData.SectionId.Name,
-                  render: (text) => {
-                    return (
-                      sections.find(
-                        (section) => section[ESection.ID] === text
-                      )?.[ESection.Name] ?? "-"
-                    );
-                  },
-                },
-              ]}
-            />
-          ) : (
-            "-"
-          )}
+          <RiskUsersTable />
         </ProForm.Item>
       </>
     ),
@@ -293,10 +259,13 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
           name={EPlan.LoadStopAt.Name}
           label={EPlan.LoadStopAt.label}
         />
-        <ProFormDateTimePicker
-          readonly
-          name={EPlan.WithElectricWorkStartAt.Name}
-          label={EPlan.WithElectricWorkStartAt.label}
+        <DataTimeRangePickerFormItem
+          value={plan[EPlan.WithElectricWorkTimeRange.Name]}
+          label={EPlan.WithElectricWorkTimeRange.label}
+        />
+        <DataTimeRangePickerFormItem
+          value={plan[EPlan.WithElectricWorkTimeRange2.Name]}
+          label={EPlan.WithElectricWorkTimeRange2.label}
         />
         <ProFormTextArea
           readonly
