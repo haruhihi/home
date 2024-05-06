@@ -1,5 +1,6 @@
 import { ProForm } from "@ant-design/pro-components";
 import { Footer } from "@components/footer-client";
+import { TIME_RANGE_SEPARATOR } from "@constants/config";
 import { IAuditReq } from "@dtos/api";
 import { EPlan, EPlanStatusEnum } from "@dtos/db";
 import { Button, Image, Input, Modal, Space, message } from "antd";
@@ -126,4 +127,13 @@ export const ImgsFormItem: React.FC<{ value: string; label: string }> = (
       )}
     </ProForm.Item>
   );
+};
+
+export const DataTimeRangePickerFormItem: React.FC<{
+  value: string;
+  label: string;
+}> = (props) => {
+  const { value, label } = props;
+
+  return <ProForm.Item label={label}>{value}</ProForm.Item>;
 };

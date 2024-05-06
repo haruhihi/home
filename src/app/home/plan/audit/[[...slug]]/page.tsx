@@ -12,12 +12,13 @@ import {
   ProFormTextArea,
 } from "@ant-design/pro-components";
 import { EPersonData, EPlan, ESection } from "@dtos/db";
-import { Footers, ImgsFormItem } from "./help";
+import { DataTimeRangePickerFormItem, Footers, ImgsFormItem } from "./help";
 import { WithElectricOptions } from "@constants/options";
 import { useRouter } from "next/navigation";
 import { commonTextareaProps } from "../../upload/help";
 import { usePlanDetail } from "@utils/detail-plan-provider";
 import { ERoute } from "@constants/route";
+import { TIME_RANGE_SEPARATOR } from "@constants/config";
 
 const App: React.FC<{ params: { slug: string } }> = (props) => {
   const router = useRouter();
@@ -118,15 +119,13 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
                       : "none",
                 }}
               >
-                <ProFormDateTimeRangePicker
-                  name={EPlan.WithElectricWorkTimeRange.Name}
+                <DataTimeRangePickerFormItem
+                  value={plan[EPlan.WithElectricWorkTimeRange.Name]}
                   label={EPlan.WithElectricWorkTimeRange.label}
-                  readonly
                 />
-                <ProFormDateTimeRangePicker
-                  name={EPlan.WithElectricWorkTimeRange2.Name}
+                <DataTimeRangePickerFormItem
+                  value={plan[EPlan.WithElectricWorkTimeRange2.Name]}
                   label={EPlan.WithElectricWorkTimeRange2.label}
-                  readonly
                 />
                 <ProFormTextArea
                   name={EPlan.WithElectricWorkText.Name}
@@ -299,14 +298,12 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
           name={EPlan.LoadStopAt.Name}
           label={EPlan.LoadStopAt.label}
         />
-        <ProFormDateTimeRangePicker
-          readonly
-          name={EPlan.WithElectricWorkTimeRange.Name}
+        <DataTimeRangePickerFormItem
+          value={plan[EPlan.WithElectricWorkTimeRange.Name]}
           label={EPlan.WithElectricWorkTimeRange.label}
         />
-        <ProFormDateTimeRangePicker
-          readonly
-          name={EPlan.WithElectricWorkTimeRange2.Name}
+        <DataTimeRangePickerFormItem
+          value={plan[EPlan.WithElectricWorkTimeRange2.Name]}
           label={EPlan.WithElectricWorkTimeRange2.label}
         />
         <ProFormTextArea

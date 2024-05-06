@@ -17,6 +17,15 @@ export const section = {
         [ESection.Name]: {
           type: DataTypes.STRING,
         },
+        [ESection.YearPlanStop]: {
+          type: DataTypes.TEXT,
+        },
+        [ESection.ExceptionStop2Months]: {
+          type: DataTypes.TEXT,
+        },
+        [ESection.ExceptionStopUserCount2Months]: {
+          type: DataTypes.INTEGER,
+        },
       },
       {
         // Other model options go here
@@ -29,15 +38,22 @@ export const section = {
   seed: async (workBook: xlsx.WorkBook) => {
     const sheet = workBook["Sheets"]["台区"];
     if (!sheet) throw new Error("无用户表");
-    const rows = xlsx.utils.sheet_to_json(sheet);
+    const rows = xlsx.utils.sheet_to_json(sheet) as any[];
     const { Section } = await getModels();
-    const sectionNames = [...new Set(rows.map((row: any) => row["台区"]))];
+
     const sectionIds = await Section.bulkCreate(
-      sectionNames.map((name) => ({
-        [ESection.Name]: name,
+      rows.map((row) => ({
+        [ESection.Name]: row[ESection.Name],
+        [ESection.YearPlanStop]: row[ESection.YearPlanStop],
+        [ESection.ExceptionStop2Months]:
+          row[ESection.ExceptionStopUserCount2Months],
+        [ESection.ExceptionStopUserCount2Months]:
+          row[ESection.ExceptionStopUserCount2Months],
       }))
     );
+
     const sectionName2IdMap = new Map<string, number>();
+
     sectionIds.forEach((section) => {
       sectionName2IdMap.set(
         (section as any)[ESection.Name],

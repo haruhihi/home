@@ -1,3 +1,4 @@
+import { TIME_RANGE_SEPARATOR } from "@constants/config";
 import { ICreateReq, Res200, Res500 } from "@dtos/api";
 import { EPlan, EPlanSection } from "@dtos/db";
 import { getModels } from "@utils/db";
@@ -52,9 +53,13 @@ export async function POST(request: Request) {
           [EPlan.ExpectFinishAt.Name]: params[EPlan.ExpectFinishAt.Name],
           [EPlan.LoadStopAt.Name]: params[EPlan.LoadStopAt.Name],
           [EPlan.WithElectricWorkTimeRange.Name]:
-            params[EPlan.WithElectricWorkTimeRange.Name].join(" - "),
+            params[EPlan.WithElectricWorkTimeRange.Name].join(
+              TIME_RANGE_SEPARATOR
+            ),
           [EPlan.WithElectricWorkTimeRange2.Name]:
-            params[EPlan.WithElectricWorkTimeRange2.Name].join(" - "),
+            params[EPlan.WithElectricWorkTimeRange2.Name].join(
+              TIME_RANGE_SEPARATOR
+            ),
           [EPlan.PlanSourceText.Name]: params[EPlan.PlanSourceText.Name],
           [EPlan.PlanSourceImgs.Name]: (
             params[EPlan.PlanSourceImgs.Name] ?? []

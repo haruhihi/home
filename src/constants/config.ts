@@ -16,3 +16,5 @@ export const ENV_LOCAL = {
   NEXT_PUBLIC_COS_REGION: process.env.NEXT_PUBLIC_COS_REGION,
   NEXT_PUBLIC_COS_PREFIX: process.env.NEXT_PUBLIC_COS_PREFIX,
 };
+
+export const TIME_RANGE_SEPARATOR = " - ";

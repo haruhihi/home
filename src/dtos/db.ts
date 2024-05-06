@@ -344,7 +344,37 @@ export enum ESection {
   ID = "ID",
   /** 姓名 */
   Name = "Name",
+  /** 年度计划停运 */
+  YearPlanStop = "YearPlanStop",
+  /** 2月内台区停运情况 */
+  ExceptionStop2Months = "ExceptionStop2Month",
+  /** 近2月用户停电情况 */
+  ExceptionStopUserCount2Months = "ExceptionStopUserCount2Months",
 }
+
+/** 台区 */
+export const ESectionData = {
+  [ESection.ID]: {
+    Name: [ESection.ID],
+    Label: "编号",
+  },
+  [ESection.Name]: {
+    Name: [ESection.Name],
+    Label: "台区",
+  },
+  [ESection.YearPlanStop]: {
+    Name: [ESection.YearPlanStop],
+    Label: "年度计划停运",
+  },
+  [ESection.ExceptionStop2Months]: {
+    Name: [ESection.ExceptionStop2Months],
+    Label: "2月内台区停运情况",
+  },
+  [ESection.ExceptionStopUserCount2Months]: {
+    Name: [ESection.ExceptionStopUserCount2Months],
+    Label: "近2月用户停电情况",
+  },
+};
 
 /** 计划 - 台区 */
 export enum EPlanSection {
