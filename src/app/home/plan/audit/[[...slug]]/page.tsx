@@ -19,6 +19,7 @@ import { commonTextareaProps } from "../../upload/help";
 import { usePlanDetail } from "@utils/detail-plan-provider";
 import { ERoute } from "@constants/route";
 import { TIME_RANGE_SEPARATOR } from "@constants/config";
+import { FrequentPowerCutTable } from "./components/frequent-power-cut-table";
 
 const App: React.FC<{ params: { slug: string } }> = (props) => {
   const router = useRouter();
@@ -160,7 +161,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
     [ERoute.FrequentPowerCut]: (
       <>
         <ProForm.Item label={"频繁停电"}>
-          <div>TODO</div>
+          <FrequentPowerCutTable />
         </ProForm.Item>
       </>
     ),
@@ -199,8 +200,8 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
                   render: (text) => {
                     return (
                       sections.find(
-                        (section) => section[ESection.ID] === text
-                      )?.[ESection.Name] ?? "-"
+                        (section) => section[ESection.ID.Name] === text
+                      )?.[ESection.Name.Name] ?? "-"
                     );
                   },
                 },

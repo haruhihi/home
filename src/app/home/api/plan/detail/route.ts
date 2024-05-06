@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
     const sections = await Section.findAll({
       where: {
-        [ESection.ID]: {
+        [ESection.ID.Name]: {
           [Op.in]: planSections.map(
             (ps) => (ps as any)[EPlanSection.SectionId]
           ),

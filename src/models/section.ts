@@ -1,4 +1,4 @@
-import { ESection, ESectionData } from "@dtos/db";
+import { ESection } from "@dtos/db";
 import { getModels } from "@utils/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 import * as xlsx from "xlsx";
@@ -8,22 +8,22 @@ export const section = {
     const Model = sequelize.define(
       "Section",
       {
-        [ESection.ID]: {
+        [ESection.ID.Name]: {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true,
           autoIncrementIdentity: true,
         },
-        [ESection.Name]: {
+        [ESection.Name.Name]: {
           type: DataTypes.STRING,
         },
-        [ESection.YearPlanStop]: {
+        [ESection.YearPlanStop.Name]: {
           type: DataTypes.TEXT,
         },
-        [ESection.ExceptionStop2Months]: {
+        [ESection.ExceptionStop2Months.Name]: {
           type: DataTypes.TEXT,
         },
-        [ESection.ExceptionStopUserCount2Months]: {
+        [ESection.ExceptionStopUserCount2Months.Name]: {
           type: DataTypes.INTEGER,
         },
       },
@@ -43,12 +43,12 @@ export const section = {
 
     const sectionIds = await Section.bulkCreate(
       rows.map((row) => ({
-        [ESection.Name]: row[ESectionData[ESection.Name].Label],
-        [ESection.YearPlanStop]: row[ESectionData[ESection.YearPlanStop].Label],
-        [ESection.ExceptionStop2Months]:
-          row[ESectionData[ESection.ExceptionStop2Months].Label],
-        [ESection.ExceptionStopUserCount2Months]:
-          row[ESectionData[ESection.ExceptionStopUserCount2Months].Label],
+        [ESection.Name.Name]: row[ESection.Name.Label],
+        [ESection.YearPlanStop.Name]: row[ESection.YearPlanStop.Label],
+        [ESection.ExceptionStop2Months.Name]:
+          row[ESection.ExceptionStop2Months.Label],
+        [ESection.ExceptionStopUserCount2Months.Name]:
+          row[ESection.ExceptionStopUserCount2Months.Label],
       }))
     );
 
@@ -58,8 +58,8 @@ export const section = {
 
     sectionIds.forEach((section) => {
       sectionName2IdMap.set(
-        (section as any)[ESection.Name],
-        (section as any)[ESection.ID]
+        (section as any)[ESection.Name.Name],
+        (section as any)[ESection.ID.Name]
       );
     });
     return { sectionName2IdMap };

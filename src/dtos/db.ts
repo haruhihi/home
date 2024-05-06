@@ -339,39 +339,30 @@ export enum EOperator {
 }
 
 /** 台区 */
-export enum ESection {
+export const ESection = {
   /** ID */
-  ID = "ID",
-  /** 姓名 */
-  Name = "Name",
-  /** 年度计划停运 */
-  YearPlanStop = "YearPlanStop",
-  /** 2月内台区停运情况 */
-  ExceptionStop2Months = "ExceptionStop2Month",
-  /** 近2月用户停电情况 */
-  ExceptionStopUserCount2Months = "ExceptionStopUserCount2Months",
-}
-
-/** 台区 */
-export const ESectionData = {
-  [ESection.ID]: {
-    Name: [ESection.ID],
+  ID: {
+    Name: "ID",
     Label: "编号",
   },
-  [ESection.Name]: {
-    Name: [ESection.Name],
+  /** 姓名 */
+  Name: {
+    Name: "Name",
     Label: "台区",
   },
-  [ESection.YearPlanStop]: {
-    Name: [ESection.YearPlanStop],
+  /** 年度计划停运 */
+  YearPlanStop: {
+    Name: "YearPlanStop",
     Label: "年度计划停运",
   },
-  [ESection.ExceptionStop2Months]: {
-    Name: [ESection.ExceptionStop2Months],
+  /** 2月内台区停运情况 */
+  ExceptionStop2Months: {
+    Name: "ExceptionStop2Months",
     Label: "2月内台区停运情况",
   },
-  [ESection.ExceptionStopUserCount2Months]: {
-    Name: [ESection.ExceptionStopUserCount2Months],
+  /** 近2月用户停电情况 */
+  ExceptionStopUserCount2Months: {
+    Name: "ExceptionStopUserCount2Months",
     Label: "近2月用户停电情况",
   },
 };
