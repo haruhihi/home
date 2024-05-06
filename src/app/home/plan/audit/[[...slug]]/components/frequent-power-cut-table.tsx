@@ -14,13 +14,13 @@ export const FrequentPowerCutTable = () => {
       columns={[
         {
           title: ESection.ID.Label,
-          width: 100,
+          width: 80,
           dataIndex: ESection.ID.Name,
           key: ESection.ID.Name,
         },
         {
           title: ESection.Name.Label,
-          width: 100,
+          width: 80,
           dataIndex: ESection.Name.Name,
           key: ESection.Name.Name,
         },
@@ -62,7 +62,7 @@ export const FrequentPowerCutTable = () => {
         },
         {
           title: ESection.ExceptionStopUserCount2Months.Label,
-          width: 100,
+          width: 120,
           dataIndex: ESection.ExceptionStopUserCount2Months.Name,
           key: ESection.ExceptionStopUserCount2Months.Name,
         },

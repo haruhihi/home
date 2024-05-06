@@ -52,14 +52,12 @@ export async function POST(request: Request) {
           [EPlan.ExpectStartAt.Name]: params[EPlan.ExpectStartAt.Name],
           [EPlan.ExpectFinishAt.Name]: params[EPlan.ExpectFinishAt.Name],
           [EPlan.LoadStopAt.Name]: params[EPlan.LoadStopAt.Name],
-          [EPlan.WithElectricWorkTimeRange.Name]:
-            params[EPlan.WithElectricWorkTimeRange.Name].join(
-              TIME_RANGE_SEPARATOR
-            ),
-          [EPlan.WithElectricWorkTimeRange2.Name]:
-            params[EPlan.WithElectricWorkTimeRange2.Name].join(
-              TIME_RANGE_SEPARATOR
-            ),
+          [EPlan.WithElectricWorkTimeRange.Name]: (
+            params[EPlan.WithElectricWorkTimeRange.Name] ?? []
+          ).join(TIME_RANGE_SEPARATOR),
+          [EPlan.WithElectricWorkTimeRange2.Name]: (
+            params[EPlan.WithElectricWorkTimeRange2.Name] ?? []
+          ).join(TIME_RANGE_SEPARATOR),
           [EPlan.PlanSourceText.Name]: params[EPlan.PlanSourceText.Name],
           [EPlan.PlanSourceImgs.Name]: (
             params[EPlan.PlanSourceImgs.Name] ?? []
