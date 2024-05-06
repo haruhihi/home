@@ -104,8 +104,11 @@ export const initPlanModel = async (
       [EPlan.LoadStopAt.Name]: {
         type: DataTypes.TEXT,
       },
-      [EPlan.WithElectricWorkStartAt.Name]: {
-        type: DataTypes.TEXT,
+      [EPlan.WithElectricWorkTimeRange.Name]: {
+        type: DataTypes.STRING,
+      },
+      [EPlan.WithElectricWorkTimeRange2.Name]: {
+        type: DataTypes.STRING,
       },
       [EPlan.PlanSourceText.Name]: {
         type: DataTypes.TEXT,

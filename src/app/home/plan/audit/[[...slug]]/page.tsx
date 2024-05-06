@@ -5,6 +5,7 @@ import {
   PageLoading,
   ProForm,
   ProFormDateTimePicker,
+  ProFormDateTimeRangePicker,
   ProFormDependency,
   ProFormRadio,
   ProFormText,
@@ -117,9 +118,14 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
                       : "none",
                 }}
               >
-                <ProFormDateTimePicker
-                  name={EPlan.WithElectricWorkStartAt.Name}
-                  label={EPlan.WithElectricWorkStartAt.label}
+                <ProFormDateTimeRangePicker
+                  name={EPlan.WithElectricWorkTimeRange.Name}
+                  label={EPlan.WithElectricWorkTimeRange.label}
+                  readonly
+                />
+                <ProFormDateTimeRangePicker
+                  name={EPlan.WithElectricWorkTimeRange2.Name}
+                  label={EPlan.WithElectricWorkTimeRange2.label}
                   readonly
                 />
                 <ProFormTextArea
@@ -293,10 +299,15 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
           name={EPlan.LoadStopAt.Name}
           label={EPlan.LoadStopAt.label}
         />
-        <ProFormDateTimePicker
+        <ProFormDateTimeRangePicker
           readonly
-          name={EPlan.WithElectricWorkStartAt.Name}
-          label={EPlan.WithElectricWorkStartAt.label}
+          name={EPlan.WithElectricWorkTimeRange.Name}
+          label={EPlan.WithElectricWorkTimeRange.label}
+        />
+        <ProFormDateTimeRangePicker
+          readonly
+          name={EPlan.WithElectricWorkTimeRange2.Name}
+          label={EPlan.WithElectricWorkTimeRange2.label}
         />
         <ProFormTextArea
           readonly

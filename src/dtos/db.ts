@@ -64,10 +64,15 @@ export const EPlan = {
     Name: "WithElectric",
     label: "带电作业",
   },
-  /** 带电作业开始时间 */
-  WithElectricWorkStartAt: {
-    Name: "WithElectricWorkStartAt",
-    label: "带电作业开始时间",
+  /** 带电作业时间 */
+  WithElectricWorkTimeRange: {
+    Name: "WithElectricWorkTimeRange",
+    label: "带电作业时间",
+  },
+  /** 带电作业时间2 */
+  WithElectricWorkTimeRange2: {
+    Name: "WithElectricWorkTimeRange2",
+    label: "带电作业时间2",
   },
   /** 带电作业任务 */
   WithElectricWorkText: {
@@ -124,10 +129,10 @@ export const EPlan = {
     Name: "LoadShifting",
     label: "负荷转供",
   },
-  /** 设备是否满足条件 */
+  /** 转供方案 */
   EquipmentCondition: {
     Name: "EquipmentCondition",
-    label: "设备是否满足条件",
+    label: "转供方案",
   },
   /** 操巡队开关是否到位 */
   PatrolSwitch: {
