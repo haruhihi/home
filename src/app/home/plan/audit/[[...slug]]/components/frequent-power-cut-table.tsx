@@ -1,6 +1,7 @@
 import { ESection } from "@dtos/db";
 import { usePlanDetail } from "@utils/detail-plan-provider";
-import { List, Table, Typography } from "antd";
+import { List, Table, Tooltip, Typography } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 export const FrequentPowerCutTable = () => {
   const { detail } = usePlanDetail();
@@ -77,7 +78,14 @@ export const FrequentPowerCutTable = () => {
           key: ESection.ExceptionStopUserCount2Months.Name,
         },
         {
-          title: <div>是否通过</div>,
+          title: (
+            <div>
+              是否通过
+              {/* <Tooltip title="年度停运在2次及以下且2月内频繁停电台区在2次以下为通过">
+                <QuestionCircleOutlined style={{ marginLeft: 4 }} />
+              </Tooltip> */}
+            </div>
+          ),
           width: 80,
           dataIndex: "是否通过",
           key: "是否通过",
