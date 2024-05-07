@@ -21,6 +21,7 @@ import { ERoute } from "@constants/route";
 import { TIME_RANGE_SEPARATOR } from "@constants/config";
 import { FrequentPowerCutTable } from "./components/frequent-power-cut-table";
 import { RiskUsersTable } from "./components/risk-users-table";
+import { SpecialWorkersTable } from "./components/special-workers";
 
 const App: React.FC<{ params: { slug: string } }> = (props) => {
   const router = useRouter();
@@ -46,7 +47,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
   const mathPath = `/home/plan/audit/${part}`;
 
   if (!detail) return <PageLoading />;
-  const { specialWorkers, plan } = detail;
+  const { plan } = detail;
 
   const route2Plan = {
     [ERoute.PlanSource]: (
@@ -204,7 +205,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
         </ProFormDependency>
       </>
     ),
-    [ERoute.Qualification]: <>{JSON.stringify(specialWorkers)}</>,
+    [ERoute.Qualification]: <SpecialWorkersTable />,
     [ERoute.ConstructionPic]: (
       <>
         <ImgsFormItem

@@ -35,10 +35,24 @@ export async function POST(request: Request) {
     });
     // find special workers
 
+    const workOwners = await User.findAll({
+      where: {
+        [EUser.ID]: {
+          [Op.in]: [...(plan[EPlan.Workers.Name] ?? "").split(",")],
+        },
+      },
+    });
     const specialWorkers = await User.findAll({
       where: {
         [EUser.ID]: {
-          [Op.in]: (plan[EPlan.SpecialWorkers.Name] ?? "").split(","),
+          [Op.in]: [...(plan[EPlan.SpecialWorkers.Name] ?? "").split(",")],
+        },
+      },
+    });
+    const workers = await User.findAll({
+      where: {
+        [EUser.ID]: {
+          [Op.in]: [...(plan[EPlan.Workers.Name] ?? "").split(",")],
         },
       },
     });
@@ -62,7 +76,14 @@ export async function POST(request: Request) {
         },
       });
     }
-    const result: IPlanDetailRes = { plan, people, sections, specialWorkers };
+    const result: IPlanDetailRes = {
+      plan,
+      people,
+      sections,
+      workers,
+      specialWorkers,
+      workOwners,
+    };
     return new Response(Res200({ result }), {
       status: 200,
     });

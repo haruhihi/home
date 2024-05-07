@@ -13,6 +13,12 @@ export const RiskUsersTable = () => {
       pagination={false}
       columns={[
         {
+          title: EPersonData.ID.Label,
+          width: 100,
+          dataIndex: EPersonData.ID.Name,
+          key: EPersonData.ID.Name,
+        },
+        {
           title: EPersonData.Name.Label,
           width: 100,
           dataIndex: EPersonData.Name.Name,
