@@ -205,7 +205,11 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
         </ProFormDependency>
       </>
     ),
-    [ERoute.Qualification]: <SpecialWorkersTable />,
+    [ERoute.Qualification]: (
+      <ProForm.Item label="人员资质">
+        <SpecialWorkersTable />
+      </ProForm.Item>
+    ),
     [ERoute.ConstructionPic]: (
       <>
         <ImgsFormItem
