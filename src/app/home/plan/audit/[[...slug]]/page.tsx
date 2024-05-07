@@ -204,6 +204,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
         </ProFormDependency>
       </>
     ),
+    [ERoute.Qualification]: <>{"人员资质"}</>,
     [ERoute.ConstructionPic]: (
       <>
         <ImgsFormItem

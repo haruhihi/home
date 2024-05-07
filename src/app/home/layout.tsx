@@ -114,6 +114,11 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
         locale: "menu.audit",
         routes: [
           {
+            path: `${ERoute.Qualification}/${id}`,
+            name: "人员资质",
+            locale: "menu.audit",
+          },
+          {
             path: `${ERoute.ConstructionPic}/${id}`,
             name: "施工附图",
             locale: "menu.audit",

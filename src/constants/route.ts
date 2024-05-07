@@ -10,6 +10,7 @@ export enum ERoute {
   RiskUsers = "/home/plan/audit/risk-users",
   ServicePlan = "/home/plan/audit/service-plan",
   ConstructionPic = "/home/plan/audit/construction-pic",
+  Qualification = "/home/plan/audit/qualification",
   HighRiskPlace = "/home/plan/audit/high-risk-place",
   OnSiteInfo = "/home/plan/audit/on-site-info",
   OnSitePic = "/home/plan/audit/on-site-pic",
