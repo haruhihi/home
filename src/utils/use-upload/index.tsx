@@ -71,7 +71,6 @@ export const useUpload = () => {
     },
     action: "http://secret",
     listType: "picture-card",
-    max: 5,
   };
 
   return { commonUploadProps };
