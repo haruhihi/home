@@ -133,11 +133,11 @@ const App: React.FC<{ children: React.ReactNode }> = (props) => {
             name: "现场资料",
             locale: "menu.audit",
           },
-          {
-            path: `${ERoute.OnSitePic}/${id}`,
-            name: "现场照片",
-            locale: "menu.audit",
-          },
+          // {
+          //   path: `${ERoute.OnSitePic}/${id}`,
+          //   name: "现场照片",
+          //   locale: "menu.audit",
+          // },
         ],
       },
       {
