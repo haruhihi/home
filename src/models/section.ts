@@ -43,15 +43,28 @@ export const section = {
     const rowsPeople = xlsx.utils.sheet_to_json(sheetPeople) as any[];
     const { Section } = await getModels();
 
+    const sectionNameSet = new Set();
+
     const sections = await Section.bulkCreate(
-      rows.map((row) => ({
-        [ESection.Name.Name]: row[ESection.Name.Label],
-        [ESection.YearPlanStop.Name]: row[ESection.YearPlanStop.Label],
-        [ESection.ExceptionStop2Months.Name]:
-          row[ESection.ExceptionStop2Months.Label],
-        [ESection.ExceptionStopUserCount2Months.Name]:
-          row[ESection.ExceptionStopUserCount2Months.Label],
-      }))
+      rows
+        .filter((row) => {
+          if (sectionNameSet.has(row[ESection.Name.Label])) {
+            return false;
+          } else {
+            sectionNameSet.add(row[ESection.Name.Label]);
+            return true;
+          }
+        })
+        .map((row) => {
+          return {
+            [ESection.Name.Name]: row[ESection.Name.Label],
+            [ESection.YearPlanStop.Name]: row[ESection.YearPlanStop.Label],
+            [ESection.ExceptionStop2Months.Name]:
+              row[ESection.ExceptionStop2Months.Label],
+            [ESection.ExceptionStopUserCount2Months.Name]:
+              row[ESection.ExceptionStopUserCount2Months.Label],
+          };
+        })
     );
 
     console.log(`共初始化${sections.length}个台区`);
@@ -67,11 +80,16 @@ export const section = {
 
     const moreSections = await Section.bulkCreate(
       rowsPeople
-        .filter(
-          (person: any) => !sectionName2IdMap.has(person[EPerson.SectionId])
-        )
+        .filter((row) => {
+          if (sectionNameSet.has(row["台区"])) {
+            return false;
+          } else {
+            sectionNameSet.add(row["台区"]);
+            return true;
+          }
+        })
         .map((row: any) => ({
-          [ESection.Name.Name]: row[ESection.Name.Label],
+          [ESection.Name.Name]: row["台区"],
         }))
     );
 
