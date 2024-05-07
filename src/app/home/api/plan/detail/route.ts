@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     const workOwners = await User.findAll({
       where: {
         [EUser.ID]: {
-          [Op.in]: [...(plan[EPlan.Workers.Name] ?? "").split(",")],
+          [Op.in]: [...(plan[EPlan.WorkOwners.Name] ?? "").split(",")],
         },
       },
     });
