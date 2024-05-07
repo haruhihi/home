@@ -9,7 +9,7 @@ export const getUsersOptions = async () => {
       [Op.or]: {
         [EUser.IsWorkOwner]: true,
         [EUser.IsWorker]: true,
-        [EUser.IsSpecialWorker]: true,
+        [EUser.SpecialWork]: true,
       },
     },
   });

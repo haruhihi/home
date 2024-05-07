@@ -34,6 +34,7 @@ export const getModels = async (
     username: DB_USER,
     password: DB_PASSWORD,
     database: DB_DATABASE,
+    port: 20612,
     dialect: "mysql",
     dialectModule: mysql2,
   };

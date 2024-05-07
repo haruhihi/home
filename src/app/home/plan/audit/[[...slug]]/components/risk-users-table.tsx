@@ -36,7 +36,7 @@ export const RiskUsersTable = () => {
           dataIndex: EPersonData.SectionId.Name,
           key: EPersonData.SectionId.Name,
           render: (text) => {
-            if (!text || text.split(",").length === 0) {
+            if (!text) {
               return "";
             }
             return (
