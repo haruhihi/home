@@ -98,7 +98,10 @@ export const ImgsFormItem: React.FC<{ value: string; label: string }> = (
     <ProForm.Item label={label}>
       {value ? (
         <Image.PreviewGroup>
-          <Space size={12}>
+          <Space
+            size={12}
+            style={{ maxWidth: 700, display: "flex", flexWrap: "wrap" }}
+          >
             {value
               .split(",")
               .filter((v) => v)
