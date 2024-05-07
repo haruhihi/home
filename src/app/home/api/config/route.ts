@@ -30,7 +30,7 @@ export async function GET(request: Request) {
           }) ?? [],
       specialWorkerOptions:
         userOptions
-          .filter((user: any) => user[EUser.IsSpecialWorker])
+          .filter((user: any) => user[EUser.SpecialWork] !== "")
           .map((row) => {
             return {
               label: (row as any)[EUser.Name],

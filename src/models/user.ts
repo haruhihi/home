@@ -29,8 +29,8 @@ const define = async (sequelize: Sequelize) => {
       [EUser.IsWorker]: {
         type: DataTypes.BOOLEAN,
       },
-      [EUser.IsSpecialWorker]: {
-        type: DataTypes.BOOLEAN,
+      [EUser.SpecialWork]: {
+        type: DataTypes.STRING,
       },
       [EUser.Role]: {
         type: DataTypes.ENUM(EUserRoleEnum.Admin, EUserRoleEnum.User),
@@ -61,7 +61,7 @@ const seed = async (sheets: xlsx.WorkBook["Sheets"]) => {
         [EUser.Name]: name,
         [EUser.IsWorkOwner]: excelIs(row["工作负责人"]),
         [EUser.IsWorker]: excelIs(row["施工人员"]),
-        [EUser.IsSpecialWorker]: excelIs(row["特种作业人员"]),
+        [EUser.SpecialWork]: row["特殊工种"],
         [EUser.Role]: isAdmin ? EUserRoleEnum.Admin : EUserRoleEnum.User,
       };
     })
