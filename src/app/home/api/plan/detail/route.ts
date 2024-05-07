@@ -1,5 +1,5 @@
 import { IPlanDetailRes, Res200, Res500 } from "@dtos/api";
-import { EPerson, EPlan, EPlanSection, ESection } from "@dtos/db";
+import { EPerson, EPlan, EPlanSection, ESection, EUser } from "@dtos/db";
 import { getModels } from "@utils/db";
 import { Op, WhereOptions } from "sequelize";
 
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     if (!id) {
       throw new Error(`非法的 id: ${id}`);
     }
-    const { Plan, Person, PlanSection, Section } = await getModels();
+    const { Plan, Person, PlanSection, Section, User } = await getModels();
     const plan = (await Plan.findByPk(id)) as any;
     if (!plan) {
       throw new Error(`未找到 id: ${id} 的计划`);
@@ -30,6 +30,15 @@ export async function POST(request: Request) {
           [Op.in]: planSections.map(
             (ps) => (ps as any)[EPlanSection.SectionId]
           ),
+        },
+      },
+    });
+    // find special workers
+
+    const specialWorkers = await User.findAll({
+      where: {
+        [EUser.ID]: {
+          [Op.in]: (plan[EPlan.SpecialWorkers.Name] ?? "").split(","),
         },
       },
     });
@@ -53,7 +62,7 @@ export async function POST(request: Request) {
         },
       });
     }
-    const result: IPlanDetailRes = { plan, people, sections };
+    const result: IPlanDetailRes = { plan, people, sections, specialWorkers };
     return new Response(Res200({ result }), {
       status: 200,
     });
