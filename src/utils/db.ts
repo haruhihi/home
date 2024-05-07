@@ -1,4 +1,10 @@
-import { DB_DATABASE, DB_HOST, DB_PASSWORD, DB_USER } from "@constants/config";
+import {
+  DB_DATABASE,
+  DB_HOST,
+  DB_PASSWORD,
+  DB_PORT,
+  DB_USER,
+} from "@constants/config";
 import { Model, ModelStatic, Options, Sequelize, SyncOptions } from "sequelize";
 import mysql2 from "mysql2";
 import { user } from "@models/user";
@@ -34,7 +40,7 @@ export const getModels = async (
     username: DB_USER,
     password: DB_PASSWORD,
     database: DB_DATABASE,
-    port: 20612,
+    port: Number(DB_PORT),
     dialect: "mysql",
     dialectModule: mysql2,
   };
