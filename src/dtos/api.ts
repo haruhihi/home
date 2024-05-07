@@ -144,6 +144,7 @@ export interface IPlanDetailRes {
   plan: any;
   people: any[];
   sections: any[];
+  specialWorkers: any[];
 }
 
 export interface IAuditReq {

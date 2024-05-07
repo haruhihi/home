@@ -46,7 +46,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
   const mathPath = `/home/plan/audit/${part}`;
 
   if (!detail) return <PageLoading />;
-  const { sections, people, plan } = detail;
+  const { specialWorkers, plan } = detail;
 
   const route2Plan = {
     [ERoute.PlanSource]: (
@@ -204,7 +204,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
         </ProFormDependency>
       </>
     ),
-    [ERoute.Qualification]: <>{"人员资质"}</>,
+    [ERoute.Qualification]: <>{JSON.stringify(specialWorkers)}</>,
     [ERoute.ConstructionPic]: (
       <>
         <ImgsFormItem
