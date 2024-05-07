@@ -144,13 +144,6 @@ export const useColumns = (configs: {
             >
               审核详情
             </Button>
-
-            <a
-              href={`/home/plan/audit/${record[EPlan.ID.Name]}`}
-              target="_blank"
-            >
-              审核
-            </a>
           </>
         );
       },
