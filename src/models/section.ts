@@ -1,4 +1,4 @@
-import { ESection } from "@dtos/db";
+import { EPerson, ESection } from "@dtos/db";
 import { getModels } from "@utils/db";
 import { DataTypes, Sequelize, SyncOptions } from "sequelize";
 import * as xlsx from "xlsx";
@@ -37,11 +37,13 @@ export const section = {
   },
   seed: async (workBook: xlsx.WorkBook) => {
     const sheet = workBook["Sheets"]["台区"];
-    if (!sheet) throw new Error("无用户表");
+    const sheetPeople = workBook["Sheets"]["敏感用户"];
+    if (!sheet || !sheetPeople) throw new Error("无台区表 / 敏感用户表");
     const rows = xlsx.utils.sheet_to_json(sheet) as any[];
+    const rowsPeople = xlsx.utils.sheet_to_json(sheetPeople) as any[];
     const { Section } = await getModels();
 
-    const sectionIds = await Section.bulkCreate(
+    const sections = await Section.bulkCreate(
       rows.map((row) => ({
         [ESection.Name.Name]: row[ESection.Name.Label],
         [ESection.YearPlanStop.Name]: row[ESection.YearPlanStop.Label],
@@ -52,16 +54,36 @@ export const section = {
       }))
     );
 
-    console.log(`共创建${sectionIds.length}个台区`);
+    console.log(`共初始化${sections.length}个台区`);
 
     const sectionName2IdMap = new Map<string, number>();
 
-    sectionIds.forEach((section) => {
+    sections.forEach((section) => {
       sectionName2IdMap.set(
         (section as any)[ESection.Name.Name],
         (section as any)[ESection.ID.Name]
       );
     });
+
+    const moreSections = await Section.bulkCreate(
+      rowsPeople
+        .filter(
+          (person: any) => !sectionName2IdMap.has(person[EPerson.SectionId])
+        )
+        .map((row: any) => ({
+          [ESection.Name.Name]: row[ESection.Name.Label],
+        }))
+    );
+
+    moreSections.forEach((section) => {
+      sectionName2IdMap.set(
+        (section as any)[ESection.Name.Name],
+        (section as any)[ESection.ID.Name]
+      );
+    });
+
+    console.log(`为敏感用户共创建${moreSections.length}个台区`);
+
     return { sectionName2IdMap };
   },
 };

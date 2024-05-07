@@ -27,6 +27,7 @@ export const initModel = async (
       },
       [EPerson.SectionId]: {
         type: DataTypes.INTEGER,
+        allowNull: false,
       },
     },
     {
@@ -48,7 +49,7 @@ export const person = {
     const { Person } = await getModels();
     const totalCount = rows.length;
     let unFoundSectionCount = 0;
-    console.log(sectionName2IdMap);
+
     await Person.bulkCreate(
       rows.map((row: any) => {
         if (!sectionName2IdMap.get(row["台区"])) {
