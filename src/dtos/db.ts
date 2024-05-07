@@ -390,6 +390,11 @@ export enum EPerson {
 }
 
 export const EPersonData = {
+  /** ID */
+  ID: {
+    Name: EPerson.ID,
+    Label: "编号",
+  },
   Name: {
     Name: EPerson.Name,
     Label: "姓名",
