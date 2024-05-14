@@ -280,6 +280,11 @@ const App: React.FC = () => {
             name={EPlan.LoadStopAt.Name}
             label={EPlan.LoadStopAt.label}
           />
+          <ProFormTextArea
+            {...commonTextareaProps}
+            name={EPlan.OnSiteWork.Name}
+            label={EPlan.OnSiteWork.label}
+          />
         </>
         <Divider orientation="left">
           <h2>项目必要性</h2>
@@ -365,11 +370,6 @@ const App: React.FC = () => {
             name={EPlan.MaterialAllocation.Name}
             label={EPlan.MaterialAllocation.label}
             {...commonUploadProps}
-          />
-          <ProFormTextArea
-            {...commonTextareaProps}
-            name={EPlan.OnSiteWork.Name}
-            label={EPlan.OnSiteWork.label}
           />
         </>
       </ProForm>
