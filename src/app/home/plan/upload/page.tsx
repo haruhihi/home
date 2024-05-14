@@ -276,10 +276,10 @@ const App: React.FC = () => {
             name={EPlan.ExpectFinishAt.Name}
             label={EPlan.ExpectFinishAt.label}
           />
-          <ProFormDateTimePicker
+          {/* <ProFormDateTimePicker
             name={EPlan.LoadStopAt.Name}
             label={EPlan.LoadStopAt.label}
-          />
+          /> */}
           <ProFormTextArea
             {...commonTextareaProps}
             name={EPlan.OnSiteWork.Name}
