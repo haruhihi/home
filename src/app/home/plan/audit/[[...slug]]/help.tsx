@@ -1,9 +1,10 @@
 import { ProForm } from "@ant-design/pro-components";
 import { Footer } from "@components/footer-client";
-import { IAuditReq } from "@dtos/api";
+import { IAuditReq, IPlanDetailRes } from "@dtos/api";
 import { EPlan, EPlanStatusEnum } from "@dtos/db";
 import { Button, Image, Input, Modal, Space, message } from "antd";
 import axios from "axios";
+import dayjs from "dayjs";
 import React, { useState } from "react";
 
 const audit = async (params: IAuditReq, onSuccess: () => void) => {
@@ -138,4 +139,18 @@ export const DataTimeRangePickerFormItem: React.FC<{
   const { value, label } = props;
 
   return <ProForm.Item label={label}>{value}</ProForm.Item>;
+};
+
+export const getPowerOutageHomes = (detail: IPlanDetailRes | null) => {
+  if (!detail) return "-";
+  const { plan, sections } = detail;
+  if (!plan || !sections) return "-";
+  const finish = plan[EPlan.ExpectFinishAt.Name];
+  const start = plan[EPlan.ExpectStartAt.Name];
+  const sectionNum = sections.length;
+  console.log(finish, start, sectionNum);
+  return (
+    (dayjs(finish).diff(dayjs(start), "minutes") / 60) *
+    sectionNum
+  ).toFixed(2);
 };

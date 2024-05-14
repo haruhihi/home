@@ -12,7 +12,12 @@ import {
   ProFormTextArea,
 } from "@ant-design/pro-components";
 import { EPersonData, EPlan, ESection } from "@dtos/db";
-import { DataTimeRangePickerFormItem, Footers, ImgsFormItem } from "./help";
+import {
+  DataTimeRangePickerFormItem,
+  Footers,
+  ImgsFormItem,
+  getPowerOutageHomes,
+} from "./help";
 import { WithElectricOptions } from "@constants/options";
 import { useRouter } from "next/navigation";
 import { commonTextareaProps } from "../../upload/help";
@@ -326,6 +331,7 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
       wrapperCol={{ span: 14 }}
       initialValues={{
         ...plan,
+        [EPlan.PowerOutageHomesText.Name]: getPowerOutageHomes(detail),
       }}
       submitter={{
         render: (_, dom) => (
