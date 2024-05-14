@@ -246,13 +246,13 @@ const App: React.FC = () => {
               label={EPlan.EquipmentCondition.label}
               {...commonTextareaProps}
             />
+            <ProFormRadio.Group
+              name={EPlan.PatrolSwitch.Name}
+              label={EPlan.PatrolSwitch.label}
+              options={PatrolSwitchOptions}
+            />
           </Dependence>
 
-          <ProFormRadio.Group
-            name={EPlan.PatrolSwitch.Name}
-            label={EPlan.PatrolSwitch.label}
-            options={PatrolSwitchOptions}
-          />
           <ProFormRadio.Group
             name={EPlan.PowerOutMethod.Name}
             label={EPlan.PowerOutMethod.label}
@@ -276,9 +276,14 @@ const App: React.FC = () => {
             name={EPlan.ExpectFinishAt.Name}
             label={EPlan.ExpectFinishAt.label}
           />
-          <ProFormDateTimePicker
+          {/* <ProFormDateTimePicker
             name={EPlan.LoadStopAt.Name}
             label={EPlan.LoadStopAt.label}
+          /> */}
+          <ProFormTextArea
+            {...commonTextareaProps}
+            name={EPlan.OnSiteWork.Name}
+            label={EPlan.OnSiteWork.label}
           />
         </>
         <Divider orientation="left">
@@ -325,11 +330,11 @@ const App: React.FC = () => {
             name={EPlan.PowerOutageHomesImgs.Name}
             label={EPlan.PowerOutageHomesImgs.label}
           />
-          <ProFormTextArea
+          {/* <ProFormTextArea
             {...commonTextareaProps}
             name={EPlan.PowerOutageHomesText.Name}
             label={EPlan.PowerOutageHomesText.label}
-          />
+          /> */}
           <ProFormRadio.Group
             name={EPlan.ServicePlan.Name}
             label={EPlan.ServicePlan.label}
@@ -365,11 +370,6 @@ const App: React.FC = () => {
             name={EPlan.MaterialAllocation.Name}
             label={EPlan.MaterialAllocation.label}
             {...commonUploadProps}
-          />
-          <ProFormTextArea
-            {...commonTextareaProps}
-            name={EPlan.OnSiteWork.Name}
-            label={EPlan.OnSiteWork.label}
           />
         </>
       </ProForm>

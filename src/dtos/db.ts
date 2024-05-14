@@ -134,10 +134,10 @@ export const EPlan = {
     Name: "EquipmentCondition",
     label: "转供方案",
   },
-  /** 操巡队开关是否到位 */
+  /** 操巡队是否到位 */
   PatrolSwitch: {
     Name: "PatrolSwitch",
-    label: "操巡队开关是否到位",
+    label: "操巡队是否到位",
   },
   /** 停电方式及区域 */
   PowerOutMethod: {
@@ -200,10 +200,10 @@ export const EPlan = {
     Name: "PowerOutageHomesText",
     label: "停电时户数（文）",
   },
-  /** 停电时户数（图） */
+  /** 同源系统（单线图） */
   PowerOutageHomesImgs: {
     Name: "PowerOutageHomesImgs",
-    label: "停电时户数（图）",
+    label: "同源系统（单线图）",
   },
   /** 服务方案 */
   ServicePlan: {

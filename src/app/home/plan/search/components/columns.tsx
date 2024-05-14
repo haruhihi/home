@@ -13,13 +13,13 @@ export const useColumns = (configs: {
   return [
     {
       title: EPlan.ID.label,
-      width: 220,
+      width: 60,
       dataIndex: EPlan.ID.Name,
       key: EPlan.ID.Name,
     },
     {
       title: EPlan.Maintainer.label,
-      width: 220,
+      width: 60,
       dataIndex: EPlan.Maintainer.Name,
       key: EPlan.Maintainer.Name,
       render: (text) =>
@@ -71,21 +71,29 @@ export const useColumns = (configs: {
     ...(process.env.NODE_ENV === "development"
       ? [
           {
-            title: EPlan.ExpectStartAt.label,
-            width: 220,
-            dataIndex: EPlan.ExpectStartAt.Name,
-            key: EPlan.ExpectStartAt.Name,
-            render: (text: string) =>
-              text ? dayjs(text).format("YYYY-MM-DD HH:mm:ss") : "-",
-          },
-          {
             title: EPlan.Section.label,
-            width: 220,
+            width: 50,
             dataIndex: EPlan.Section.Name,
             key: EPlan.Section.Name,
           },
         ]
       : []),
+    {
+      title: EPlan.ExpectStartAt.label,
+      key: EPlan.ExpectStartAt.Name,
+      dataIndex: EPlan.ExpectStartAt.Name,
+      width: 150,
+      render: (text: string) =>
+        text ? dayjs(text).format("YYYY-MM-DD HH:mm:ss") : "-",
+    },
+    {
+      title: EPlan.ExpectFinishAt.label,
+      key: EPlan.ExpectFinishAt.Name,
+      dataIndex: EPlan.ExpectFinishAt.Name,
+      width: 150,
+      render: (text: string) =>
+        text ? dayjs(text).format("YYYY-MM-DD HH:mm:ss") : "-",
+    },
     {
       title: EPlan.Status.label,
       key: EPlan.Status.Name,
