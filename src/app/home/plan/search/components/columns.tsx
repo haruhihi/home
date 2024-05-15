@@ -19,7 +19,7 @@ export const useColumns = (configs: {
     },
     {
       title: EPlan.Maintainer.label,
-      width: 60,
+      width: 80,
       dataIndex: EPlan.Maintainer.Name,
       key: EPlan.Maintainer.Name,
       render: (text) =>
@@ -28,7 +28,7 @@ export const useColumns = (configs: {
     },
     {
       title: EPlan.Operator.label,
-      width: 220,
+      width: 150,
       dataIndex: EPlan.Operator.Name,
       key: EPlan.Operator.Name,
       render: (text) =>
