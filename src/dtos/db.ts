@@ -195,10 +195,10 @@ export const EPlan = {
     Name: "MetricsImprovementImgs",
     label: "指标提升情况（图）",
   },
-  /** 停电时户数（文） */
+  /** 停电时户数*/
   PowerOutageHomesText: {
     Name: "PowerOutageHomesText",
-    label: "停电时户数（文）",
+    label: "停电时户数",
   },
   /** 同源系统（单线图） */
   PowerOutageHomesImgs: {
