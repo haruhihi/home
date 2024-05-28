@@ -77,9 +77,6 @@ export async function POST(request: Request) {
           [EPlan.PowerOutageHomesImgs.Name]: (
             params[EPlan.PowerOutageHomesImgs.Name] ?? []
           ).join(","),
-          [EPlan.ServicePlan.Name]: params[EPlan.ServicePlan.Name],
-          [EPlan.ServicePlanContent.Name]:
-            params[EPlan.ServicePlanContent.Name],
           [EPlan.EquipmentAllocation.Name]: (
             params[EPlan.EquipmentAllocation.Name] ?? []
           ).join(","),

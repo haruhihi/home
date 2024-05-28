@@ -25,8 +25,6 @@ import {
   PowerCutOptions,
   PowerOutMethodEnum,
   PowerOutMethodOptions,
-  ServicePlanEnum,
-  ServicePlanOptions,
   WithElectricOptionEnum,
   WithElectricOptions,
   electricRiskLevelOptions,
@@ -64,7 +62,6 @@ const App: React.FC = () => {
           [EPlan.LoadShifting.Name]: LoadShiftingOptionEnum.Yes,
           [EPlan.PatrolSwitch.Name]: PatrolSwitchEnum.Yes,
           [EPlan.PowerOutMethod.Name]: PowerOutMethodEnum.CutOff,
-          [EPlan.ServicePlan.Name]: ServicePlanEnum.Yes,
         }}
         onFinish={async (values) => {
           await onFinish({
@@ -335,21 +332,6 @@ const App: React.FC = () => {
             name={EPlan.PowerOutageHomesText.Name}
             label={EPlan.PowerOutageHomesText.label}
           /> */}
-          <ProFormRadio.Group
-            name={EPlan.ServicePlan.Name}
-            label={EPlan.ServicePlan.label}
-            options={ServicePlanOptions}
-          />
-          <Dependence
-            dependOn={EPlan.ServicePlan.Name}
-            equals={ServicePlanEnum.Yes}
-          >
-            <ProFormTextArea
-              {...commonTextareaProps}
-              name={EPlan.ServicePlanContent.Name}
-              label={EPlan.ServicePlanContent.label}
-            />
-          </Dependence>
         </>
 
         <Divider orientation="left">
