@@ -350,6 +350,11 @@ export const ESection = {
     Name: "Name",
     Label: "台区",
   },
+  /** 服务计划 */
+  ServicePlan: {
+    Name: "ServicePlan",
+    Label: "服务计划",
+  },
   /** 年度计划停运 */
   YearPlanStop: {
     Name: "YearPlanStop",
