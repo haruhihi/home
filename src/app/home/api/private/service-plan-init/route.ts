@@ -84,12 +84,14 @@ export async function GET(request: Request) {
                     },
                     { transaction }
                   );
-                  console.log(`Not found ${rowName}`);
                 }
               }
-              await transaction.commit();
               console.log("服务方案更新成功。");
-              console.log(`Un found sections: ${unFoundSections.join(",")}`);
+              console.log(
+                `Created sections: total ${
+                  unFoundSections.length
+                }\n${unFoundSections.join(",")}`
+              );
             } catch (error) {
               await transaction.rollback();
               console.error("更新服务方案时出错：", error);
