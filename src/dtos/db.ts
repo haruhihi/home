@@ -205,12 +205,12 @@ export const EPlan = {
     Name: "PowerOutageHomesImgs",
     label: "同源系统（单线图）",
   },
-  /** 服务方案 */
+  /** Deprecated 服务方案 */
   ServicePlan: {
     Name: "ServicePlan",
     label: "服务方案",
   },
-  /** 服务方案内容 */
+  /** Deprecated 服务方案内容 */
   ServicePlanContent: {
     Name: "ServicePlanContent",
     label: "服务方案内容",
@@ -349,6 +349,11 @@ export const ESection = {
   Name: {
     Name: "Name",
     Label: "台区",
+  },
+  /** 服务计划 */
+  ServicePlan: {
+    Name: "ServicePlan",
+    Label: "服务计划",
   },
   /** 年度计划停运 */
   YearPlanStop: {

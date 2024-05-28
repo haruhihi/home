@@ -27,6 +27,7 @@ import { TIME_RANGE_SEPARATOR } from "@constants/config";
 import { FrequentPowerCutTable } from "./components/frequent-power-cut-table";
 import { RiskUsersTable } from "./components/risk-users-table";
 import { SpecialWorkersTable } from "./components/special-workers";
+import { ServicePlanTable } from "./components/service-plan-table";
 
 const App: React.FC<{ params: { slug: string } }> = (props) => {
   const router = useRouter();
@@ -181,33 +182,9 @@ const App: React.FC<{ params: { slug: string } }> = (props) => {
     ),
     [ERoute.ServicePlan]: (
       <>
-        <ProFormRadio.Group
-          name={EPlan.ServicePlan.Name}
-          label={EPlan.ServicePlan.label}
-          options={["需要", "不需要"]}
-          readonly
-        />
-        <ProFormDependency name={[EPlan.ServicePlan.Name]}>
-          {(values) => {
-            return (
-              <div
-                style={{
-                  display:
-                    values[EPlan.ServicePlan.Name] === "需要"
-                      ? "block"
-                      : "none",
-                }}
-              >
-                <ProFormTextArea
-                  {...commonTextareaProps}
-                  name={EPlan.ServicePlanContent.Name}
-                  label={EPlan.ServicePlanContent.label}
-                  readonly
-                />
-              </div>
-            );
-          }}
-        </ProFormDependency>
+        <ProForm.Item label={"服务方案"}>
+          <ServicePlanTable />
+        </ProForm.Item>
       </>
     ),
     [ERoute.Qualification]: (

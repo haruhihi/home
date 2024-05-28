@@ -127,8 +127,6 @@ export interface ICreateReq {
   [EPlan.MetricsImprovementImgs.Name]: string[];
   [EPlan.PowerOutageHomesText.Name]: string;
   [EPlan.PowerOutageHomesImgs.Name]: string[];
-  [EPlan.ServicePlan.Name]: string[];
-  [EPlan.ServicePlanContent.Name]: string;
   [EPlan.EquipmentAllocation.Name]: string[];
   [EPlan.EquipmentAllocationId.Name]: string;
   [EPlan.MaterialAllocation.Name]: string[];

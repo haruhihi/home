@@ -32,13 +32,6 @@ export enum PatrolSwitchEnum {
 
 export const PatrolSwitchOptions = [PatrolSwitchEnum.Yes, PatrolSwitchEnum.No];
 
-export enum ServicePlanEnum {
-  Yes = "需要",
-  No = "不需要",
-}
-
-export const ServicePlanOptions = [ServicePlanEnum.Yes, ServicePlanEnum.No];
-
 export enum PowerOutMethodEnum {
   CutOff = "停用开关",
   WithElectric = "带电作业",

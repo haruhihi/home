@@ -17,6 +17,9 @@ export const section = {
         [ESection.Name.Name]: {
           type: DataTypes.STRING,
         },
+        [ESection.ServicePlan.Name]: {
+          type: DataTypes.TEXT,
+        },
         [ESection.YearPlanStop.Name]: {
           type: DataTypes.TEXT,
         },
