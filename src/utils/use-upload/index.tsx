@@ -20,7 +20,7 @@ export const useUpload = () => {
         // STS 详细文档指引看：https://cloud.tencent.com/document/product/436/14048
 
         axios
-          .get("/home/api/secret/temp")
+          .post("/home/api/secret/temp")
           .then((res) => {
             const result = JSON.parse(res.data.result);
             const { credentials, startTime, expiredTime } = result;
