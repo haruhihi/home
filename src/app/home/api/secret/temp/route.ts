@@ -29,7 +29,7 @@ const config = {
   ],
 };
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   // TODO 这里根据自己业务需要做好放行判断
 
   // 获取临时密钥
