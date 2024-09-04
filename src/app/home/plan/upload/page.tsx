@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Divider } from "antd";
+import { Button, Divider, Form } from "antd";
 import {
   PageLoading,
   ProForm,
@@ -35,8 +35,12 @@ import {
 import { useUpload } from "@utils/use-upload";
 import { Dependence, commonTextareaProps, onFinish } from "./help";
 import { useRouter } from "next/navigation";
+import SpecialWorkersModal from "./special-workers-modal";
+import GaodeWeather from "@components/gaode-weather";
+const CITY = 420881 // 钟祥市
 
 const App: React.FC = () => {
+  const [form] = ProForm.useForm();
   const optionsRes = useServerConfigs();
   const router = useRouter();
   const { commonUploadProps } = useUpload();
@@ -63,6 +67,7 @@ const App: React.FC = () => {
           [EPlan.PatrolSwitch.Name]: PatrolSwitchEnum.Yes,
           [EPlan.PowerOutMethod.Name]: PowerOutMethodEnum.CutOff,
         }}
+        form={form}
         onFinish={async (values) => {
           await onFinish({
             values,
@@ -107,13 +112,8 @@ const App: React.FC = () => {
           options={workerOptions}
           mode="multiple"
         />
-        <ProFormSelect
-          width="md"
-          name={EPlan.SpecialWorkers.Name}
-          label={EPlan.SpecialWorkers.label}
-          options={specialWorkerOptions}
-          mode="multiple"
-        />
+        <SpecialWorkersModal form={form} specialWorkerOptions={specialWorkerOptions} />
+       
         <Divider orientation="left">
           <h2>工作内容</h2>
         </Divider>
@@ -265,10 +265,14 @@ const App: React.FC = () => {
           <h2>作业时间</h2>
         </Divider>
         <>
-          <ProFormDateTimePicker
-            name={EPlan.ExpectStartAt.Name}
-            label={EPlan.ExpectStartAt.label}
+          <Form.Item shouldUpdate noStyle>{(form) => {
+            return <ProFormDateTimePicker
+              name={EPlan.ExpectStartAt.Name}
+              label={EPlan.ExpectStartAt.label}
+              addonAfter=  {<GaodeWeather city={CITY} date={form.getFieldValue(EPlan.ExpectStartAt.Name)?.format("YYYY-MM-DD")}
+            />}
           />
+          }}</Form.Item>
           <ProFormDateTimePicker
             name={EPlan.ExpectFinishAt.Name}
             label={EPlan.ExpectFinishAt.label}
