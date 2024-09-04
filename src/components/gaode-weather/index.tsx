@@ -82,8 +82,10 @@ const WeatherDisplay = ({ city, date }: Props) => {
   if (index < 0 ) {
     return <span style={{color:'grey'}}>仅支持查看 15 天内天气</span>
   }
+  const dw = weather[index].dayweather;
+  const nw = weather[index].nightweather
 
-  return  <span style={{color:'grey'}}>早：{weather[index].dayweather}  {weather[index].daytemp}°C  ~  晚：{weather[index].nightweather} {weather[index].nighttemp}°C </span>
+  return  <span style={{color:'grey'}}>{weather[index].daytemp} - {weather[index].nighttemp} 度，{dw === nw ? dw : `${dw}转${nw}`} </span>
 };
 
 
