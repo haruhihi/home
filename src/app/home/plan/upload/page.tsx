@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Divider } from "antd";
+import { Button, Divider, Form } from "antd";
 import {
   PageLoading,
   ProForm,
@@ -36,6 +36,8 @@ import { useUpload } from "@utils/use-upload";
 import { Dependence, commonTextareaProps, onFinish } from "./help";
 import { useRouter } from "next/navigation";
 import SpecialWorkersModal from "./special-workers-modal";
+import GaodeWeather from "@components/gaode-weather";
+const CITY = 420881 // 钟祥市
 
 const App: React.FC = () => {
   const [form] = ProForm.useForm();
@@ -265,10 +267,14 @@ const App: React.FC = () => {
           <h2>作业时间</h2>
         </Divider>
         <>
-          <ProFormDateTimePicker
-            name={EPlan.ExpectStartAt.Name}
-            label={EPlan.ExpectStartAt.label}
+          <Form.Item shouldUpdate noStyle>{(form) => {
+            return <ProFormDateTimePicker
+              name={EPlan.ExpectStartAt.Name}
+              label={EPlan.ExpectStartAt.label}
+              addonAfter=  {<GaodeWeather city={CITY} date={form.getFieldValue(EPlan.ExpectStartAt.Name)?.format("YYYY-MM-DD")}
+            />}
           />
+          }}</Form.Item>
           <ProFormDateTimePicker
             name={EPlan.ExpectFinishAt.Name}
             label={EPlan.ExpectFinishAt.label}
