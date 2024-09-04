@@ -70,24 +70,6 @@ const WeatherDisplay = ({ city, date }: Props) => {
   }
 
   return  <span style={{color:'grey'}}>早：{weather[index].dayweather}  {weather[index].daytemp}°C  ~  晚：{weather[index].nightweather} {weather[index].nighttemp}°C </span>
-
-    // return (
-    //   <Popover content= { <List
-    //    style={{width:400}}
-    //     itemLayout="horizontal"
-    //     dataSource={weather}
-    //     renderItem={(item, index) => (
-    //       <List.Item>
-    //         <List.Item.Meta
-    //           avatar={item.date}
-    //           title={<><span>{item.dayweather} - {item.nightweather} </span>,<span> {item.daytemp}°C - {item.nighttemp}°C</span></>}
-    //           />
-    //       </List.Item>
-    //     )}
-    //   /> }>
-    //     <span style={{color:'grey'}}> {weather[0].date},  {weather[0].dayweather} - {weather[0].nightweather} ,  {weather[0].daytemp}°C - {weather[0].nighttemp}°C </span>
-    //   </Popover>
-    // );
 };
 
 

@@ -11,7 +11,6 @@ import { EUserRoleEnum } from "@dtos/db";
 import { DataProvider, useData } from "@utils/data-provider";
 import { ERoute } from "@constants/route";
 
-
 const Main: React.FC<{ children: React.ReactNode }> = (props) => {
   return (
     <DataProvider>

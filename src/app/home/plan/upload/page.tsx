@@ -54,8 +54,6 @@ const App: React.FC = () => {
     operatorOptions,
     maintainerOptions,
   } = optionsRes;
-
-  
   return (
     <div>
       <ProForm
