@@ -35,6 +35,7 @@ export async function POST(request: Request) {
             return {
               label: (row as any)[EUser.Name],
               value: (row as any)[EUser.ID],
+              specialWork: (row as any)[EUser.SpecialWork],
             };
           }) ?? [],
       maintainerOptions: await getMaintainerOptions(),

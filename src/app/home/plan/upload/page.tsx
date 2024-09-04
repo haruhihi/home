@@ -35,8 +35,10 @@ import {
 import { useUpload } from "@utils/use-upload";
 import { Dependence, commonTextareaProps, onFinish } from "./help";
 import { useRouter } from "next/navigation";
+import SpecialWorkersModal from "./special-workers-modal";
 
 const App: React.FC = () => {
+  const [form] = ProForm.useForm();
   const optionsRes = useServerConfigs();
   const router = useRouter();
   const { commonUploadProps } = useUpload();
@@ -50,6 +52,8 @@ const App: React.FC = () => {
     operatorOptions,
     maintainerOptions,
   } = optionsRes;
+
+  
   return (
     <div>
       <ProForm
@@ -63,6 +67,7 @@ const App: React.FC = () => {
           [EPlan.PatrolSwitch.Name]: PatrolSwitchEnum.Yes,
           [EPlan.PowerOutMethod.Name]: PowerOutMethodEnum.CutOff,
         }}
+        form={form}
         onFinish={async (values) => {
           await onFinish({
             values,
@@ -107,13 +112,8 @@ const App: React.FC = () => {
           options={workerOptions}
           mode="multiple"
         />
-        <ProFormSelect
-          width="md"
-          name={EPlan.SpecialWorkers.Name}
-          label={EPlan.SpecialWorkers.label}
-          options={specialWorkerOptions}
-          mode="multiple"
-        />
+        <SpecialWorkersModal form={form} specialWorkerOptions={specialWorkerOptions} />
+       
         <Divider orientation="left">
           <h2>工作内容</h2>
         </Divider>
