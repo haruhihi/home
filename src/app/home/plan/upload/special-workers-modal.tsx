@@ -10,7 +10,7 @@ interface Props {
     form: FormInstance;
 }
 
-export default ({specialWorkerOptions, form}: Props) => {
+const App = ({specialWorkerOptions, form}: Props) => {
     const [open, setOpen] = useState(false);
     const [specialWorkers, setSpecialWorkers] = useState<{label:string; value:string|number; specialwRorker?: string;}[]>([]);
   
@@ -39,7 +39,7 @@ export default ({specialWorkerOptions, form}: Props) => {
             width={1000}
             onCancel={hideModal}
             footer={[
-                <Button type="primary" onClick={hideModal}>确认</Button>
+                <Button type="primary" onClick={hideModal} key="confirm">确认</Button>
             ]}
         >
             <Table columns={[ 
@@ -59,3 +59,5 @@ export default ({specialWorkerOptions, form}: Props) => {
         </Modal>
     </>  
 }
+
+export default App;
