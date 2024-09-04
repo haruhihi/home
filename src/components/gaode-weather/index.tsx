@@ -215,6 +215,9 @@ const WeatherDisplay = ({ city, date }: Props) => {
     return <Spin  spinning={true}/>;
   }
 
+  if (!date) {
+    return null;
+  }
 
   const index = weather.findIndex(v => v.date === date);
   if (index < 0 ) {
