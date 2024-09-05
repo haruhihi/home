@@ -31,6 +31,7 @@ export async function POST(request: Request) {
       status: 200,
     });
   } catch (error) {
+    console.log('err', error);
     return new Response(
       Res500({ result: `error: ${(error as Error)?.message ?? ""}` }),
       {

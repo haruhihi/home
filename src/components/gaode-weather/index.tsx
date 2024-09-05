@@ -40,24 +40,23 @@ const WeatherDisplay = ({ city, date }: Props) => {
         });
 
         
-        let cast = (response.data?.forecasts?.[0]?.casts ?? []) as IWeather[];
+        const cast = (response.data?.forecasts?.[0]?.casts ?? []) as IWeather[];
 
         const customizedTempResponse = await axios.get('/static/temp.json')
-        console.log(9,customizedTempResponse);
         
         if (customizedTempResponse?.data) {
-          
           const customizedTemp = customizedTempResponse?.data?.list as IWeather[]
           console.log(77, customizedTemp);
-          cast = cast.map(v => {
-            const item = customizedTemp.find((i) => i.date ===v.date);
-            if ( item) {
-              return item
+          const newCast = customizedTemp;
+          cast.forEach(v => {
+            if (!customizedTemp.find(i => i.date === v.date)) {
+              newCast.push(v)
             }
-            return v
           })
+          setWeather(newCast);
+        } else {
+          setWeather(cast);
         }
-        setWeather(cast);
       } catch (err) {
         setError(err);
       }
@@ -78,9 +77,10 @@ const WeatherDisplay = ({ city, date }: Props) => {
     return null;
   }
 
+  
   const index = weather.findIndex(v => v.date === date);
   if (index < 0 ) {
-    return <span style={{color:'grey'}}>仅支持查看 15 天内天气</span>
+    return <span style={{color:'grey'}}>暂无当天天气数据</span>
   }
   const dw = weather[index].dayweather;
   const nw = weather[index].nightweather
