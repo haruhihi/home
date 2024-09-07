@@ -123,7 +123,13 @@ const App: React.FC = () => {
           name={EPlan.VoltageLevel.Name}
           options={voltageLevelOptions}
         />
-        <SectionFormItem />
+        <SectionFormItem extra={
+          <>
+            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { console.log('11') }}>校验风险用户</Button>
+            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { console.log('11') }}>校验敏感用户</Button>
+            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { console.log('11') }}>校验停电时户数</Button>
+          </>
+        } />
         <ProFormSelect
           width="md"
           name={EPlan.Classification.Name}
