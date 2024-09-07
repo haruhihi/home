@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Divider, Form, message, Modal, Result } from "antd";
+import { Button, Divider, Form, message, Modal } from "antd";
 import {
   PageLoading,
   ProForm,
@@ -37,6 +37,9 @@ import { Dependence, commonTextareaProps, onFinish } from "./help";
 import { useRouter } from "next/navigation";
 import SpecialWorkersModal from "./special-workers-modal";
 import GaodeWeather from "@components/gaode-weather";
+import { RiskUsers } from "@components/risk-users";
+import { FrequentPowerCut } from "@components/frequent-power-cut";
+import { getPowerOutageHomesV2 } from "../audit/[[...slug]]/help";
 const CITY = 420881 // 钟祥市
 
 const RES = { "Response": { "Angle": 4.500009536743164, "Language": "zh", "PdfPageSize": 0, "RequestId": "05fdcfee-938b-431d-bf73-680a29d94a73", "TextDetections": [ { "AdvancedInfo": "{\"Parag\":{\"ParagNo\":1}}", "Confidence": 100, "DetectedText": "10kV丽山线", "ItemPolygon": { "Height": 39, "Width": 179, "X": 544, "Y": 1314 }, "Polygon": [ { "X": 445, "Y": 1268 }, { "X": 624, "Y": 1280 }, { "X": 621, "Y": 1319 }, { "X": 442, "Y": 1308 } ], "WordCoordPoint": [], "Words": [] }, { "AdvancedInfo": "{\"Parag\":{\"ParagNo\":1}}", "Confidence": 100, "DetectedText": "丽614开关斑竹#7支线", "ItemPolygon": { "Height": 40, "Width": 202, "X": 532, "Y": 1356 }, "Polygon": [ { "X": 430, "Y": 1309 }, { "X": 632, "Y": 1316 }, { "X": 631, "Y": 1356 }, { "X": 428, "Y": 1349 } ], "WordCoordPoint": [], "Words": [] }, { "AdvancedInfo": "{\"Parag\":{\"ParagNo\":2}}", "Confidence": 100, "DetectedText": "#001", "ItemPolygon": { "Height": 75, "Width": 175, "X": 542, "Y": 1422 }, "Polygon": [ { "X": 435, "Y": 1375 }, { "X": 611, "Y": 1375 }, { "X": 611, "Y": 1450 }, { "X": 435, "Y": 1450 } ], "WordCoordPoint": [], "Words": [] }, { "AdvancedInfo": "{\"Parag\":{\"ParagNo\":3}}", "Confidence": 100, "DetectedText": "80", "ItemPolygon": { "Height": 56, "Width": 157, "X": 543, "Y": 2028 }, "Polygon": [ { "X": 388, "Y": 1979 }, { "X": 545, "Y": 1990 }, { "X": 541, "Y": 2046 }, { "X": 384, "Y": 2035 } ], "WordCoordPoint": [], "Words": [] }, { "AdvancedInfo": "{\"Parag\":{\"ParagNo\":4}}", "Confidence": 90, "DetectedText": "起暖卫浴损导者", "ItemPolygon": { "Height": 36, "Width": 145, "X": 546, "Y": 2080 }, "Polygon": [ { "X": 387, "Y": 2032 }, { "X": 532, "Y": 2048 }, { "X": 528, "Y": 2084 }, { "X": 383, "Y": 2067 } ], "WordCoordPoint": [], "Words": [] } ] } }
@@ -186,7 +189,31 @@ const App: React.FC = () => {
           name={EPlan.VoltageLevel.Name}
           options={voltageLevelOptions}
         />
-        <SectionFormItem />
+        <SectionFormItem extra={
+          <>
+            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { Modal.info({
+              title: '敏感用户',
+              content: <div><RiskUsers sectionIds={form.getFieldValue(EPlan.Section.Name)} /></div>,
+              width: 1200
+            }) }}>校验敏感用户</Button>
+
+            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => {  Modal.info({
+              title: '频繁停电',
+              content: <div><FrequentPowerCut sectionIds={form.getFieldValue(EPlan.Section.Name)} /></div>,
+              width: 1200
+            }) }} >校验频繁停电</Button>
+
+            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { 
+              Modal.info({
+              title: '停电时户数',
+              content: <div>{getPowerOutageHomesV2({
+                expectFinish: form.getFieldValue(EPlan.ExpectFinishAt.Name),
+                expectStart: form.getFieldValue(EPlan.ExpectStartAt.Name),
+                sectionNum: form.getFieldValue(EPlan.Section.Name)?.length
+              })}</div>
+            }) }}>校验停电时户数</Button>
+          </>
+        } />
         <ProFormSelect
           width="md"
           name={EPlan.Classification.Name}
@@ -397,11 +424,6 @@ const App: React.FC = () => {
             name={EPlan.PowerOutageHomesImgs.Name}
             label={EPlan.PowerOutageHomesImgs.label}
           />
-          {/* <ProFormTextArea
-            {...commonTextareaProps}
-            name={EPlan.PowerOutageHomesText.Name}
-            label={EPlan.PowerOutageHomesText.label}
-          /> */}
         </>
 
         <Divider orientation="left">

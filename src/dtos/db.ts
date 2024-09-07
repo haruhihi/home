@@ -365,10 +365,10 @@ export const ESection = {
     Name: "ExceptionStop2Months",
     Label: "2月内台区停运情况",
   },
-  /** 近2月用户停电情况 */
+  /** 台区用户数 */
   ExceptionStopUserCount2Months: {
     Name: "ExceptionStopUserCount2Months",
-    Label: "近2月用户停电情况",
+    Label: "台区用户数",
   },
 };
 
