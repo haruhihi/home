@@ -8,12 +8,12 @@ export const RiskUsers: React.FC<{ sectionIds: any[]; }> = (props) => {
   const [sectionDetail, setSectionDetail] = useState<ISectionDetailRes | null>(null);
   
   useEffect(() => {
-  if (!props || !props.sectionIds) return;
-  axios
-    .post('/home/api/section/detail', { sectionIds: props.sectionIds })
-    .then(res => {
-      setSectionDetail(res.data.result)
-    })
+    if (!props || !props.sectionIds) return;
+    axios
+      .post('/home/api/section/detail', { sectionIds: props.sectionIds })
+      .then(res => {
+        setSectionDetail(res.data.result)
+      })
   }, [])
 
   
