@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { Button, Divider, Form, Modal } from "antd";
+import React, { useState } from "react";
+import { Button, Divider, Form, message, Modal } from "antd";
 import {
   PageLoading,
   ProForm,
@@ -42,11 +42,66 @@ import { FrequentPowerCut } from "@components/frequent-power-cut";
 import { getPowerOutageHomesV2 } from "../audit/[[...slug]]/help";
 const CITY = 420881 // 钟祥市
 
+const RES = { "Response": { "Angle": 4.500009536743164, "Language": "zh", "PdfPageSize": 0, "RequestId": "05fdcfee-938b-431d-bf73-680a29d94a73", "TextDetections": [ { "AdvancedInfo": "{\"Parag\":{\"ParagNo\":1}}", "Confidence": 100, "DetectedText": "10kV丽山线", "ItemPolygon": { "Height": 39, "Width": 179, "X": 544, "Y": 1314 }, "Polygon": [ { "X": 445, "Y": 1268 }, { "X": 624, "Y": 1280 }, { "X": 621, "Y": 1319 }, { "X": 442, "Y": 1308 } ], "WordCoordPoint": [], "Words": [] }, { "AdvancedInfo": "{\"Parag\":{\"ParagNo\":1}}", "Confidence": 100, "DetectedText": "丽614开关斑竹#7支线", "ItemPolygon": { "Height": 40, "Width": 202, "X": 532, "Y": 1356 }, "Polygon": [ { "X": 430, "Y": 1309 }, { "X": 632, "Y": 1316 }, { "X": 631, "Y": 1356 }, { "X": 428, "Y": 1349 } ], "WordCoordPoint": [], "Words": [] }, { "AdvancedInfo": "{\"Parag\":{\"ParagNo\":2}}", "Confidence": 100, "DetectedText": "#001", "ItemPolygon": { "Height": 75, "Width": 175, "X": 542, "Y": 1422 }, "Polygon": [ { "X": 435, "Y": 1375 }, { "X": 611, "Y": 1375 }, { "X": 611, "Y": 1450 }, { "X": 435, "Y": 1450 } ], "WordCoordPoint": [], "Words": [] }, { "AdvancedInfo": "{\"Parag\":{\"ParagNo\":3}}", "Confidence": 100, "DetectedText": "80", "ItemPolygon": { "Height": 56, "Width": 157, "X": 543, "Y": 2028 }, "Polygon": [ { "X": 388, "Y": 1979 }, { "X": 545, "Y": 1990 }, { "X": 541, "Y": 2046 }, { "X": 384, "Y": 2035 } ], "WordCoordPoint": [], "Words": [] }, { "AdvancedInfo": "{\"Parag\":{\"ParagNo\":4}}", "Confidence": 90, "DetectedText": "起暖卫浴损导者", "ItemPolygon": { "Height": 36, "Width": 145, "X": 546, "Y": 2080 }, "Polygon": [ { "X": 387, "Y": 2032 }, { "X": 532, "Y": 2048 }, { "X": 528, "Y": 2084 }, { "X": 383, "Y": 2067 } ], "WordCoordPoint": [], "Words": [] } ] } }
+
 const App: React.FC = () => {
   const [form] = ProForm.useForm();
   const optionsRes = useServerConfigs();
+  const [imgUrls, setImgUrls] = useState([])
   const router = useRouter();
   const { commonUploadProps } = useUpload();
+
+  const getTexts = (text: string) => {
+    try {
+      // 正则表达式匹配 "涉及台区" 和其后的内容，处理冒号前后的空白字符
+    const content = text.split('涉及台区:')[1] || text.split('涉及台区：')[1]
+    
+    if (content) {
+      // 按照中英文逗号分隔，处理逗号前后的空白字符和换行
+      const items = content.split(/[\s]*[,，][\s]*/).map(item => item.trim()).filter(item => item.length > 0);
+      return items;
+    } else {
+      console.log('未找到匹配的内容');
+      return []
+    }
+    } catch (error) {
+      message.error('请按要求的格式输入');
+      return []
+    }
+  }
+
+  const checkImgText = () => {
+     // 调用文字识别接口 imgUrls
+    const finalDetectedTexts = [RES].map(r => {
+      const detectedTexts = r?.Response?.TextDetections?.map(v => v.DetectedText);
+      if (detectedTexts && detectedTexts.length > 0) {
+        return detectedTexts.join('');
+     } else {
+      return '';
+     }
+    }).join(',');
+    console.log("imgText", finalDetectedTexts)
+    const withElectricWorkText = form.getFieldValue(EPlan.WithElectricWorkText.Name) || "";
+    console.log("withElectricWorkText", withElectricWorkText)
+    const checkRes = getTexts(withElectricWorkText).join(',');
+    console.log('checkRes', checkRes);
+    if (checkRes !== finalDetectedTexts) {
+      Modal.error({
+        title:'校验失败',
+        content: <div>
+          <p>文本内容：{checkRes|| "无"}</p>
+          
+          <p>图片内容：{finalDetectedTexts || "无"}</p>
+        </div>
+      })
+    } else {
+      Modal.success({
+        title:'校验通过',
+        content: "文本内容与图片内容一致"
+      })
+    }
+    
+  }
 
   if (!optionsRes) return <PageLoading />;
 
@@ -83,6 +138,14 @@ const App: React.FC = () => {
         }}
         submitter={{
           render: (_, dom) => <Footer ele={dom}></Footer>,
+        }}
+        onValuesChange={(values) => {
+          const name = Object.keys(values)[0];
+          if (name === EPlan.WithElectricWorkImgs.Name) {
+            const imgUrls = values[EPlan.WithElectricWorkImgs.Name].map((v: any) => v.url);
+            console.log(99, imgUrls);
+            setImgUrls(imgUrls);
+          }
         }}
       >
         <Divider orientation="left">
@@ -196,12 +259,15 @@ const App: React.FC = () => {
             name={EPlan.WithElectricWorkText.Name}
             label={EPlan.WithElectricWorkText.label}
             {...commonTextareaProps}
+
           />
           <ProFormUploadButton
             name={EPlan.WithElectricWorkImgs.Name}
             label={EPlan.WithElectricWorkImgs.label}
             {...commonUploadProps}
+            extra={<Button onClick={checkImgText} type="link">校验</Button>}
           />
+         
         </Dependence>
         <ProFormRadio.Group
           width="md"
