@@ -17,7 +17,7 @@ export const RiskUsers: React.FC<{ sectionIds: any[]; }> = (props) => {
   }, [])
 
   
-  if (!props || !props.sectionIds) return "请选择台区";
+  if (!props || !props.sectionIds || !props.sectionIds.length) return "请选择台区";
 
   if (!sectionDetail) return '正在校验中'
   
