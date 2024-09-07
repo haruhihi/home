@@ -1,10 +1,27 @@
+import { ISectionDetailRes } from "@dtos/api";
 import { EPersonData, ESection } from "@dtos/db";
-import { Table  } from "antd";
+import { Modal, Table  } from "antd";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-export const RiskUsers: React.FC<{ people: any[], sections: any[]; }> = (props) => {
-  if (!props) return "-";
+export const RiskUsers: React.FC<{ sectionIds: any[]; }> = (props) => {
+  const [sectionDetail, setSectionDetail] = useState<ISectionDetailRes | null>(null);
+  
+  useEffect(() => {
+  if (!props || !props.sectionIds) return;
+  axios
+    .post('/home/api/section/detail', { sectionIds: props.sectionIds })
+    .then(res => {
+      setSectionDetail(res.data.result)
+    })
+  }, [])
 
-  const { people, sections } = props
+  
+  if (!props || !props.sectionIds) return "请选择台区";
+
+  if (!sectionDetail) return '正在校验中'
+  
+  const { sections, people } = sectionDetail
   return (
     <Table
       bordered

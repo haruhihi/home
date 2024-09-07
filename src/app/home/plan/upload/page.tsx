@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button, Divider, Form } from "antd";
+import { Button, Divider, Form, Modal } from "antd";
 import {
   PageLoading,
   ProForm,
@@ -37,6 +37,7 @@ import { Dependence, commonTextareaProps, onFinish } from "./help";
 import { useRouter } from "next/navigation";
 import SpecialWorkersModal from "./special-workers-modal";
 import GaodeWeather from "@components/gaode-weather";
+import { RiskUsers } from "@components/risk-users";
 const CITY = 420881 // 钟祥市
 
 const App: React.FC = () => {
@@ -125,7 +126,11 @@ const App: React.FC = () => {
         />
         <SectionFormItem extra={
           <>
-            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { console.log('11') }}>校验风险用户</Button>
+            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { Modal.info({
+              title: '风险用户',
+              content: <div><RiskUsers sectionIds={form.getFieldValue(EPlan.Section.Name)} /></div>,
+              width: 1000
+            }) }}>校验风险用户</Button>
             <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { console.log('11') }}>校验敏感用户</Button>
             <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { console.log('11') }}>校验停电时户数</Button>
           </>
