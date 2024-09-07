@@ -147,6 +147,11 @@ export interface IPlanDetailRes {
   workOwners: any[];
 }
 
+export interface ISectionDetailRes {
+  people: any[];
+  sections: any[];
+}
+
 export interface IAuditReq {
   [EPlan.Status.Name]: EPlanStatusEnum;
   [EPlan.ID.Name]: string;

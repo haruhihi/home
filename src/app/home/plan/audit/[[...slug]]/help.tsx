@@ -4,7 +4,7 @@ import { IAuditReq, IPlanDetailRes } from "@dtos/api";
 import { EPlan, EPlanStatusEnum } from "@dtos/db";
 import { Button, Image, Input, Modal, Space, message } from "antd";
 import axios from "axios";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import React, { useState } from "react";
 
 const audit = async (params: IAuditReq, onSuccess: () => void) => {
@@ -149,6 +149,24 @@ export const getPowerOutageHomes = (detail: IPlanDetailRes | null) => {
   const start = plan[EPlan.ExpectStartAt.Name];
   const sectionNum = sections.length;
   console.log(finish, start, sectionNum);
+  return getPowerOutageHomesV2({ expectFinish: finish, expectStart: start, sectionNum: sectionNum })
+};
+
+
+export const getPowerOutageHomesV2 = (params: {
+  expectFinish?: string | dayjs.Dayjs,
+  expectStart?: string | dayjs.Dayjs,
+  sectionNum?: number
+}) => {
+  if (!params) return '-';
+  const { expectFinish, expectStart, sectionNum } = params;
+  console.log(expectFinish, expectStart, sectionNum)
+  if (!expectStart || !expectFinish) return "请先选择计划开工时间和计划完工时间";
+  if (!sectionNum) return "请先选择台区";
+  console.log(expectStart, expectFinish, sectionNum);
+  const finish = typeof expectFinish === 'string' ? dayjs(expectFinish) : expectFinish
+  const start = typeof expectStart === 'string' ? dayjs(expectStart) : expectStart
+  console.log(dayjs(finish).diff(dayjs(start), "minutes"))
   return (
     (dayjs(finish).diff(dayjs(start), "minutes") / 60) *
     sectionNum

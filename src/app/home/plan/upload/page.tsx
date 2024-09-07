@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button, Divider, Form } from "antd";
+import { Button, Divider, Form, Modal } from "antd";
 import {
   PageLoading,
   ProForm,
@@ -37,6 +37,9 @@ import { Dependence, commonTextareaProps, onFinish } from "./help";
 import { useRouter } from "next/navigation";
 import SpecialWorkersModal from "./special-workers-modal";
 import GaodeWeather from "@components/gaode-weather";
+import { RiskUsers } from "@components/risk-users";
+import { FrequentPowerCut } from "@components/frequent-power-cut";
+import { getPowerOutageHomesV2 } from "../audit/[[...slug]]/help";
 const CITY = 420881 // 钟祥市
 
 const App: React.FC = () => {
@@ -123,7 +126,31 @@ const App: React.FC = () => {
           name={EPlan.VoltageLevel.Name}
           options={voltageLevelOptions}
         />
-        <SectionFormItem />
+        <SectionFormItem extra={
+          <>
+            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { Modal.info({
+              title: '敏感用户',
+              content: <div><RiskUsers sectionIds={form.getFieldValue(EPlan.Section.Name)} /></div>,
+              width: 1200
+            }) }}>校验敏感用户</Button>
+
+            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => {  Modal.info({
+              title: '频繁停电',
+              content: <div><FrequentPowerCut sectionIds={form.getFieldValue(EPlan.Section.Name)} /></div>,
+              width: 1200
+            }) }} >校验频繁停电</Button>
+
+            <Button style={{ marginLeft:-15 }}  type="link" onClick={() => { 
+              Modal.info({
+              title: '停电时户数',
+              content: <div>{getPowerOutageHomesV2({
+                expectFinish: form.getFieldValue(EPlan.ExpectFinishAt.Name),
+                expectStart: form.getFieldValue(EPlan.ExpectStartAt.Name),
+                sectionNum: form.getFieldValue(EPlan.Section.Name)?.length
+              })}</div>
+            }) }}>校验停电时户数</Button>
+          </>
+        } />
         <ProFormSelect
           width="md"
           name={EPlan.Classification.Name}
@@ -331,11 +358,6 @@ const App: React.FC = () => {
             name={EPlan.PowerOutageHomesImgs.Name}
             label={EPlan.PowerOutageHomesImgs.label}
           />
-          {/* <ProFormTextArea
-            {...commonTextareaProps}
-            name={EPlan.PowerOutageHomesText.Name}
-            label={EPlan.PowerOutageHomesText.label}
-          /> */}
         </>
 
         <Divider orientation="left">
