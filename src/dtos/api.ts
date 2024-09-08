@@ -16,6 +16,10 @@ export interface ILoginReq {
   [EUser.Password]: string;
 }
 
+export interface IOCRReq {
+  imageUrl: string;
+}
+
 export const Res200 = <T>(params: {
   result?: T;
   message?: string;
