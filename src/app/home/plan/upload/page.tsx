@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Divider, Form, message, Modal } from "antd";
+import { Button, Divider, Form, List, message, Modal } from "antd";
 import {
   PageLoading,
   ProForm,
@@ -43,109 +43,6 @@ import { getPowerOutageHomesV2 } from "../audit/[[...slug]]/help";
 import axios from "axios";
 const CITY = 420881 // 钟祥市
 
-const RES = {
-  "Response": {
-      "Angle": 4.500009536743164,
-      "Language": "zh",
-      "PdfPageSize": 0,
-      "RequestId": "05fdcfee-938b-431d-bf73-680a29d94a73",
-      "TextDetections": [
-          {
-              "AdvancedInfo": "{\"Parag\":{\"ParagNo\":1}}",
-              "Confidence": 100,
-              "DetectedText": "10kV丽山线",
-              "ItemPolygon": {
-                  "Height": 39,
-                  "Width": 179,
-                  "X": 544,
-                  "Y": 1314
-              },
-              "Polygon": [
-                  {
-                      "X": 445,
-                      "Y": 1268
-                  },
-                  {
-                      "X": 624,
-                      "Y": 1280
-                  },
-                  {
-                      "X": 621,
-                      "Y": 1319
-                  },
-                  {
-                      "X": 442,
-                      "Y": 1308
-                  }
-              ],
-              "WordCoordPoint": [],
-              "Words": []
-          },
-          {
-              "AdvancedInfo": "{\"Parag\":{\"ParagNo\":1}}",
-              "Confidence": 100,
-              "DetectedText": "丽614开关斑竹#7支线",
-              "ItemPolygon": {
-                  "Height": 40,
-                  "Width": 202,
-                  "X": 532,
-                  "Y": 1356
-              },
-              "Polygon": [
-                  {
-                      "X": 430,
-                      "Y": 1309
-                  },
-                  {
-                      "X": 632,
-                      "Y": 1316
-                  },
-                  {
-                      "X": 631,
-                      "Y": 1356
-                  },
-                  {
-                      "X": 428,
-                      "Y": 1349
-                  }
-              ],
-              "WordCoordPoint": [],
-              "Words": []
-          },
-          {
-              "AdvancedInfo": "{\"Parag\":{\"ParagNo\":2}}",
-              "Confidence": 100,
-              "DetectedText": "#001",
-              "ItemPolygon": {
-                  "Height": 75,
-                  "Width": 175,
-                  "X": 542,
-                  "Y": 1422
-              },
-              "Polygon": [
-                  {
-                      "X": 435,
-                      "Y": 1375
-                  },
-                  {
-                      "X": 611,
-                      "Y": 1375
-                  },
-                  {
-                      "X": 611,
-                      "Y": 1450
-                  },
-                  {
-                      "X": 435,
-                      "Y": 1450
-                  }
-              ],
-              "WordCoordPoint": [],
-              "Words": []
-          }
-      ]
-  }
-}
 
 const App: React.FC = () => {
   const [form] = ProForm.useForm();
@@ -157,7 +54,10 @@ const App: React.FC = () => {
   const getTexts = (text: string) => {
     try {
       // 正则表达式匹配 "涉及台区" 和其后的内容，处理冒号前后的空白字符
-    const content = text.split('涉及台区:')[1] || text.split('涉及台区：')[1]
+    const data = text.split('\n').find(v => v.includes('涉及台区')) || '';
+    console.log('data',data);
+    
+    const content = data.split('涉及台区:')[1] || data.split('涉及台区：')[1];
     
     if (content) {
       // 按照中英文逗号分隔，处理逗号前后的空白字符和换行
@@ -173,48 +73,64 @@ const App: React.FC = () => {
     }
   }
 
-  const checkImgText = () => {
-     // 调用文字识别接口 imgUrls
-    const promises = imgUrls.map(imageUrl => {
-      return axios.post(
-        "/home/api/ocr",
-        {imageUrl}
-      );
-    });
+  const checkImgText = async () => {
+    try {
+      // 调用文字识别接口 imgUrls
+     const promises = imgUrls.map(imageUrl => {
+       return axios.post(
+         "/home/api/ocr",
+         {imageUrl}
+       );
+     });
+ 
+     const ocrResults = await Promise.allSettled(promises)
+ 
+     const finalDetectedTexts = ocrResults.filter(ocrResult => ocrResult && ocrResult.status === 'fulfilled' &&  ocrResult?.value?.data?.result?.TextDetections).map((r:any) => {
+       console.log('r',r)
+       const detectedTexts = r?.value?.data?.result?.TextDetections?.map((v:any) => v.DetectedText);
+       if (detectedTexts && detectedTexts.length > 0) {
+         return detectedTexts.join('');
+      } else {
+       return '';
+      }
+     });
+     console.log("finalDetectedTexts", finalDetectedTexts)
+     const withElectricWorkText = form.getFieldValue(EPlan.WithElectricWorkText.Name) || "";
+     console.log("withElectricWorkText", withElectricWorkText)
+     const checkRes = getTexts(withElectricWorkText);
+     console.log('checkRes', checkRes);
+     function arraysEqualUnordered(arr1: string[], arr2: string[]) {
+      // 检查数组长度是否相同
+      if (arr1.length !== arr2.length) return false;
+    
+      // 排序数组并比较每个元素
+      const sortedArr1 = arr1.slice().sort();
+      const sortedArr2 = arr2.slice().sort();
+    
+      // 使用 every 方法检查每个元素是否相等
+      return sortedArr1.every((value, index) => value === sortedArr2[index]);
+    }
 
-    Promise.allSettled(promises).then((results) =>
-      console.log('result',results)
-      // const res = results.filter((result:any) => result.status === "fulfilled");
-      // console.log("res", res)
-    );
-
-    const finalDetectedTexts = [RES].map(r => {
-      const detectedTexts = r?.Response?.TextDetections?.map(v => v.DetectedText);
-      if (detectedTexts && detectedTexts.length > 0) {
-        return detectedTexts.join('');
+     if (!arraysEqualUnordered(finalDetectedTexts, checkRes)) {
+       Modal.error({
+         title:'校验失败',
+         content: <div>
+          <List dataSource={checkRes} header='文本内容' renderItem={(item) => <List.Item>{item}</List.Item>} bordered />
+           
+          <List dataSource={finalDetectedTexts} header='图片内容' renderItem={(item) => <List.Item>{item}</List.Item>} bordered style={{ marginTop: 8 }}/>
+         </div>
+       })
      } else {
-      return '';
+       Modal.success({
+         title:'校验通过',
+         content: <div>
+         <p>文本内容与图片内容一致</p>
+         <List header='涉及台区' dataSource={checkRes}  renderItem={(item) => <List.Item>{item}</List.Item>} bordered/>
+         </div>
+       })
      }
-    }).join(',');
-    console.log("imgText", finalDetectedTexts)
-    const withElectricWorkText = form.getFieldValue(EPlan.WithElectricWorkText.Name) || "";
-    console.log("withElectricWorkText", withElectricWorkText)
-    const checkRes = getTexts(withElectricWorkText).join(',');
-    console.log('checkRes', checkRes);
-    if (checkRes !== finalDetectedTexts) {
-      Modal.error({
-        title:'校验失败',
-        content: <div>
-          <p>文本内容：{checkRes|| "无"}</p>
-          
-          <p>图片内容：{finalDetectedTexts || "无"}</p>
-        </div>
-      })
-    } else {
-      Modal.success({
-        title:'校验通过',
-        content: "文本内容与图片内容一致"
-      })
+    } catch(err) {
+      console.log(err)
     }
     
   }

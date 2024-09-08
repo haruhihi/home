@@ -1,6 +1,7 @@
 import { ENV_LOCAL } from "@constants/config";
 import { ILoginReq, IOCRReq, Res200, Res500 } from "@dtos/api";
-import tencentcloud from "tencentcloud-sdk-nodejs-ocr";
+// import tencentcloud from "tencentcloud-sdk-nodejs-ocr";
+const tencentcloud = require("tencentcloud-sdk-nodejs-ocr");
 
 
 export async function POST(request: Request) {
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
         };
 
         const client = new OcrClient(clientConfig);
-        const data = await client.IDCardOCR({
+        const data = await client.GeneralBasicOCR({
             ImageUrl: imageUrl
         })
 
