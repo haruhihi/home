@@ -53,11 +53,11 @@ const App: React.FC = () => {
 
   const getTexts = (text: string) => {
     try {
-      // 正则表达式匹配 "涉及台区" 和其后的内容，处理冒号前后的空白字符
-    const data = text.split('\n').find(v => v.includes('涉及台区')) || '';
+      // 正则表达式匹配 "带电作业工作地点" 和其后的内容，处理冒号前后的空白字符
+    const data = text.split('\n').find(v => v.includes('带电作业工作地点')) || '';
     console.log('data',data);
     
-    const content = data.split('涉及台区:')[1] || data.split('涉及台区：')[1];
+    const content = data.split('带电作业工作地点:')[1] || data.split('带电作业工作地点：')[1];
     
     if (content) {
       // 按照中英文逗号分隔，处理逗号前后的空白字符和换行
@@ -89,7 +89,7 @@ const App: React.FC = () => {
        console.log('r',r)
        const detectedTexts = r?.value?.data?.result?.TextDetections?.map((v:any) => v.DetectedText);
        if (detectedTexts && detectedTexts.length > 0) {
-         return detectedTexts.join('');
+         return detectedTexts.join('').trim();
       } else {
        return '';
       }
@@ -99,16 +99,12 @@ const App: React.FC = () => {
      console.log("withElectricWorkText", withElectricWorkText)
      const checkRes = getTexts(withElectricWorkText);
      console.log('checkRes', checkRes);
-     function arraysEqualUnordered(arr1: string[], arr2: string[]) {
+     function arraysEqualUnordered(arr1: string[], arr2: string[]) { 
+      // arr1 图片 arr2 文本
       // 检查数组长度是否相同
       if (arr1.length !== arr2.length) return false;
-    
-      // 排序数组并比较每个元素
-      const sortedArr1 = arr1.slice().sort();
-      const sortedArr2 = arr2.slice().sort();
-    
-      // 使用 every 方法检查每个元素是否相等
-      return sortedArr1.every((value, index) => value === sortedArr2[index]);
+      return arr2.every(v => arr1.find(j => j.includes(v))) && arr1.every(v => arr2.find(j =>v.includes(j)))
+     
     }
 
      if (!arraysEqualUnordered(finalDetectedTexts, checkRes)) {
@@ -125,7 +121,7 @@ const App: React.FC = () => {
          title:'校验通过',
          content: <div>
          <p>文本内容与图片内容一致</p>
-         <List header='涉及台区' dataSource={checkRes}  renderItem={(item) => <List.Item>{item}</List.Item>} bordered/>
+         <List header='带电作业工作地点' dataSource={checkRes}  renderItem={(item) => <List.Item>{item}</List.Item>} bordered/>
          </div>
        })
      }
