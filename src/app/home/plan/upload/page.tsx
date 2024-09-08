@@ -40,6 +40,7 @@ import GaodeWeather from "@components/gaode-weather";
 import { RiskUsers } from "@components/risk-users";
 import { FrequentPowerCut } from "@components/frequent-power-cut";
 import { getPowerOutageHomesV2 } from "../audit/[[...slug]]/help";
+import axios from "axios";
 const CITY = 420881 // 钟祥市
 
 const RES = {
@@ -174,6 +175,19 @@ const App: React.FC = () => {
 
   const checkImgText = () => {
      // 调用文字识别接口 imgUrls
+    const promises = imgUrls.map(imageUrl => {
+      return axios.post(
+        "/home/api/ocr",
+        {imageUrl}
+      );
+    });
+
+    Promise.allSettled(promises).then((results) =>
+      console.log('result',results)
+      // const res = results.filter((result:any) => result.status === "fulfilled");
+      // console.log("res", res)
+    );
+
     const finalDetectedTexts = [RES].map(r => {
       const detectedTexts = r?.Response?.TextDetections?.map(v => v.DetectedText);
       if (detectedTexts && detectedTexts.length > 0) {
